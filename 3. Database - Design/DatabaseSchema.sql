@@ -1,5 +1,5 @@
-CREATE DATABASE AcademicPerformanceTracker;
-USE AcademicPerformanceTracker;
+CREATE DATABASE Academia;
+USE Academia;
 
 CREATE TABLE Users (
     userId INT NOT NULL AUTO_INCREMENT,
@@ -132,9 +132,9 @@ CREATE TABLE QualificationModule (
 
 CREATE TABLE Assessment (
 	assessmentId INT NOT NULL AUTO_INCREMENT,
-    assessment_name VARCHAR(50) NOT NULL,
+    assessmentName VARCHAR(100) NOT NULL,
     totalMark INT NOT NULL,
-    weighting DECIMAL NOT NULL,
+    weighting DECIMAL(5,2) NOT NULL,
     dueDate DATE NOT NULL,
     dateCreated DATE NOT NULL,
     lecturerId INT NOT NULL,
@@ -143,6 +143,7 @@ CREATE TABLE Assessment (
 	FOREIGN KEY (lecturerId) REFERENCES Lecturer(lecturerId),
     FOREIGN KEY (moduleId) REFERENCES Module(moduleId)
 );
+
 CREATE TABLE ClassSession(
 	sessionId INT NOT NULL AUTO_INCREMENT,
     classType VARCHAR(20) NOT NULL,

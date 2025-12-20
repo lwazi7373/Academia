@@ -1,4 +1,4 @@
-USE AcademicPerformanceTracker;
+USE Academia;
 
 -- Insert Faculties
 INSERT INTO Faculty (facultyName) VALUES
@@ -259,7 +259,7 @@ INSERT INTO StudentModule (studentId, moduleId) VALUES
 (45, 5); -- Samuel
 
 -- Insert Assessments
-INSERT INTO Assessment (assessment_name, totalMark, weighting, dueDate, dateCreated, lecturerId, moduleId) VALUES
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, dateCreated, lecturerId, moduleId) VALUES
 -- Introduction to Programming (Module 1)
 ('Assignment 1: Basic Syntax', 100, 0.10, '2024-03-15', '2024-02-01', 8, 1),
 ('Test 1: Control Structures', 100, 0.15, '2024-04-10', '2024-02-01', 8, 1),
