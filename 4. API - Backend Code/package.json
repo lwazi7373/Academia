@@ -1,0 +1,32 @@
+{
+  "name": "server-api",
+  "version": "1.0.0",
+  "description": "Backend API wriiten in express.js and node.js along with other libraries, that contains the logic for the Academia app, to help institutions to help identify studenst that are having a hard time with their academic work.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lwazi7373/Academic-Analysis.git"
+  },
+  "author": "Lwazi Simphiwe Ncube",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lwazi7373/Academic-Analysis/issues"
+  },
+  "homepage": "https://github.com/lwazi7373/Academic-Analysis#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.3",
+    "nodemailer": "^7.0.11"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

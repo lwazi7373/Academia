@@ -1,0 +1,84 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram name="Page-1" id="M-TrXQvhfjBcqTl_iFWP">
+    <mxGraphModel dx="1281" dy="634" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-1" value="" style="swimlane;startSize=0;" vertex="1" parent="1">
+          <mxGeometry x="240" y="961" width="720" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-2" value="Assessment Insertion&lt;div&gt;&amp;nbsp;Subsystem&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;html=1;fontSize=24;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="TrmG-tRlyn-datWIi7Xz-1">
+          <mxGeometry x="311" y="10" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-3" value="Insert assessment details" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" vertex="1" parent="TrmG-tRlyn-datWIi7Xz-1">
+          <mxGeometry x="240" y="140" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-4" value="Update assessment details" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" vertex="1" parent="TrmG-tRlyn-datWIi7Xz-1">
+          <mxGeometry x="240" y="300" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-5" value="View assessment details" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" vertex="1" parent="TrmG-tRlyn-datWIi7Xz-1">
+          <mxGeometry x="240" y="500" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-6" value="&amp;lt;&amp;lt;includes&amp;gt;&amp;gt;" style="endArrow=open;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontSize=13;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="TrmG-tRlyn-datWIi7Xz-1" source="TrmG-tRlyn-datWIi7Xz-4" target="TrmG-tRlyn-datWIi7Xz-5">
+          <mxGeometry x="0.0059" width="160" relative="1" as="geometry">
+            <mxPoint x="460" y="330" as="sourcePoint" />
+            <mxPoint x="460" y="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="520" y="330" />
+              <mxPoint x="520" y="530" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-7" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="TrmG-tRlyn-datWIi7Xz-1" target="TrmG-tRlyn-datWIi7Xz-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-80" y="190" as="sourcePoint" />
+            <mxPoint x="90" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-30" y="190" />
+              <mxPoint x="-30" y="440" />
+              <mxPoint x="340" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-8" value="Student" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1461" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-9" value="Lecturer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1101" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-10" value="Coordinator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1231" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-11" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="TrmG-tRlyn-datWIi7Xz-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="1131" as="sourcePoint" />
+            <mxPoint x="210" y="1071" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-12" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="TrmG-tRlyn-datWIi7Xz-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="1141" as="sourcePoint" />
+            <mxPoint x="280" y="1191" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="220" y="1141" />
+              <mxPoint x="220" y="1291" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-13" value="" style="endArrow=block;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="TrmG-tRlyn-datWIi7Xz-10">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="40" y="1221" as="sourcePoint" />
+            <mxPoint x="135" y="1191" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TrmG-tRlyn-datWIi7Xz-14" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="TrmG-tRlyn-datWIi7Xz-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="1491" as="sourcePoint" />
+            <mxPoint x="210" y="1431" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
