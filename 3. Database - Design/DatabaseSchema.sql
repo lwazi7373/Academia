@@ -148,7 +148,7 @@ CREATE TABLE ClassSession(
 	sessionId INT NOT NULL AUTO_INCREMENT,
     classType VARCHAR(20) NOT NULL,
     startTime TIME NOT NULL,
-    EndTime TIME NOT NULL,
+    endTime TIME NOT NULL,
     dateCreated DATE NOT NULL,
     lecturerId INT NOT NULL,
     moduleId INT NOT NULL,
