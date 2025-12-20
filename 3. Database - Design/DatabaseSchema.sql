@@ -1,38 +1,41 @@
-CREATE DATABASE AcademicTrackerSystem;
-USE AcademicTrackerSystem;
+CREATE DATABASE AcademicPerformanceTracker;
+USE AcademicPerformanceTracker;
 
 CREATE TABLE Users (
-	userId INT NOT NULL AUTO_INCREMENT,
-    firstName VARCHAR(50),
-    LastName VARCHAR(50),
+    userId INT NOT NULL AUTO_INCREMENT,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
     title VARCHAR(10),
-    emailAddress VARCHAR(50) UNIQUE,
-    userPassword VARCHAR(255) UNIQUE,
+    emailAddress VARCHAR(100) UNIQUE NOT NULL,
+    userPassword VARCHAR(255) NOT NULL,
     contactNo VARCHAR(15),
-    isActive BOOLEAN,
-    userRole ENUM ('Administrator','H.O.D', 'Lecturer', 'Coordinator','Student') NOT NULL,
-    dateRegistered DATE,
-	gender VARCHAR(10),
-	idNumber VARCHAR(13),
+    isActive BOOLEAN NOT NULL DEFAULT TRUE,
+    userRole ENUM ('ADMIN','HOD','LECTURER','COORDINATOR','STUDENT') NOT NULL,
+    dateRegistered DATE NOT NULL,
+    gender VARCHAR(20),
+    idNumber VARCHAR(20),
     PRIMARY KEY (userId)
 );
 
-CREATE TABLE Administrator(
-	adminId INT NOT NULL,
-    PRIMARY KEY (adminId),
-    FOREIGN KEY (adminId) REFERENCES Users(userId)
+CREATE TABLE Faculty (
+    facultyId INT NOT NULL AUTO_INCREMENT,
+    facultyName VARCHAR(100) NOT NULL,
+    PRIMARY KEY (facultyId)
 );
 
+
 CREATE TABLE Department (
-	departmentId INT NOT NULL AUTO_INCREMENT,
-    departmentName VARCHAR(50),
-    PRIMARY KEY (departmentId)
+    departmentId INT NOT NULL AUTO_INCREMENT,
+    departmentName VARCHAR(50) NOT NULL,
+    facultyId INT NOT NULL,
+    PRIMARY KEY (departmentId),
+    FOREIGN KEY (facultyId) REFERENCES Faculty(facultyId)
 );
 
 CREATE TABLE Qualification (
-	qualificationId INT NOT NULL AUTO_INCREMENT,
-    qualificationName VARCHAR(50),
-    qualificationCode VARCHAR(50),
+    qualificationId INT NOT NULL AUTO_INCREMENT,
+    qualificationName VARCHAR(100) NOT NULL,
+    qualificationCode VARCHAR(20) UNIQUE NOT NULL,
     duration INT NOT NULL,
     totalCredits INT NOT NULL,
     departmentId INT NOT NULL,
@@ -41,18 +44,18 @@ CREATE TABLE Qualification (
 );
 
 CREATE TABLE Student (
-	studentId INT NOT NULL,
-    studentNumber VARCHAR(50),
-	levelOfEducation VARCHAR(20),
-    yearOfStudy INT,
+    studentId INT NOT NULL,
+    studentNumber VARCHAR(20) UNIQUE NOT NULL,
+    levelOfEducation VARCHAR(20),
+    yearOfStudy INT NOT NULL,
     qualificationId INT NOT NULL,
-	PRIMARY KEY (studentId),
+    PRIMARY KEY (studentId),
     FOREIGN KEY (studentId) REFERENCES Users(userId),
-    FOREIGN KEY (qualificationId) REFERENCES Qualification(qualificationId) 
+    FOREIGN KEY (qualificationId) REFERENCES Qualification(qualificationId)
 );
 
 CREATE TABLE Lecturer (
-	lecturerId INT NOT NULL,
+    lecturerId INT NOT NULL,
     departmentId INT NOT NULL,
     PRIMARY KEY (lecturerId),
     FOREIGN KEY (lecturerId) REFERENCES Users(userId),
@@ -60,30 +63,33 @@ CREATE TABLE Lecturer (
 );
 
 CREATE TABLE Module (
-	moduleId INT NOT NULL AUTO_INCREMENT,
-    moduleName VARCHAR(50),
-    moduleCode VARCHAR(50),
+    moduleId INT NOT NULL AUTO_INCREMENT,
+    moduleName VARCHAR(100) NOT NULL,
+    moduleCode VARCHAR(20) UNIQUE NOT NULL,
     credits INT NOT NULL,
     departmentId INT NOT NULL,
     PRIMARY KEY (moduleId),
     FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
 );
 
+
 CREATE TABLE Coordinator (
-	coordinatorId INT NOT NULL,
+    coordinatorId INT NOT NULL,
     departmentId INT NOT NULL,
     PRIMARY KEY (coordinatorId),
     FOREIGN KEY (coordinatorId) REFERENCES Users(userId),
     FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
 );
 
+
 CREATE TABLE HOD (
-	hodId INT NOT NULL,
-    PRIMARY KEY (hodId),
+    hodId INT NOT NULL,
     departmentId INT NOT NULL,
+    PRIMARY KEY (hodId),
     FOREIGN KEY (hodId) REFERENCES Users(userId),
     FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
 );
+
 
 CREATE TABLE StudentModule(
 	studentModuleId INT NOT NULL AUTO_INCREMENT,
@@ -111,26 +117,26 @@ CREATE TABLE CoordinatorModule(
     FOREIGN KEY (moduleId) REFERENCES Module(moduleId)
 );
 
-CREATE TABLE QualificationModule(
-	qualificationModuleId INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE QualificationModule (
+    qualificationModuleId INT NOT NULL AUTO_INCREMENT,
     qualificationId INT NOT NULL,
     moduleId INT NOT NULL,
     academicYear INT NOT NULL,
     semesterNo INT NOT NULL,
-	compulsoryModule VARCHAR(30),
-	electiveModule VARCHAR(30),
+    isCompulsory BOOLEAN NOT NULL,
     PRIMARY KEY (qualificationModuleId),
     FOREIGN KEY (qualificationId) REFERENCES Qualification(qualificationId),
     FOREIGN KEY (moduleId) REFERENCES Module(moduleId)
 );
 
+
 CREATE TABLE Assessment (
 	assessmentId INT NOT NULL AUTO_INCREMENT,
-    assessment_name VARCHAR(50),
-    totalMark INT,
-    weighting DECIMAL,
-    dueDate DATE,
-    dateCreated DATE,
+    assessment_name VARCHAR(50) NOT NULL,
+    totalMark INT NOT NULL,
+    weighting DECIMAL NOT NULL,
+    dueDate DATE NOT NULL,
+    dateCreated DATE NOT NULL,
     lecturerId INT NOT NULL,
     moduleId INT NOT NULL,
 	PRIMARY KEY (assessmentId),
@@ -139,10 +145,10 @@ CREATE TABLE Assessment (
 );
 CREATE TABLE ClassSession(
 	sessionId INT NOT NULL AUTO_INCREMENT,
-    classType VARCHAR(20),
-    startTime TIME,
-    EndTime TIME,
-    dateCreated DATE,
+    classType VARCHAR(20) NOT NULL,
+    startTime TIME NOT NULL,
+    EndTime TIME NOT NULL,
+    dateCreated DATE NOT NULL,
     lecturerId INT NOT NULL,
     moduleId INT NOT NULL,
     PRIMARY KEY (sessionId),
@@ -161,9 +167,9 @@ CREATE TABLE AttendanceRecord (
 
 CREATE TABLE MarkEntry (
 	markEntryId INT NOT NULL AUTO_INCREMENT,
-    mark DOUBLE,
+    mark DECIMAL,
     submission BOOLEAN,
-    dateSubmitted DATE,
+    dateSubmitted DATE NOT NULL,
     studentId INT NOT NULL,
     assessmentId INT NOT NULL,
     PRIMARY KEY(markEntryId),
@@ -172,42 +178,35 @@ CREATE TABLE MarkEntry (
 );
 
 CREATE TABLE RiskReport (
-	riskReportId INT NOT NULL AUTO_INCREMENT,
-    riskLevel VARCHAR(20),
-	attendanceRate DECIMAL,
-    submissionRate DECIMAL,
-    marks DOUBLE,
+    riskReportId INT NOT NULL AUTO_INCREMENT,
     studentModuleId INT NOT NULL,
+    riskLevel ENUM('LOW','MODERATE','HIGH') NOT NULL,
+    attendanceRate DECIMAL(5,2) NOT NULL,
+    submissionRate DECIMAL(5,2) NOT NULL,
+    averageMark DECIMAL(5,2) NOT NULL,
+    dateCalculated DATE NOT NULL,
     PRIMARY KEY (riskReportId),
-    FOREIGN KEY (StudentModuleId) REFERENCES  StudentModule(StudentModuleId)
+    FOREIGN KEY (studentModuleId) REFERENCES StudentModule(studentModuleId)
 );
 
-CREATE TABLE Message(
-	messageId INT NOT NULL AUTO_INCREMENT,
-    content TEXT,
-    dateSent DATE,
-    studentId INT NOT NULL,
+CREATE TABLE Intervention (
+    interventionId INT NOT NULL AUTO_INCREMENT,
+    studentModuleId INT NOT NULL,
     coordinatorId INT NOT NULL,
-    PRIMARY KEY(messageId),
-    FOREIGN KEY (studentId) REFERENCES  Student(studentId),
+    content TEXT NOT NULL,
+    dateCreated DATE NOT NULL,
+    status ENUM('ACTIVE','FOLLOW_UP_DUE','CLOSED') NOT NULL,
+    PRIMARY KEY (interventionId),
+    FOREIGN KEY (studentModuleId) REFERENCES StudentModule(studentModuleId),
     FOREIGN KEY (coordinatorId) REFERENCES Coordinator(coordinatorId)
 );
 
-CREATE TABLE Intervention(
-	interventionId INT NOT NULL AUTO_INCREMENT,
-    content VARCHAR(255),
-    dateSent DATE,
-    studentId INT NOT NULL,
-    coordinatorId INT NOT NULL,
-    PRIMARY KEY(interventionId),
-    FOREIGN KEY (studentId) REFERENCES  Student(studentId),
-    FOREIGN KEY (coordinatorId) REFERENCES Coordinator(coordinatorId)
-);
-
-CREATE TABLE FollowUP (
-	FollowUpId INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE FollowUp (
+    followUpId INT NOT NULL AUTO_INCREMENT,
     interventionId INT NOT NULL,
-    content VARCHAR(255),
-    PRIMARY KEY(FollowUpId),
+    content TEXT NOT NULL,
+    outcome ENUM('IMPROVED','NO_CHANGE','WORSENED') NOT NULL,
+    dateCreated DATE NOT NULL,
+    PRIMARY KEY (followUpId),
     FOREIGN KEY (interventionId) REFERENCES Intervention(interventionId)
 );
