@@ -1,4 +1,4 @@
--- Academia Database Comprehensive Seed Data
+-- Academia Database Comprehensive Seed Data (With Staff Numbers)
 USE Academia;
 
 -- Disable foreign key checks for easier insertion
@@ -193,43 +193,46 @@ INSERT INTO Student (studentId, studentNumber, levelOfEducation, yearOfStudy, qu
 (36, 'ST2021004', 'Undergraduate', 3, 5);
 
 -- =====================================================
--- LECTURER DATA
+-- LECTURER DATA (WITH STAFF NUMBERS)
 -- =====================================================
-INSERT INTO Lecturer (lecturerId, departmentId) VALUES
-(2, 1),  -- Prof Chen (HOD CS, also lecturer)
-(3, 2),  -- Dr Mbatha (HOD EE, also lecturer)
-(4, 7),  -- Prof Williams (HOD Accounting, also lecturer)
-(5, 10), -- Dr Naidoo (HOD Psychology, also lecturer)
-(6, 1),  -- Dr Thompson (CS)
-(7, 1),  -- Ms Hassan (CS)
-(8, 2),  -- Dr Van Der Merwe (EE)
-(9, 7),  -- Ms Dlamini (Accounting)
-(10, 4), -- Dr Kowalski (Math)
-(11, 1), -- Dr Mohamed (CS)
-(12, 5), -- Mr Brown (Physics)
-(13, 10),-- Dr Khumalo (Psychology)
-(14, 8), -- Dr Smith (Business Management)
-(15, 12),-- Mr Mthembu (Nursing)
-(16, 1), -- Dr Lee (CS, also coordinator)
-(17, 2), -- Dr Ndlovu (EE, also coordinator)
-(18, 7); -- Dr Petrova (Accounting, also coordinator)
+-- Staff number format: LEC-YYYY-NNN (Lecturer-Year-Number)
+INSERT INTO Lecturer (lecturerId, departmentId, staffNumber) VALUES
+(2, 1, 'LEC-2018-001'),  -- Prof Chen (HOD CS, also lecturer)
+(3, 2, 'LEC-2019-002'),  -- Dr Mbatha (HOD EE, also lecturer)
+(4, 7, 'LEC-2017-003'),  -- Prof Williams (HOD Accounting, also lecturer)
+(5, 10, 'LEC-2019-004'), -- Dr Naidoo (HOD Psychology, also lecturer)
+(6, 1, 'LEC-2020-005'),  -- Dr Thompson (CS)
+(7, 1, 'LEC-2021-006'),  -- Ms Hassan (CS)
+(8, 2, 'LEC-2019-007'),  -- Dr Van Der Merwe (EE)
+(9, 7, 'LEC-2020-008'),  -- Ms Dlamini (Accounting)
+(10, 4, 'LEC-2018-009'), -- Dr Kowalski (Math)
+(11, 1, 'LEC-2021-010'), -- Dr Mohamed (CS)
+(12, 5, 'LEC-2020-011'), -- Mr Brown (Physics)
+(13, 10, 'LEC-2019-012'),-- Dr Khumalo (Psychology)
+(14, 8, 'LEC-2021-013'), -- Dr Smith (Business Management)
+(15, 12, 'LEC-2020-014'),-- Mr Mthembu (Nursing)
+(16, 1, 'LEC-2019-015'), -- Dr Lee (CS, also coordinator)
+(17, 2, 'LEC-2020-016'), -- Dr Ndlovu (EE, also coordinator)
+(18, 7, 'LEC-2021-017'); -- Dr Petrova (Accounting, also coordinator)
 
 -- =====================================================
--- COORDINATOR DATA
+-- COORDINATOR DATA (WITH STAFF NUMBERS)
 -- =====================================================
-INSERT INTO Coordinator (coordinatorId, departmentId) VALUES
-(16, 1), -- Dr Lee (CS)
-(17, 2), -- Dr Ndlovu (EE)
-(18, 7); -- Dr Petrova (Accounting)
+-- Staff number format: COORD-YYYY-NNN (Coordinator-Year-Number)
+INSERT INTO Coordinator (coordinatorId, departmentId, staffNumber) VALUES
+(16, 1, 'COORD-2019-001'), -- Dr Lee (CS)
+(17, 2, 'COORD-2020-002'), -- Dr Ndlovu (EE)
+(18, 7, 'COORD-2021-003'); -- Dr Petrova (Accounting)
 
 -- =====================================================
--- HOD DATA
+-- HOD DATA (WITH STAFF NUMBERS)
 -- =====================================================
-INSERT INTO HOD (hodId, departmentId) VALUES
-(2, 1),  -- Prof Chen (Computer Science)
-(3, 2),  -- Dr Mbatha (Electrical Engineering)
-(4, 7),  -- Prof Williams (Accounting)
-(5, 10); -- Dr Naidoo (Psychology)
+-- Staff number format: HOD-YYYY-NNN (HOD-Year-Number)
+INSERT INTO HOD (hodId, departmentId, staffNumber) VALUES
+(2, 1, 'HOD-2018-001'),  -- Prof Chen (Computer Science)
+(3, 2, 'HOD-2019-002'),  -- Dr Mbatha (Electrical Engineering)
+(4, 7, 'HOD-2017-003'),  -- Prof Williams (Accounting)
+(5, 10, 'HOD-2019-004'); -- Dr Naidoo (Psychology)
 
 -- =====================================================
 -- MODULE DATA

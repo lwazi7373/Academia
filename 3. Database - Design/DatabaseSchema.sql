@@ -10,7 +10,7 @@ CREATE TABLE Users (
     userPassword VARCHAR(255) NOT NULL,
     contactNo VARCHAR(15),
     isActive BOOLEAN NOT NULL DEFAULT TRUE,
-    dateRegistered DATE NOT NULL,
+    dateRegistered DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     gender VARCHAR(20),
     idNumber VARCHAR(20),
     PRIMARY KEY (userId),
@@ -73,6 +73,7 @@ CREATE TABLE Student (
 CREATE TABLE Lecturer (
     lecturerId INT NOT NULL,
     departmentId INT NOT NULL,
+	staffNumber VARCHAR(20) UNIQUE NOT NULL,
     PRIMARY KEY (lecturerId),
     FOREIGN KEY (lecturerId) REFERENCES Users(userId),
     FOREIGN KEY (departmentId) REFERENCES Department(departmentId),
@@ -94,6 +95,7 @@ CREATE TABLE Module (
 CREATE TABLE Coordinator (
     coordinatorId INT NOT NULL,
     departmentId INT NOT NULL,
+	staffNumber VARCHAR(20) UNIQUE NOT NULL,
     PRIMARY KEY (coordinatorId),
     FOREIGN KEY (coordinatorId) REFERENCES Users(userId),
     FOREIGN KEY (departmentId) REFERENCES Department(departmentId),
@@ -103,6 +105,7 @@ CREATE TABLE Coordinator (
 CREATE TABLE HOD (
     hodId INT NOT NULL,
     departmentId INT NOT NULL,
+	staffNumber VARCHAR(20) UNIQUE NOT NULL,
     PRIMARY KEY (hodId),
     FOREIGN KEY (hodId) REFERENCES Users(userId),
     FOREIGN KEY (departmentId) REFERENCES Department(departmentId),
