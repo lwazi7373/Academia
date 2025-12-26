@@ -9,6 +9,9 @@ app.use(body_parser.json());
 app.use(cors({ origin: true }));
 
 const connectDB = require("./db/connect");
+const authRoutes = require("./routes/authRoutes");
+
+app.use('/api/', authRoutes);
 
 const PORT = process.env.PORT || 3000;
 
