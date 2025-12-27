@@ -12,11 +12,13 @@ const connectDB = require("./db/connect");
 const authRoutes = require("./routes/authRoutes");
 const lecturerRoutes = require("./routes/lecturerRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+const assessmentRoutes = require("./routes/assessmentsRoutes");
 
 // Routes
 app.use('/api/', authRoutes);
 app.use('/api/', lecturerRoutes);
 app.use('/api/', attendanceRoutes);
+app.use('/api/', assessmentRoutes);
 
 // Server Port
 const PORT = process.env.PORT || 3000;
