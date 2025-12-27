@@ -6,17 +6,22 @@ const authorizeRoles = (...allowedRoles) => {
     // Get the user's roles from the request
     // (This was added by authenticateToken middleware)
     const { userRoles } = req.user;
-    // userRoles = [{userRole: 'STUDENT'}, {userRole: 'LECTURER'}]
+    // userRoles = ['STUDENT', 'LECTURER'] or [{userRole: 'STUDENT'}, {userRole: 'LECTURER'}]
     
     // Check if user has ANY of the allowed roles
-    const hasPermission = userRoles.some(role => 
-      allowedRoles.includes(role.userRole)
-    );
-    // hasPermission = true (because they have 'LECTURER')
+    // Handle both array of strings and array of objects
+    const hasPermission = userRoles.some(role => {
+      // If role is a string, compare directly
+      if (typeof role === 'string') {
+        return allowedRoles.includes(role);
+      }
+      // If role is an object, access the userRole property
+      return allowedRoles.includes(role.userRole);
+    });
     
     // Decide what to do
     if (!hasPermission) {
-      // ❌ User doesn't have required role - STOP
+      // User doesn't have required role - STOP
       return res.status(403).json({ code: "Unsuccessful", msg: "Access denied" });
       // Request ENDS here
     }
@@ -25,3 +30,6 @@ const authorizeRoles = (...allowedRoles) => {
     next(); // Move to next middleware/controller
   };
 };
+
+// Export the middleware factory function
+module.exports = authorizeRoles;

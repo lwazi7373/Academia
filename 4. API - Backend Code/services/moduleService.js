@@ -191,6 +191,27 @@ const getStudentModules = async (studentId) => {
 };
 
 /**
+ * Gets all modules assigned to a lecturer
+ * @param {number} lecturerId - The lecturer's user ID
+ * @returns {Promise<Array>} Array of modules
+ */
+const getLecturerModules = async (lecturerId) => {
+  try {
+    const [modules] = await connectDB.query(
+      `SELECT m.moduleId, m.moduleName, m.moduleCode
+        FROM LecturerModule lm
+        JOIN Module m ON m.moduleId = lm.moduleId
+        WHERE lm.lecturerId = ?;`,
+      [lecturerId]
+    );
+    
+    return modules;
+  } catch (error) {
+    throw new Error(`Failed to get lecturer modules: ${error.message}`);
+  }
+};
+
+/**
  * Gets all modules for a specific qualification, year, and semester
  * Useful for displaying available modules before assignment
  * @param {number} qualificationId - The qualification ID
@@ -243,6 +264,7 @@ module.exports = {
   assignModulesToLecturer,
   assignModulesToCoordinator,
   getStudentModules,
+  getLecturerModules,
   getModulesByQualification,
   getModulesByDepartment,
 };
