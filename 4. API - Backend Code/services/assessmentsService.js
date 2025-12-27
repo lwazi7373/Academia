@@ -257,10 +257,135 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
     }
 };
 
+/**
+ * Upload/update marks for multiple students for a specific assessment.
+ * Handles bulk insertion and updates of student marks
+ * NOTE : Use a transaction to ensure all-or-nothing (if one fails, all fail)
+ * @param {number} assessmentId - The ID of the assessment
+ * @param {number} lecturerId - The ID of the lecturer uploading marks
+ * @param {Array} marksData - Array of objects containing {studentId, mark, submission}
+ * @returns {Object} Object containing success message and number of records processed
+ * @throws {Error} If assessment not found, lecturer not authorized, validation fails, or database error occurs
+ */
+const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
+    // Start a database transaction
+    const connection = await connectDB.getConnection();
+    
+    try {
+        await connection.beginTransaction();
+
+        // Verify the assessment exists and belongs to this lecturer
+        const [assessment] = await connection.execute(
+            `SELECT a.assessmentId, a.moduleId, a.totalMark 
+             FROM Assessment a
+             WHERE a.assessmentId = ? AND a.lecturerId = ?`,
+            [assessmentId, lecturerId]
+        );
+
+        if (assessment.length === 0) {
+            throw new Error('Assessment not found or you are not authorized to upload marks');
+        }
+
+        const moduleId = assessment[0].moduleId;
+        const totalMark = assessment[0].totalMark;
+
+        // Verify all students are enrolled in this module
+        const studentIds = marksData.map(entry => entry.studentId);
+        const [enrolledStudents] = await connection.execute(
+            `SELECT s.studentId 
+             FROM StudentModule sm
+             JOIN Student s ON sm.studentId = s.studentId
+             WHERE sm.moduleId = ? AND s.studentId IN (?)`,
+            [moduleId, studentIds]
+        );
+
+        const enrolledStudentIds = enrolledStudents.map(s => s.studentId);
+        const unenrolledStudents = studentIds.filter(id => !enrolledStudentIds.includes(id));
+
+        if (unenrolledStudents.length > 0) {
+            throw new Error(`Students with IDs [${unenrolledStudents.join(', ')}] are not enrolled in this module`);
+        }
+
+        // Process each mark entry
+        let insertedCount = 0;
+        let updatedCount = 0;
+
+        for (const entry of marksData) {
+            const { studentId, mark, submission } = entry;
+
+            // Validate mark is within range
+            if (mark !== null && (mark < 0 || mark > totalMark)) {
+                throw new Error(`Invalid mark ${mark} for student ${studentId}. Must be between 0 and ${totalMark}`);
+            }
+
+            // Check if mark entry already exists
+            const [existing] = await connection.execute(
+                `SELECT markEntryId FROM MarkEntry 
+                 WHERE studentId = ? AND assessmentId = ?`,
+                [studentId, assessmentId]
+            );
+
+            if (existing.length > 0) {
+                // Update existing mark entry
+                await connection.execute(
+                    `UPDATE MarkEntry 
+                     SET mark = ?, 
+                         submission = ?, 
+                         dateSubmitted = ?
+                     WHERE studentId = ? AND assessmentId = ?`,
+                    [
+                        mark,
+                        submission,
+                        submission ? new Date() : null,
+                        studentId,
+                        assessmentId
+                    ]
+                );
+                updatedCount++;
+            } else {
+                // Insert new mark entry
+                await connection.execute(
+                    `INSERT INTO MarkEntry 
+                     (mark, submission, dateSubmitted, studentId, assessmentId)
+                     VALUES (?, ?, ?, ?, ?)`,
+                    [
+                        mark,
+                        submission,
+                        submission ? new Date() : null,
+                        studentId,
+                        assessmentId
+                    ]
+                );
+                insertedCount++;
+            }
+        }
+
+        // Commit the transaction
+        await connection.commit();
+
+        return {
+            message: 'Marks uploaded successfully',
+            inserted: insertedCount,
+            updated: updatedCount,
+            total: insertedCount + updatedCount
+        };
+
+    } catch (error) {
+        // Rollback transaction on error
+        await connection.rollback();
+        console.error('Error uploading student marks:', error);
+        throw error;
+    } finally {
+        // Release the connection back to the pool
+        connection.release();
+    }
+};
+
 module.exports = {
     getStudentModuleAssessments,
     getLecturerModuleAssessments,
     createAssessment,
     updateAssessment,
-    deleteAssessment
+    deleteAssessment,
+    uploadStudentMarks
 };
