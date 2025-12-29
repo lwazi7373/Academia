@@ -107,10 +107,7 @@ const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalM
             [assessmentName, totalMark, weighting, dueDate, assessmentId, lecturerId]
         );
 
-        return {
-            message: 'Assessment updated successfully',
-            assessmentId
-        };
+        return assessmentId;
 
     } catch (error) {
         console.error('Error updating assessment:', error);
@@ -152,11 +149,8 @@ const deleteAssessment = async (assessmentId, lecturerId) => {
             [assessmentId, lecturerId]
         );
 
-        return {
-            message: 'Assessment deleted successfully',
-            assessmentId
-        };
-
+        return assessmentId;
+        
     } catch (error) {
         console.error('Error deleting assessment:', error);
         throw error;
@@ -197,14 +191,14 @@ const getStudentModuleAssessments = async (moduleId, studentId) => {
             [studentId, moduleId]
         );
 
-        // Format the response
+        // Format the response into an array of assessment objects 
         return assessments.map(assessment => ({
             assessmentId: assessment.assessmentId,
             assessmentName: assessment.assessmentName,
             totalMark: assessment.totalMark,
-            weighting: assessment.weighting,
+            weighting: assessment.weighting, 
             dueDate: assessment.dueDate,
-            studentMark: assessment.studentMark || null,
+            studentMark: assessment.studentMark || null, 
             submission: assessment.submission || false,
             dateSubmitted: assessment.dateSubmitted || null
         }));
@@ -227,7 +221,8 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
     try {
         // Verify if the lecturer teaches this module
         const [assigned] = await connectDB.execute(
-            `SELECT 1 FROM LecturerModule 
+            // I just can't seem to get the assigned if I use SELECT 1, insted of SELECT *
+            `SELECT * FROM LecturerModule  
              WHERE lecturerId = ? AND moduleId = ?`,
             [lecturerId, moduleId]
         );
@@ -286,18 +281,37 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
             throw new Error('Assessment not found or you are not authorized to upload marks');
         }
 
+        // Get the module and the total mark of the assessment 
         const moduleId = assessment[0].moduleId;
         const totalMark = assessment[0].totalMark;
 
         // Verify all students are enrolled in this module
         const studentIds = marksData.map(entry => entry.studentId);
+        
+        // Expand placeholders
+        const placeholders = studentIds.map(() => '?').join(',');
+
         const [enrolledStudents] = await connection.execute(
             `SELECT s.studentId 
              FROM StudentModule sm
              JOIN Student s ON sm.studentId = s.studentId
-             WHERE sm.moduleId = ? AND s.studentId IN (?)`,
+             WHERE sm.moduleId = ? AND s.studentId IN (${placeholders})`, 
+            [moduleId, ...studentIds]
+        );
+
+        // I had tried this, but ran into, what was called a classic node + mysql trap
+        // The bug was placeholder expansion.
+        // Never rely on array expansion with IN (?) in prepared statements
+        // Always expand placeholders yourself
+        /*
+        const [enrolledStudents] = await connection.execute(
+            `SELECT s.studentId 
+             FROM StudentModule sm
+             JOIN Student s ON sm.studentId = s.studentId
+             WHERE sm.moduleId = ? AND s.studentId IN (?)`, // Only return rows where the studentId is one of the provided student IDs
             [moduleId, studentIds]
         );
+        */
 
         const enrolledStudentIds = enrolledStudents.map(s => s.studentId);
         const unenrolledStudents = studentIds.filter(id => !enrolledStudentIds.includes(id));

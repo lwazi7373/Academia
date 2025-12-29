@@ -5,6 +5,11 @@ const assessmentsController = require("../controllers/assessmentsController");
 const authenticateToken = require('../middleware/authMiddleware');
 const authorizeRoles = require("../middleware/authRolesMiddleware");
 
+/**
+ * POST /assessments/:moduleId/create
+ * Create an assessment for a particular module 
+ * Body: { assessmentName, totalMark, weighting, dueDate }
+ */
 router.post(
   '/assessments/:moduleId/create',
   authenticateToken,
@@ -12,36 +17,57 @@ router.post(
   assessmentsController.createAnAssessment
 );
 
-router.post(
+/**
+ * POST /assessments/:assessmentId/update
+ * Update an assessment 
+ * Body: { assessmentName, totalMark, weighting, dueDate }
+ */
+router.patch(
   '/assessments/:assessmentId/update',
   authenticateToken,
   authorizeRoles('LECTURER'),
   assessmentsController.updateAnAssessment
 );
 
-router.post(
+/**
+ * POST /assessments/:assessmentId/delete
+ * Update an assessment 
+ */
+router.delete(
   '/assessments/:assessmentId/delete',
   authenticateToken,
   authorizeRoles('LECTURER'),
   assessmentsController.deleteAnAssessment
 );
 
-router.post(
-  '/assessments/:assessmentId/semester-assessments',
+/**
+ * GET /assessments/:moduleId/semester-assessments
+ * Get the list of assessments available for lecturer
+ */
+router.get(
+  '/assessments/:moduleId/semester-assessments',
   authenticateToken,
   authorizeRoles('LECTURER'),
   assessmentsController.getLecturerModuleAssessments
 );
 
-router.post(
+/**
+ * GET /assessments/:moduleId/semester-assessments
+ * Get the list of assessments and corresponding marks available for student 
+ */
+router.get(
   '/assessments/:moduleId/assessments-marks',
   authenticateToken,
   authorizeRoles('STUDENT'),
   assessmentsController.getStudentModuleAssessments
 );
 
+/**
+ * POST /assessments/:assessmentId/upload
+ * upload or update students marks for a particular assessment 
+ */
 router.post(
-  '/assessments/:assessmentId/upload',
+  '/assessments/:assessmentId/upload-marks',
   authenticateToken,
   authorizeRoles('LECTURER'),
   assessmentsController.uploadOrUpdateStudentMarks
