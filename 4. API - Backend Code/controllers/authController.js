@@ -271,7 +271,7 @@ const login = async (req, res) => {
     // After getting the user object, validate if the password is correct
     const isPasswordValid = await bcrypt.compare(userPassword, user.userPassword);
 
-    if (!isPasswordValid) {return res.status(401).json({code: "Unsuccessful", msg: "User passwrod is incorrect" });}
+    if (!isPasswordValid) {return res.status(401).json({code: "Unsuccessful", msg: "User password is incorrect" });}
 
     // If correct create token
     const payload = {userId: user.userId, userRoles: user.roles};
