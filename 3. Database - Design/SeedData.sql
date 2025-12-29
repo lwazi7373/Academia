@@ -1,638 +1,924 @@
--- Academia Database Comprehensive Seed Data (With Staff Numbers)
-USE Academia;
+use academia;
+-- =====================================================
+-- Academia Database Seed Data
+-- Password for all users: Password123!
+-- Bcrypt hash: $2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5
+-- =====================================================
 
--- Disable foreign key checks for easier insertion
-SET FOREIGN_KEY_CHECKS = 0;
+-- Disable foreign key checks for insertion
+SET FOREIGN_KEY_CHECKS=0;
 
--- Clear existing data (optional - comment out if not needed)
-TRUNCATE TABLE FollowUp;
-TRUNCATE TABLE Intervention;
-TRUNCATE TABLE RiskReport;
-TRUNCATE TABLE MarkEntry;
-TRUNCATE TABLE AttendanceRecord;
-TRUNCATE TABLE ClassSession;
-TRUNCATE TABLE Assessment;
-TRUNCATE TABLE QualificationModule;
-TRUNCATE TABLE CoordinatorModule;
-TRUNCATE TABLE LecturerModule;
-TRUNCATE TABLE StudentModule;
-TRUNCATE TABLE HOD;
-TRUNCATE TABLE Coordinator;
-TRUNCATE TABLE Module;
-TRUNCATE TABLE Lecturer;
-TRUNCATE TABLE Student;
-TRUNCATE TABLE Qualification;
-TRUNCATE TABLE Department;
-TRUNCATE TABLE Faculty;
-TRUNCATE TABLE UserRoles;
-TRUNCATE TABLE Users;
+-- Clear existing data
+TRUNCATE TABLE followup;
+TRUNCATE TABLE intervention;
+TRUNCATE TABLE riskreport;
+TRUNCATE TABLE markentry;
+TRUNCATE TABLE attendancerecord;
+TRUNCATE TABLE classsession;
+TRUNCATE TABLE studentmodule;
+TRUNCATE TABLE assessment;
+TRUNCATE TABLE coordinatormodule;
+TRUNCATE TABLE lecturermodule;
+TRUNCATE TABLE qualificationmodule;
+TRUNCATE TABLE student;
+TRUNCATE TABLE lecturer;
+TRUNCATE TABLE coordinator;
+TRUNCATE TABLE hod;
+TRUNCATE TABLE userroles;
+TRUNCATE TABLE users;
+TRUNCATE TABLE module;
+TRUNCATE TABLE qualification;
+TRUNCATE TABLE department;
+TRUNCATE TABLE faculty;
 
 -- =====================================================
 -- FACULTY DATA
 -- =====================================================
-INSERT INTO Faculty (facultyId, facultyName) VALUES
-(1, 'Faculty of Engineering and Built Environment'),
-(2, 'Faculty of Science'),
-(3, 'Faculty of Commerce'),
-(4, 'Faculty of Humanities'),
+INSERT INTO faculty (facultyId, facultyName) VALUES
+(1, 'Faculty of Science and Technology'),
+(2, 'Faculty of Business and Economics'),
+(3, 'Faculty of Engineering'),
+(4, 'Faculty of Humanities and Social Sciences'),
 (5, 'Faculty of Health Sciences');
 
 -- =====================================================
 -- DEPARTMENT DATA
 -- =====================================================
-INSERT INTO Department (departmentId, departmentName, facultyId) VALUES
+INSERT INTO department (departmentId, departmentName, facultyId) VALUES
 (1, 'Computer Science', 1),
-(2, 'Electrical Engineering', 1),
-(3, 'Civil Engineering', 1),
-(4, 'Mathematics', 2),
-(5, 'Physics', 2),
-(6, 'Chemistry', 2),
-(7, 'Accounting', 3),
-(8, 'Business Management', 3),
-(9, 'Economics', 3),
-(10, 'Psychology', 4),
-(11, 'Sociology', 4),
-(12, 'Nursing', 5);
+(2, 'Mathematics', 1),
+(3, 'Physics', 1),
+(4, 'Business Management', 2),
+(5, 'Economics', 2),
+(6, 'Electrical Engineering', 3),
+(7, 'Mechanical Engineering', 3),
+(8, 'Psychology', 4),
+(9, 'Sociology', 4),
+(10, 'Nursing', 5),
+(11, 'Information Technology', 1),
+(12, 'Accounting', 2);
 
 -- =====================================================
--- USERS DATA (Admin, HODs, Lecturers, Coordinators, Students)
+-- USERS DATA (All password: Password123!)
 -- =====================================================
-INSERT INTO Users (userId, firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, dateRegistered, gender, idNumber) VALUES
+INSERT INTO users (userId, firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, dateRegistered, gender, idNumber) VALUES
 -- Admin
-(1, 'Sarah', 'Johnson', 'Dr', 'sarah.johnson@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0821234567', TRUE, '2020-01-15', 'Female', '8506145678089'),
+(1, 'Sarah', 'Administrator', 'Ms', 'admin@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234567', 1, '2024-01-15 08:00:00', 'Female', '8505150234089'),
 
--- HODs (Head of Departments)
-(2, 'Michael', 'Chen', 'Prof', 'michael.chen@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0823456789', TRUE, '2018-03-10', 'Male', '7809234567890'),
-(3, 'Linda', 'Mbatha', 'Dr', 'linda.mbatha@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0834567890', TRUE, '2019-06-20', 'Female', '8203145678091'),
-(4, 'David', 'Williams', 'Prof', 'david.williams@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0845678901', TRUE, '2017-09-15', 'Male', '7512234567892'),
-(5, 'Priya', 'Naidoo', 'Dr', 'priya.naidoo@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0856789012', TRUE, '2019-02-28', 'Female', '8607145678093'),
-
--- Lecturers
-(6, 'James', 'Thompson', 'Dr', 'james.thompson@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0867890123', TRUE, '2020-08-01', 'Male', '8301234567894'),
-(7, 'Fatima', 'Hassan', 'Ms', 'fatima.hassan@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0878901234', TRUE, '2021-01-15', 'Female', '9105145678095'),
-(8, 'Robert', 'Van Der Merwe', 'Dr', 'robert.vandermerwe@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0889012345', TRUE, '2019-07-20', 'Male', '7908234567896'),
-(9, 'Zanele', 'Dlamini', 'Ms', 'zanele.dlamini@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0890123456', TRUE, '2020-09-10', 'Female', '8809145678097'),
-(10, 'Peter', 'Kowalski', 'Dr', 'peter.kowalski@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0801234567', TRUE, '2018-11-05', 'Male', '7706234567898'),
-(11, 'Amina', 'Mohamed', 'Dr', 'amina.mohamed@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0812345678', TRUE, '2021-03-12', 'Female', '8504145678099'),
-(12, 'Thomas', 'Brown', 'Mr', 'thomas.brown@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0823456780', TRUE, '2020-05-18', 'Male', '8612234567800'),
-(13, 'Ntombi', 'Khumalo', 'Dr', 'ntombi.khumalo@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0834567891', TRUE, '2019-08-25', 'Female', '8407145678801'),
-(14, 'Andrew', 'Smith', 'Dr', 'andrew.smith@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0845678902', TRUE, '2021-02-14', 'Male', '8208234567802'),
-(15, 'Sipho', 'Mthembu', 'Mr', 'sipho.mthembu@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0856789013', TRUE, '2020-10-30', 'Male', '9001234567803'),
-
--- Coordinators
-(16, 'Jennifer', 'Lee', 'Dr', 'jennifer.lee@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0867890124', TRUE, '2019-04-15', 'Female', '8305145678804'),
-(17, 'Marcus', 'Ndlovu', 'Dr', 'marcus.ndlovu@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0878901235', TRUE, '2020-06-22', 'Male', '8106234567805'),
-(18, 'Elena', 'Petrova', 'Dr', 'elena.petrova@academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0889012346', TRUE, '2021-01-08', 'Female', '8704145678806'),
-
--- Students
-(19, 'Thabo', 'Mokoena', 'Mr', 'thabo.mokoena@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0890123457', TRUE, '2023-02-01', 'Male', '0305145678807'),
-(20, 'Emma', 'Wilson', 'Ms', 'emma.wilson@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0801234568', TRUE, '2023-02-01', 'Female', '0406234567808'),
-(21, 'Lebo', 'Molefe', 'Ms', 'lebo.molefe@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0812345679', TRUE, '2023-02-01', 'Female', '0307145678809'),
-(22, 'Daniel', 'Park', 'Mr', 'daniel.park@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0823456781', TRUE, '2023-02-01', 'Male', '0408234567810'),
-(23, 'Nomsa', 'Zulu', 'Ms', 'nomsa.zulu@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0834567892', TRUE, '2022-02-01', 'Female', '0209145678811'),
-(24, 'Kyle', 'Johnson', 'Mr', 'kyle.johnson@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0845678903', TRUE, '2022-02-01', 'Male', '0210234567812'),
-(25, 'Ayanda', 'Ngubane', 'Ms', 'ayanda.ngubane@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0856789014', TRUE, '2022-02-01', 'Female', '0211145678813'),
-(26, 'Connor', 'Murphy', 'Mr', 'connor.murphy@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0867890125', TRUE, '2021-02-01', 'Male', '0112234567814'),
-(27, 'Bontle', 'Kgomo', 'Ms', 'bontle.kgomo@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0878901236', TRUE, '2021-02-01', 'Female', '0113145678815'),
-(28, 'Ryan', 'Adams', 'Mr', 'ryan.adams@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0889012347', TRUE, '2023-02-01', 'Male', '0314234567816'),
-(29, 'Palesa', 'Tshabalala', 'Ms', 'palesa.tshabalala@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0890123458', TRUE, '2023-02-01', 'Female', '0315145678817'),
-(30, 'Oliver', 'Davies', 'Mr', 'oliver.davies@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0801234569', TRUE, '2022-02-01', 'Male', '0216234567818'),
-(31, 'Thandeka', 'Mabaso', 'Ms', 'thandeka.mabaso@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0812345680', TRUE, '2022-02-01', 'Female', '0217145678819'),
-(32, 'Joshua', 'Martinez', 'Mr', 'joshua.martinez@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0823456782', TRUE, '2021-02-01', 'Male', '0118234567820'),
-(33, 'Noluthando', 'Sithole', 'Ms', 'noluthando.sithole@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0834567893', TRUE, '2023-02-01', 'Female', '0319145678821'),
-(34, 'Ethan', 'Robinson', 'Mr', 'ethan.robinson@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0845678904', TRUE, '2023-02-01', 'Male', '0320234567822'),
-(35, 'Lerato', 'Mahlangu', 'Ms', 'lerato.mahlangu@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0856789015', TRUE, '2022-02-01', 'Female', '0221145678823'),
-(36, 'Nathan', 'White', 'Mr', 'nathan.white@student.academia.edu', '$2y$10$abcdefghijklmnopqrstuvwxyz123456', '0867890126', TRUE, '2021-02-01', 'Male', '0122234567824');
-
--- =====================================================
--- USER ROLES DATA
--- =====================================================
-INSERT INTO UserRoles (userId, userRole) VALUES
--- Admin
-(1, 'ADMIN'),
 -- HODs
-(2, 'HOD'),
-(2, 'LECTURER'),
-(3, 'HOD'),
-(3, 'LECTURER'),
-(4, 'HOD'),
-(4, 'LECTURER'),
-(5, 'HOD'),
-(5, 'LECTURER'),
--- Lecturers
-(6, 'LECTURER'),
-(7, 'LECTURER'),
-(8, 'LECTURER'),
-(9, 'LECTURER'),
-(10, 'LECTURER'),
-(11, 'LECTURER'),
-(12, 'LECTURER'),
-(13, 'LECTURER'),
-(14, 'LECTURER'),
-(15, 'LECTURER'),
+(2, 'John', 'Smith', 'Prof', 'j.smith@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234568', 1, '2024-01-15 08:00:00', 'Male', '7503120345067'),
+(3, 'Mary', 'Johnson', 'Dr', 'm.johnson@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234569', 1, '2024-01-15 08:00:00', 'Female', '8204250234078'),
+
 -- Coordinators
-(16, 'COORDINATOR'),
-(16, 'LECTURER'),
-(17, 'COORDINATOR'),
-(17, 'LECTURER'),
-(18, 'COORDINATOR'),
-(18, 'LECTURER'),
+(4, 'David', 'Williams', 'Dr', 'd.williams@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234570', 1, '2024-01-15 08:00:00', 'Male', '7908150345089'),
+(5, 'Jennifer', 'Brown', 'Dr', 'j.brown@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234571', 1, '2024-01-15 08:00:00', 'Female', '8511220234067'),
+(6, 'Michael', 'Davis', 'Dr', 'm.davis@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234572', 1, '2024-01-15 08:00:00', 'Male', '7706300345078'),
+
+-- Lecturers
+(7, 'Robert', 'Miller', 'Mr', 'r.miller@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234573', 1, '2024-01-15 08:00:00', 'Male', '8801150345067'),
+(8, 'Patricia', 'Wilson', 'Ms', 'p.wilson@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234574', 1, '2024-01-15 08:00:00', 'Female', '9203180234089'),
+(9, 'James', 'Moore', 'Dr', 'j.moore@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234575', 1, '2024-01-15 08:00:00', 'Male', '8105250345078'),
+(10, 'Linda', 'Taylor', 'Dr', 'l.taylor@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234576', 1, '2024-01-15 08:00:00', 'Female', '7907150234067'),
+(11, 'Thomas', 'Anderson', 'Mr', 't.anderson@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234577', 1, '2024-01-15 08:00:00', 'Male', '8609120345089'),
+(12, 'Barbara', 'Thomas', 'Ms', 'b.thomas@academia.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0821234578', 1, '2024-01-15 08:00:00', 'Female', '9010250234078'),
+
 -- Students
-(19, 'STUDENT'),
-(20, 'STUDENT'),
-(21, 'STUDENT'),
-(22, 'STUDENT'),
-(23, 'STUDENT'),
-(24, 'STUDENT'),
-(25, 'STUDENT'),
-(26, 'STUDENT'),
-(27, 'STUDENT'),
-(28, 'STUDENT'),
-(29, 'STUDENT'),
-(30, 'STUDENT'),
-(31, 'STUDENT'),
-(32, 'STUDENT'),
-(33, 'STUDENT'),
-(34, 'STUDENT'),
-(35, 'STUDENT'),
-(36, 'STUDENT');
+(13, 'Thabo', 'Mokoena', NULL, 't.mokoena@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234567', 1, '2024-02-01 08:00:00', 'Male', '0305150345067'),
+(14, 'Nombuso', 'Nkosi', NULL, 'n.nkosi@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234568', 1, '2024-02-01 08:00:00', 'Female', '0408200234089'),
+(15, 'Sipho', 'Dlamini', NULL, 's.dlamini@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234569', 1, '2024-02-01 08:00:00', 'Male', '0211250345078'),
+(16, 'Lerato', 'Mthembu', NULL, 'l.mthembu@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234570', 1, '2024-02-01 08:00:00', 'Female', '0307100234067'),
+(17, 'Bongani', 'Khumalo', NULL, 'b.khumalo@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234571', 1, '2024-02-01 08:00:00', 'Male', '0109150345089'),
+(18, 'Zanele', 'Ndlovu', NULL, 'z.ndlovu@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234572', 1, '2024-02-01 08:00:00', 'Female', '0506220234078'),
+(19, 'Mandla', 'Zulu', NULL, 'm.zulu@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234573', 1, '2024-02-01 08:00:00', 'Male', '0410050345067'),
+(20, 'Ntombifuthi', 'Sithole', NULL, 'n.sithole@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234574', 1, '2024-02-01 08:00:00', 'Female', '0212180234089'),
+(21, 'Themba', 'Mahlangu', NULL, 't.mahlangu@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234575', 1, '2024-02-01 08:00:00', 'Male', '0108270345078'),
+(22, 'Precious', 'Radebe', NULL, 'p.radebe@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234576', 1, '2024-02-01 08:00:00', 'Female', '0405140234067'),
+(23, 'Sello', 'Molefe', NULL, 's.molefe@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234577', 1, '2024-02-01 08:00:00', 'Male', '0309300345089'),
+(24, 'Busisiwe', 'Shabalala', NULL, 'b.shabalala@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234578', 1, '2024-02-01 08:00:00', 'Female', '0507080234078'),
+(25, 'Nhlanhla', 'Buthelezi', NULL, 'n.buthelezi@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234579', 1, '2024-02-01 08:00:00', 'Male', '0206120345067'),
+(26, 'Nokuthula', 'Cele', NULL, 'n.cele@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234580', 1, '2024-02-01 08:00:00', 'Female', '0411250234089'),
+(27, 'Musa', 'Ngubane', NULL, 'm.ngubane@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234581', 1, '2024-02-01 08:00:00', 'Male', '0110010345078'),
+(28, 'Thandiwe', 'Zungu', NULL, 't.zungu@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234582', 1, '2024-02-01 08:00:00', 'Female', '0308190234067'),
+(29, 'Sibusiso', 'Mazibuko', NULL, 's.mazibuko@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234583', 1, '2024-02-01 08:00:00', 'Male', '0509060345089'),
+(30, 'Zinhle', 'Mkhize', NULL, 'z.mkhize@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234584', 1, '2024-02-01 08:00:00', 'Female', '0204280234078'),
+(31, 'Andile', 'Gumede', NULL, 'a.gumede@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234585', 1, '2024-02-01 08:00:00', 'Male', '0407160345067'),
+(32, 'Nonhlanhla', 'Ntuli', NULL, 'n.ntuli@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234586', 1, '2024-02-01 08:00:00', 'Female', '0101210234089'),
+(33, 'Sanele', 'Zwane', NULL, 's.zwane@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234587', 1, '2024-02-01 08:00:00', 'Male', '0212150345078'),
+(34, 'Nomfundo', 'Ngcobo', NULL, 'n.ngcobo@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234588', 1, '2024-02-01 08:00:00', 'Female', '0506030234067'),
+(35, 'Thulani', 'Dube', NULL, 't.dube@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234589', 1, '2024-02-01 08:00:00', 'Male', '0310240345089'),
+(36, 'Lindiwe', 'Kgomo', NULL, 'l.kgomo@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234590', 1, '2024-02-01 08:00:00', 'Female', '0408110234078'),
+(37, 'Mpho', 'Masango', NULL, 'm.masango@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234591', 1, '2024-02-01 08:00:00', 'Male', '0209290345067'),
+(38, 'Nokwanda', 'Khoza', NULL, 'n.khoza@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234592', 1, '2024-02-01 08:00:00', 'Female', '0411170234089'),
+(39, 'Tshepo', 'Baloyi', NULL, 't.baloyi@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234593', 1, '2024-02-01 08:00:00', 'Male', '0107070345078'),
+(40, 'Sindisiwe', 'Zwane', NULL, 's.zwane2@student.ac.za', '$2a$10$rQ8qI7ZjQq5Y5h5X5Z5Z5OqK5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5', '0731234594', 1, '2024-02-01 08:00:00', 'Female', '0305220234067');
 
 -- =====================================================
--- QUALIFICATIONS DATA
+-- USER ROLES
 -- =====================================================
-INSERT INTO Qualification (qualificationId, qualificationName, qualificationCode, duration, totalCredits, departmentId) VALUES
-(1, 'Bachelor of Science in Computer Science', 'BSC-CS', 3, 360, 1),
-(2, 'Bachelor of Engineering in Electrical Engineering', 'BENG-EE', 4, 480, 2),
-(3, 'Bachelor of Science in Civil Engineering', 'BSC-CE', 4, 480, 3),
-(4, 'Bachelor of Science in Mathematics', 'BSC-MATH', 3, 360, 4),
-(5, 'Bachelor of Commerce in Accounting', 'BCOM-ACC', 3, 360, 7),
-(6, 'Bachelor of Arts in Psychology', 'BA-PSY', 3, 360, 10),
-(7, 'Bachelor of Science in Nursing', 'BSC-NURS', 4, 480, 12);
+INSERT INTO userroles (userRoleId, userId, userRole) VALUES
+(1, 1, 'ADMIN'),
+(2, 2, 'HOD'),
+(3, 3, 'HOD'),
+(4, 4, 'COORDINATOR'),
+(5, 5, 'COORDINATOR'),
+(6, 6, 'COORDINATOR'),
+(7, 7, 'LECTURER'),
+(8, 8, 'LECTURER'),
+(9, 9, 'LECTURER'),
+(10, 10, 'LECTURER'),
+(11, 11, 'LECTURER'),
+(12, 12, 'LECTURER'),
+(13, 13, 'STUDENT'),
+(14, 14, 'STUDENT'),
+(15, 15, 'STUDENT'),
+(16, 16, 'STUDENT'),
+(17, 17, 'STUDENT'),
+(18, 18, 'STUDENT'),
+(19, 19, 'STUDENT'),
+(20, 20, 'STUDENT'),
+(21, 21, 'STUDENT'),
+(22, 22, 'STUDENT'),
+(23, 23, 'STUDENT'),
+(24, 24, 'STUDENT'),
+(25, 25, 'STUDENT'),
+(26, 26, 'STUDENT'),
+(27, 27, 'STUDENT'),
+(28, 28, 'STUDENT'),
+(29, 29, 'STUDENT'),
+(30, 30, 'STUDENT'),
+(31, 31, 'STUDENT'),
+(32, 32, 'STUDENT'),
+(33, 33, 'STUDENT'),
+(34, 34, 'STUDENT'),
+(35, 35, 'STUDENT'),
+(36, 36, 'STUDENT'),
+(37, 37, 'STUDENT'),
+(38, 38, 'STUDENT'),
+(39, 39, 'STUDENT'),
+(40, 40, 'STUDENT'),
+-- Coordinators also as lecturers
+(41, 4, 'LECTURER'),
+(42, 5, 'LECTURER'),
+(43, 6, 'LECTURER');
 
 -- =====================================================
--- STUDENT DATA
+-- HOD DATA
 -- =====================================================
-INSERT INTO Student (studentId, studentNumber, levelOfEducation, yearOfStudy, qualificationId) VALUES
-(19, 'ST2023001', 'Undergraduate', 1, 1),
-(20, 'ST2023002', 'Undergraduate', 1, 1),
-(21, 'ST2023003', 'Undergraduate', 1, 2),
-(22, 'ST2023004', 'Undergraduate', 1, 5),
-(23, 'ST2022001', 'Undergraduate', 2, 1),
-(24, 'ST2022002', 'Undergraduate', 2, 1),
-(25, 'ST2022003', 'Undergraduate', 2, 2),
-(26, 'ST2021001', 'Undergraduate', 3, 1),
-(27, 'ST2021002', 'Undergraduate', 3, 4),
-(28, 'ST2023005', 'Undergraduate', 1, 6),
-(29, 'ST2023006', 'Undergraduate', 1, 1),
-(30, 'ST2022004', 'Undergraduate', 2, 5),
-(31, 'ST2022005', 'Undergraduate', 2, 6),
-(32, 'ST2021003', 'Undergraduate', 3, 1),
-(33, 'ST2023007', 'Undergraduate', 1, 7),
-(34, 'ST2023008', 'Undergraduate', 1, 1),
-(35, 'ST2022006', 'Undergraduate', 2, 2),
-(36, 'ST2021004', 'Undergraduate', 3, 5);
+INSERT INTO hod (hodId, departmentId, staffNumber) VALUES
+(2, 1, 'STF2024001'),  -- John Smith - Computer Science
+(3, 11, 'STF2024002'); -- Mary Johnson - IT
 
 -- =====================================================
--- LECTURER DATA (WITH STAFF NUMBERS)
+-- COORDINATOR DATA
 -- =====================================================
--- Staff number format: LEC-YYYY-NNN (Lecturer-Year-Number)
-INSERT INTO Lecturer (lecturerId, departmentId, staffNumber) VALUES
-(2, 1, 'LEC-2018-001'),  -- Prof Chen (HOD CS, also lecturer)
-(3, 2, 'LEC-2019-002'),  -- Dr Mbatha (HOD EE, also lecturer)
-(4, 7, 'LEC-2017-003'),  -- Prof Williams (HOD Accounting, also lecturer)
-(5, 10, 'LEC-2019-004'), -- Dr Naidoo (HOD Psychology, also lecturer)
-(6, 1, 'LEC-2020-005'),  -- Dr Thompson (CS)
-(7, 1, 'LEC-2021-006'),  -- Ms Hassan (CS)
-(8, 2, 'LEC-2019-007'),  -- Dr Van Der Merwe (EE)
-(9, 7, 'LEC-2020-008'),  -- Ms Dlamini (Accounting)
-(10, 4, 'LEC-2018-009'), -- Dr Kowalski (Math)
-(11, 1, 'LEC-2021-010'), -- Dr Mohamed (CS)
-(12, 5, 'LEC-2020-011'), -- Mr Brown (Physics)
-(13, 10, 'LEC-2019-012'),-- Dr Khumalo (Psychology)
-(14, 8, 'LEC-2021-013'), -- Dr Smith (Business Management)
-(15, 12, 'LEC-2020-014'),-- Mr Mthembu (Nursing)
-(16, 1, 'LEC-2019-015'), -- Dr Lee (CS, also coordinator)
-(17, 2, 'LEC-2020-016'), -- Dr Ndlovu (EE, also coordinator)
-(18, 7, 'LEC-2021-017'); -- Dr Petrova (Accounting, also coordinator)
+INSERT INTO coordinator (coordinatorId, departmentId, staffNumber) VALUES
+(4, 1, 'STF2024003'),  -- David Williams - Computer Science
+(5, 1, 'STF2024004'),  -- Jennifer Brown - Computer Science
+(6, 11, 'STF2024005'); -- Michael Davis - IT
 
 -- =====================================================
--- COORDINATOR DATA (WITH STAFF NUMBERS)
+-- LECTURER DATA
 -- =====================================================
--- Staff number format: COORD-YYYY-NNN (Coordinator-Year-Number)
-INSERT INTO Coordinator (coordinatorId, departmentId, staffNumber) VALUES
-(16, 1, 'COORD-2019-001'), -- Dr Lee (CS)
-(17, 2, 'COORD-2020-002'), -- Dr Ndlovu (EE)
-(18, 7, 'COORD-2021-003'); -- Dr Petrova (Accounting)
+INSERT INTO lecturer (lecturerId, departmentId, staffNumber) VALUES
+(4, 1, 'STF2024003'),   -- David Williams (also coordinator)
+(5, 1, 'STF2024004'),   -- Jennifer Brown (also coordinator)
+(6, 11, 'STF2024005'),  -- Michael Davis (also coordinator)
+(7, 1, 'STF2024006'),   -- Robert Miller
+(8, 1, 'STF2024007'),   -- Patricia Wilson
+(9, 11, 'STF2024008'),  -- James Moore
+(10, 11, 'STF2024009'), -- Linda Taylor
+(11, 1, 'STF2024010'),  -- Thomas Anderson
+(12, 11, 'STF2024011'); -- Barbara Thomas
 
 -- =====================================================
--- HOD DATA (WITH STAFF NUMBERS)
+-- QUALIFICATION DATA
 -- =====================================================
--- Staff number format: HOD-YYYY-NNN (HOD-Year-Number)
-INSERT INTO HOD (hodId, departmentId, staffNumber) VALUES
-(2, 1, 'HOD-2018-001'),  -- Prof Chen (Computer Science)
-(3, 2, 'HOD-2019-002'),  -- Dr Mbatha (Electrical Engineering)
-(4, 7, 'HOD-2017-003'),  -- Prof Williams (Accounting)
-(5, 10, 'HOD-2019-004'); -- Dr Naidoo (Psychology)
+INSERT INTO qualification (qualificationId, qualificationName, qualificationCode, duration, totalCredits, departmentId) VALUES
+(1, 'Bachelor of Science in Computer Science', 'BSCS', 3, 360, 1),
+(2, 'Bachelor of Information Technology', 'BIT', 3, 360, 11),
+(3, 'Diploma in Software Development', 'DSD', 3, 360, 1),
+(4, 'National Diploma in IT', 'NDIT', 3, 360, 11),
+(5, 'Bachelor of Commerce in Information Systems', 'BCIS', 4, 480, 11),
+(6, 'Advanced Diploma in Computer Science', 'ADCS', 1, 120, 1),
+(7, 'Certificate in Programming', 'CP', 1, 120, 1);
 
 -- =====================================================
 -- MODULE DATA
 -- =====================================================
-INSERT INTO Module (moduleId, moduleName, moduleCode, credits, departmentId) VALUES
--- Computer Science Modules
-(1, 'Introduction to Programming', 'CS101', 12, 1),
-(2, 'Data Structures and Algorithms', 'CS201', 12, 1),
-(3, 'Database Systems', 'CS202', 12, 1),
-(4, 'Software Engineering', 'CS301', 15, 1),
-(5, 'Artificial Intelligence', 'CS302', 15, 1),
-(6, 'Computer Networks', 'CS303', 15, 1),
--- Electrical Engineering Modules
-(7, 'Circuit Analysis', 'EE101', 12, 2),
-(8, 'Digital Electronics', 'EE201', 15, 2),
-(9, 'Control Systems', 'EE301', 15, 2),
--- Mathematics Modules
-(10, 'Calculus I', 'MATH101', 12, 4),
-(11, 'Linear Algebra', 'MATH102', 12, 4),
-(12, 'Statistics', 'MATH201', 12, 4),
--- Accounting Modules
-(13, 'Financial Accounting I', 'ACC101', 12, 7),
-(14, 'Management Accounting', 'ACC201', 15, 7),
-(15, 'Auditing', 'ACC301', 15, 7),
--- Psychology Modules
-(16, 'Introduction to Psychology', 'PSY101', 12, 10),
-(17, 'Cognitive Psychology', 'PSY201', 12, 10),
--- Nursing Modules
-(18, 'Anatomy and Physiology', 'NURS101', 15, 12);
+INSERT INTO module (moduleId, moduleName, moduleCode, credits, departmentId) VALUES
+(1, 'Programming Fundamentals', 'PRG101', 15, 1),
+(2, 'Data Structures and Algorithms', 'DSA201', 15, 1),
+(3, 'Database Management Systems', 'DBS301', 15, 1),
+(4, 'Web Development', 'WEB201', 15, 1),
+(5, 'Object-Oriented Programming', 'OOP201', 15, 1),
+(6, 'Software Engineering', 'SWE301', 15, 1),
+(7, 'Mobile Application Development', 'MAD301', 15, 1),
+(8, 'Network Fundamentals', 'NET101', 15, 11),
+(9, 'Cybersecurity Basics', 'CYB201', 15, 11),
+(10, 'Cloud Computing', 'CLD301', 15, 11),
+(11, 'Systems Analysis and Design', 'SAD201', 15, 11),
+(12, 'IT Project Management', 'IPM301', 15, 11),
+(13, 'Computer Architecture', 'CAR101', 15, 1),
+(14, 'Operating Systems', 'OPS201', 15, 1),
+(15, 'Artificial Intelligence', 'AIF301', 15, 1),
+(16, 'Machine Learning', 'MLN301', 15, 1),
+(17, 'Digital Forensics', 'DFO301', 15, 11),
+(18, 'IoT Development', 'IOT301', 15, 11);
 
 -- =====================================================
 -- QUALIFICATION MODULE MAPPING
 -- =====================================================
-INSERT INTO QualificationModule (qualificationId, moduleId, academicYear, semesterNo, isCompulsory) VALUES
--- BSc Computer Science (Qualification 1)
-(1, 1, 1, 1, TRUE),   -- CS101 Year 1, Sem 1
-(1, 10, 1, 1, TRUE),  -- MATH101 Year 1, Sem 1
-(1, 11, 1, 2, TRUE),  -- MATH102 Year 1, Sem 2
-(1, 2, 2, 1, TRUE),   -- CS201 Year 2, Sem 1
-(1, 3, 2, 1, TRUE),   -- CS202 Year 2, Sem 1
-(1, 12, 2, 2, TRUE),  -- MATH201 Year 2, Sem 2
-(1, 4, 3, 1, TRUE),   -- CS301 Year 3, Sem 1
-(1, 5, 3, 1, FALSE),  -- CS302 Year 3, Sem 1 (Elective)
-(1, 6, 3, 2, TRUE),   -- CS303 Year 3, Sem 2
--- BEng Electrical Engineering (Qualification 2)
-(2, 7, 1, 1, TRUE),   -- EE101 Year 1, Sem 1
-(2, 10, 1, 1, TRUE),  -- MATH101 Year 1, Sem 1
-(2, 11, 1, 2, TRUE),  -- MATH102 Year 1, Sem 2
-(2, 8, 2, 1, TRUE),   -- EE201 Year 2, Sem 1
-(2, 9, 3, 1, TRUE),   -- EE301 Year 3, Sem 1
--- BCom Accounting (Qualification 5)
-(5, 13, 1, 1, TRUE),  -- ACC101 Year 1, Sem 1
-(5, 14, 2, 1, TRUE),  -- ACC201 Year 2, Sem 1
-(5, 15, 3, 1, TRUE),  -- ACC301 Year 3, Sem 1
--- BA Psychology (Qualification 6)
-(6, 16, 1, 1, TRUE),  -- PSY101 Year 1, Sem 1
-(6, 17, 2, 1, TRUE),  -- PSY201 Year 2, Sem 1
--- BSc Nursing (Qualification 7)
-(7, 18, 1, 1, TRUE);  -- NURS101 Year 1, Sem 1
+INSERT INTO qualificationmodule (qualificationModuleId, qualificationId, moduleId, academicYear, semesterNo, isCompulsory) VALUES
+-- BSCS Year 1 Semester 1
+(1, 1, 1, 1, 1, 1),
+(2, 1, 13, 1, 1, 1),
+-- BSCS Year 1 Semester 2
+(3, 1, 5, 1, 2, 1),
+(4, 1, 14, 1, 2, 1),
+-- BSCS Year 2 Semester 1
+(5, 1, 2, 2, 1, 1),
+(6, 1, 4, 2, 1, 1),
+-- BSCS Year 2 Semester 2
+(7, 1, 3, 2, 2, 1),
+(8, 1, 11, 2, 2, 1),
+-- BSCS Year 3 Semester 1
+(9, 1, 6, 3, 1, 1),
+(10, 1, 7, 3, 1, 1),
+-- BSCS Year 3 Semester 2
+(11, 1, 15, 3, 2, 0),
+(12, 1, 16, 3, 2, 0),
+
+-- BIT Year 1 Semester 1
+(13, 2, 8, 1, 1, 1),
+(14, 2, 1, 1, 1, 1),
+-- BIT Year 2 Semester 1
+(15, 2, 9, 2, 1, 1),
+(16, 2, 11, 2, 1, 1),
+-- BIT Year 3 Semester 1
+(17, 2, 10, 3, 1, 1),
+(18, 2, 12, 3, 1, 1),
+-- BIT Year 3 Semester 2
+(19, 2, 17, 3, 2, 0),
+(20, 2, 18, 3, 2, 0);
 
 -- =====================================================
--- STUDENT MODULE ENROLLMENTS
+-- STUDENT DATA
 -- =====================================================
-INSERT INTO StudentModule (studentId, moduleId) VALUES
--- First Year CS Students (19, 20, 29, 34)
-(19, 1), (19, 10),
-(20, 1), (20, 10),
-(29, 1), (29, 10),
-(34, 1), (34, 10),
--- Second Year CS Students (23, 24)
-(23, 2), (23, 3), (23, 12),
-(24, 2), (24, 3), (24, 12),
--- Third Year CS Students (26, 32)
-(26, 4), (26, 5), (26, 6),
-(32, 4), (32, 5), (32, 6),
--- First Year EE Student (21)
-(21, 7), (21, 10),
--- Second Year EE Student (25, 35)
-(25, 8),
-(35, 8),
--- Third Year Math Student (27)
-(27, 10), (27, 11), (27, 12),
--- First Year Accounting Student (22)
-(22, 13),
--- Second Year Accounting Student (30)
-(30, 14),
--- Third Year Accounting Student (36)
-(36, 15),
--- First Year Psychology Student (28)
-(28, 16),
--- Second Year Psychology Student (31)
-(31, 17),
--- First Year Nursing Student (33)
-(33, 18);
+INSERT INTO student (studentId, studentNumber, levelOfEducation, yearOfStudy, qualificationId) VALUES
+-- BSCS Students
+(13, 'STU2024001', 'Undergraduate', 1, 1),
+(14, 'STU2024002', 'Undergraduate', 1, 1),
+(15, 'STU2024003', 'Undergraduate', 2, 1),
+(16, 'STU2024004', 'Undergraduate', 2, 1),
+(17, 'STU2024005', 'Undergraduate', 2, 1),
+(18, 'STU2024006', 'Undergraduate', 3, 1),
+(19, 'STU2024007', 'Undergraduate', 3, 1),
+-- BIT Students
+(20, 'STU2024008', 'Undergraduate', 1, 2),
+(21, 'STU2024009', 'Undergraduate', 1, 2),
+(22, 'STU2024010', 'Undergraduate', 2, 2),
+(23, 'STU2024011', 'Undergraduate', 2, 2),
+(24, 'STU2024012', 'Undergraduate', 3, 2),
+(25, 'STU2024013', 'Undergraduate', 3, 2),
+-- DSD Students
+(26, 'STU2024014', 'Undergraduate', 1, 3),
+(27, 'STU2024015', 'Undergraduate', 2, 3),
+(28, 'STU2024016', 'Undergraduate', 3, 3),
+-- NDIT Students
+(29, 'STU2024017', 'Undergraduate', 1, 4),
+(30, 'STU2024018', 'Undergraduate', 2, 4),
+(31, 'STU2024019', 'Undergraduate', 3, 4),
+-- BCIS Students
+(32, 'STU2024020', 'Undergraduate', 1, 5),
+(33, 'STU2024021', 'Undergraduate', 2, 5),
+(34, 'STU2024022', 'Undergraduate', 3, 5),
+(35, 'STU2024023', 'Undergraduate', 4, 5),
+-- ADCS Students
+(36, 'STU2024024', 'Postgraduate', 1, 6),
+(37, 'STU2024025', 'Postgraduate', 1, 6),
+-- CP Students
+(38, 'STU2024026', 'Certificate', 1, 7),
+(39, 'STU2024027', 'Certificate', 1, 7),
+(40, 'STU2024028', 'Certificate', 1, 7);
 
 -- =====================================================
 -- LECTURER MODULE ASSIGNMENTS
 -- =====================================================
-INSERT INTO LecturerModule (lecturerId, moduleId) VALUES
--- CS Modules
-(2, 1),   -- Prof Chen teaches CS101
-(6, 1),   -- Dr Thompson teaches CS101
-(7, 2),   -- Ms Hassan teaches CS201
-(11, 3),  -- Dr Mohamed teaches CS202
-(16, 4),  -- Dr Lee teaches CS301
-(2, 5),   -- Prof Chen teaches CS302
-(6, 6),   -- Dr Thompson teaches CS303
--- EE Modules
-(3, 7),   -- Dr Mbatha teaches EE101
-(8, 8),   -- Dr Van Der Merwe teaches EE201
-(17, 9),  -- Dr Ndlovu teaches EE301
--- Math Modules
-(10, 10), -- Dr Kowalski teaches MATH101
-(10, 11), -- Dr Kowalski teaches MATH102
-(10, 12), -- Dr Kowalski teaches MATH201
--- Accounting Modules
-(4, 13),  -- Prof Williams teaches ACC101
-(9, 14),  -- Ms Dlamini teaches ACC201
-(18, 15), -- Dr Petrova teaches ACC301
--- Psychology Modules
-(5, 16),  -- Dr Naidoo teaches PSY101
-(13, 17), -- Dr Khumalo teaches PSY201
--- Nursing Modules
-(15, 18); -- Mr Mthembu teaches NURS101
+INSERT INTO lecturermodule (lecturerModuleId, lecturerId, moduleId) VALUES
+-- David Williams (Coordinator) teaches PRG101, DSA201
+(1, 4, 1),
+(2, 4, 2),
+-- Jennifer Brown (Coordinator) teaches OOP201, WEB201
+(3, 5, 5),
+(4, 5, 4),
+-- Michael Davis (Coordinator) teaches NET101, CLD301
+(5, 6, 8),
+(6, 6, 10),
+-- Robert Miller teaches DBS301, SWE301
+(7, 7, 3),
+(8, 7, 6),
+-- Patricia Wilson teaches MAD301, AIF301
+(9, 8, 7),
+(10, 8, 15),
+-- James Moore teaches CYB201, DFO301
+(11, 9, 9),
+(12, 9, 17),
+-- Linda Taylor teaches SAD201, IPM301
+(13, 10, 11),
+(14, 10, 12),
+-- Thomas Anderson teaches CAR101, OPS201
+(15, 11, 13),
+(16, 11, 14),
+-- Barbara Thomas teaches MLN301, IOT301
+(17, 12, 16),
+(18, 12, 18);
 
 -- =====================================================
 -- COORDINATOR MODULE ASSIGNMENTS
 -- =====================================================
-INSERT INTO CoordinatorModule (coordinatorId, moduleId) VALUES
-(16, 1), (16, 2), (16, 3), (16, 4), (16, 5), (16, 6), -- Dr Lee coordinates all CS modules
-(17, 7), (17, 8), (17, 9),                             -- Dr Ndlovu coordinates EE modules
-(18, 13), (18, 14), (18, 15);                          -- Dr Petrova coordinates Accounting modules
+INSERT INTO coordinatormodule (coordinatorModuleId, coordinatorId, moduleId) VALUES
+-- David Williams coordinates PRG101, DSA201, OOP201
+(1, 4, 1),
+(2, 4, 2),
+(3, 4, 5),
+-- Jennifer Brown coordinates DBS301, WEB201, SWE301
+(4, 5, 3),
+(5, 5, 4),
+(6, 5, 6),
+-- Michael Davis coordinates NET101, CYB201, CLD301
+(7, 6, 8),
+(8, 6, 9),
+(9, 6, 10);
 
 -- =====================================================
--- ASSESSMENTS
+-- STUDENT MODULE ENROLLMENTS
 -- =====================================================
-INSERT INTO Assessment (assessmentId, assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
--- CS101 Assessments
-(1, 'Assignment 1: Variables and Data Types', 100, 10.00, '2024-03-15', '2024-02-01 09:00:00', 2, 1),
-(2, 'Test 1: Control Structures', 100, 15.00, '2024-04-10', '2024-02-01 09:00:00', 2, 1),
-(3, 'Assignment 2: Functions', 100, 10.00, '2024-05-05', '2024-02-01 09:00:00', 6, 1),
-(4, 'Final Project', 100, 25.00, '2024-06-15', '2024-02-01 09:00:00', 2, 1),
-(5, 'Final Exam', 100, 40.00, '2024-06-25', '2024-02-01 09:00:00', 2, 1),
+INSERT INTO studentmodule (studentModuleId, studentId, moduleId) VALUES
+-- Year 1 BSCS students (STU2024001-002) - Semester 1
+(1, 13, 1),  -- PRG101
+(2, 13, 13), -- CAR101
+(3, 14, 1),  -- PRG101
+(4, 14, 13), -- CAR101
 
--- CS201 Assessments
-(6, 'Assignment 1: Arrays and Lists', 100, 12.00, '2024-03-20', '2024-02-01 09:00:00', 7, 2),
-(7, 'Test 1: Sorting Algorithms', 100, 18.00, '2024-04-15', '2024-02-01 09:00:00', 7, 2),
-(8, 'Assignment 2: Trees and Graphs', 100, 15.00, '2024-05-10', '2024-02-01 09:00:00', 7, 2),
-(9, 'Final Exam', 100, 55.00, '2024-06-20', '2024-02-01 09:00:00', 7, 2),
+-- Year 2 BSCS students (STU2024003-005) - Semester 1
+(5, 15, 2),  -- DSA201
+(6, 15, 4),  -- WEB201
+(7, 16, 2),  -- DSA201
+(8, 16, 4),  -- WEB201
+(9, 17, 2),  -- DSA201
+(10, 17, 4), -- WEB201
 
--- CS202 Assessments (Database Systems)
-(10, 'Assignment 1: SQL Basics', 100, 10.00, '2024-03-18', '2024-02-01 09:00:00', 11, 3),
-(11, 'Test 1: Normalization', 100, 15.00, '2024-04-12', '2024-02-01 09:00:00', 11, 3),
-(12, 'Project: Database Design', 100, 25.00, '2024-05-15', '2024-02-01 09:00:00', 11, 3),
-(13, 'Final Exam', 100, 50.00, '2024-06-22', '2024-02-01 09:00:00', 11, 3),
+-- Year 3 BSCS students (STU2024006-007) - Semester 1
+(11, 18, 6),  -- SWE301
+(12, 18, 7),  -- MAD301
+(13, 19, 6),  -- SWE301
+(14, 19, 7),  -- MAD301
 
--- MATH101 Assessments
-(14, 'Test 1: Limits and Derivatives', 100, 20.00, '2024-03-25', '2024-02-01 09:00:00', 10, 10),
-(15, 'Assignment 1: Integration', 100, 15.00, '2024-04-20', '2024-02-01 09:00:00', 10, 10),
-(16, 'Test 2: Applications', 100, 20.00, '2024-05-18', '2024-02-01 09:00:00', 10, 10),
-(17, 'Final Exam', 100, 45.00, '2024-06-18', '2024-02-01 09:00:00', 10, 10),
+-- Year 1 BIT students (STU2024008-009) - Semester 1
+(15, 20, 8),  -- NET101
+(16, 20, 1),  -- PRG101
+(17, 21, 8),  -- NET101
+(18, 21, 1),  -- PRG101
 
--- ACC101 Assessments
-(18, 'Test 1: Basic Accounting', 100, 20.00, '2024-03-22', '2024-02-01 09:00:00', 4, 13),
-(19, 'Assignment: Financial Statements', 100, 15.00, '2024-04-25', '2024-02-01 09:00:00', 4, 13),
-(20, 'Final Exam', 100, 65.00, '2024-06-19', '2024-02-01 09:00:00', 4, 13),
+-- Year 2 BIT students (STU2024010-011) - Semester 1
+(19, 22, 9),  -- CYB201
+(20, 22, 11), -- SAD201
+(21, 23, 9),  -- CYB201
+(22, 23, 11), -- SAD201
 
--- EE101 Assessments
-(21, 'Lab Assignment 1', 100, 10.00, '2024-03-16', '2024-02-01 09:00:00', 3, 7),
-(22, 'Test 1: Circuit Analysis', 100, 20.00, '2024-04-14', '2024-02-01 09:00:00', 3, 7),
-(23, 'Lab Assignment 2', 100, 10.00, '2024-05-12', '2024-02-01 09:00:00', 3, 7),
-(24, 'Final Exam', 100, 60.00, '2024-06-21', '2024-02-01 09:00:00', 3, 7);
+-- Year 3 BIT students (STU2024012-013) - Semester 1
+(23, 24, 10), -- CLD301
+(24, 24, 12), -- IPM301
+(25, 25, 10), -- CLD301
+(26, 25, 12), -- IPM301
+
+-- Additional enrollments for comprehensive testing
+(27, 26, 1),  -- DSD student in PRG101
+(28, 27, 2),  -- DSD student in DSA201
+(29, 28, 6),  -- DSD student in SWE301
+(30, 29, 8),  -- NDIT student in NET101
+(31, 30, 9),  -- NDIT student in CYB201
+(32, 31, 10), -- NDIT student in CLD301
+(33, 32, 8),  -- BCIS Year 1 in NET101
+(34, 33, 11), -- BCIS Year 2 in SAD201
+(35, 36, 2),  -- ADCS student in DSA201
+(36, 37, 15); -- ADCS student in AIF301
+
+-- =====================================================
+-- ASSESSMENTS (Weightings add up to 100% per module)
+-- =====================================================
+
+-- PRG101 Assessments (Total: 100%)
+INSERT INTO assessment (assessmentId, assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+(1, 'PRG101 Assignment 1: Variables and Data Types', 100, 15.00, '2024-03-15', '2024-02-01 09:00:00', 4, 1),
+(2, 'PRG101 Test 1: Control Structures', 100, 20.00, '2024-04-10', '2024-02-01 09:00:00', 4, 1),
+(3, 'PRG101 Assignment 2: Functions and Modules', 100, 15.00, '2024-05-08', '2024-02-01 09:00:00', 4, 1),
+(4, 'PRG101 Final Exam', 100, 50.00, '2024-06-15', '2024-02-01 09:00:00', 4, 1),
+
+-- DSA201 Assessments (Total: 100%)
+(5, 'DSA201 Assignment 1: Arrays and Lists', 100, 15.00, '2024-03-20', '2024-02-01 09:00:00', 4, 2),
+(6, 'DSA201 Test 1: Sorting Algorithms', 100, 20.00, '2024-04-15', '2024-02-01 09:00:00', 4, 2),
+(7, 'DSA201 Assignment 2: Trees and Graphs', 100, 15.00, '2024-05-12', '2024-02-01 09:00:00', 4, 2),
+(8, 'DSA201 Final Exam', 100, 50.00, '2024-06-18', '2024-02-01 09:00:00', 4, 2),
+
+-- DBS301 Assessments (Total: 100%)
+(9, 'DBS301 Assignment 1: SQL Basics', 100, 10.00, '2024-03-18', '2024-02-01 09:00:00', 7, 3),
+(10, 'DBS301 Test 1: Normalization', 100, 15.00, '2024-04-12', '2024-02-01 09:00:00', 7, 3),
+(11, 'DBS301 Assignment 2: Database Design Project', 100, 25.00, '2024-05-15', '2024-02-01 09:00:00', 7, 3),
+(12, 'DBS301 Final Exam', 100, 50.00, '2024-06-20', '2024-02-01 09:00:00', 7, 3),
+
+-- WEB201 Assessments (Total: 100%)
+(13, 'WEB201 Assignment 1: HTML/CSS Portfolio', 100, 20.00, '2024-03-25', '2024-02-01 09:00:00', 5, 4),
+(14, 'WEB201 Test 1: JavaScript Fundamentals', 100, 15.00, '2024-04-18', '2024-02-01 09:00:00', 5, 4),
+(15, 'WEB201 Assignment 2: Full Stack Web App', 100, 25.00, '2024-05-20', '2024-02-01 09:00:00', 5, 4),
+(16, 'WEB201 Final Exam', 100, 40.00, '2024-06-22', '2024-02-01 09:00:00', 5, 4),
+
+-- OOP201 Assessments (Total: 100%)
+(17, 'OOP201 Assignment 1: Classes and Objects', 100, 15.00, '2024-03-12', '2024-02-01 09:00:00', 5, 5),
+(18, 'OOP201 Test 1: Inheritance and Polymorphism', 100, 20.00, '2024-04-08', '2024-02-01 09:00:00', 5, 5),
+(19, 'OOP201 Assignment 2: Design Patterns', 100, 15.00, '2024-05-10', '2024-02-01 09:00:00', 5, 5),
+(20, 'OOP201 Final Exam', 100, 50.00, '2024-06-16', '2024-02-01 09:00:00', 5, 5),
+
+-- SWE301 Assessments (Total: 100%)
+(21, 'SWE301 Assignment 1: Requirements Analysis', 100, 15.00, '2024-03-22', '2024-02-01 09:00:00', 7, 6),
+(22, 'SWE301 Test 1: Software Design', 100, 20.00, '2024-04-20', '2024-02-01 09:00:00', 7, 6),
+(23, 'SWE301 Group Project: SDLC Implementation', 100, 30.00, '2024-05-25', '2024-02-01 09:00:00', 7, 6),
+(24, 'SWE301 Final Exam', 100, 35.00, '2024-06-25', '2024-02-01 09:00:00', 7, 6),
+
+-- MAD301 Assessments (Total: 100%)
+(25, 'MAD301 Assignment 1: Android App Prototype', 100, 20.00, '2024-03-28', '2024-02-01 09:00:00', 8, 7),
+(26, 'MAD301 Test 1: Mobile UI/UX Design', 100, 15.00, '2024-04-22', '2024-02-01 09:00:00', 8, 7),
+(27, 'MAD301 Assignment 2: Cross-Platform App', 100, 25.00, '2024-05-28', '2024-02-01 09:00:00', 8, 7),
+(28, 'MAD301 Final Exam', 100, 40.00, '2024-06-28', '2024-02-01 09:00:00', 8, 7),
+
+-- NET101 Assessments (Total: 100%)
+(29, 'NET101 Assignment 1: Network Configuration', 100, 15.00, '2024-03-14', '2024-02-01 09:00:00', 6, 8),
+(30, 'NET101 Test 1: OSI Model and Protocols', 100, 20.00, '2024-04-11', '2024-02-01 09:00:00', 6, 8),
+(31, 'NET101 Assignment 2: Network Design Project', 100, 15.00, '2024-05-09', '2024-02-01 09:00:00', 6, 8),
+(32, 'NET101 Final Exam', 100, 50.00, '2024-06-17', '2024-02-01 09:00:00', 6, 8),
+
+-- CYB201 Assessments (Total: 100%)
+(33, 'CYB201 Assignment 1: Security Assessment', 100, 15.00, '2024-03-19', '2024-02-01 09:00:00', 9, 9),
+(34, 'CYB201 Test 1: Cryptography', 100, 20.00, '2024-04-16', '2024-02-01 09:00:00', 9, 9),
+(35, 'CYB201 Assignment 2: Penetration Testing Lab', 100, 15.00, '2024-05-14', '2024-02-01 09:00:00', 9, 9),
+(36, 'CYB201 Final Exam', 100, 50.00, '2024-06-19', '2024-02-01 09:00:00', 9, 9),
+
+-- CLD301 Assessments (Total: 100%)
+(37, 'CLD301 Assignment 1: AWS/Azure Deployment', 100, 20.00, '2024-03-26', '2024-02-01 09:00:00', 6, 10),
+(38, 'CLD301 Test 1: Cloud Architecture', 100, 15.00, '2024-04-24', '2024-02-01 09:00:00', 6, 10),
+(39, 'CLD301 Assignment 2: Microservices Project', 100, 25.00, '2024-05-22', '2024-02-01 09:00:00', 6, 10),
+(40, 'CLD301 Final Exam', 100, 40.00, '2024-06-24', '2024-02-01 09:00:00', 6, 10),
+
+-- SAD201 Assessments (Total: 100%)
+(41, 'SAD201 Assignment 1: System Analysis', 100, 15.00, '2024-03-21', '2024-02-01 09:00:00', 10, 11),
+(42, 'SAD201 Test 1: UML Diagrams', 100, 20.00, '2024-04-19', '2024-02-01 09:00:00', 10, 11),
+(43, 'SAD201 Assignment 2: System Design Document', 100, 15.00, '2024-05-16', '2024-02-01 09:00:00', 10, 11),
+(44, 'SAD201 Final Exam', 100, 50.00, '2024-06-21', '2024-02-01 09:00:00', 10, 11),
+
+-- IPM301 Assessments (Total: 100%)
+(45, 'IPM301 Assignment 1: Project Charter', 100, 15.00, '2024-03-27', '2024-02-01 09:00:00', 10, 12),
+(46, 'IPM301 Test 1: Agile Methodologies', 100, 20.00, '2024-04-25', '2024-02-01 09:00:00', 10, 12),
+(47, 'IPM301 Group Project: Project Plan', 100, 25.00, '2024-05-29', '2024-02-01 09:00:00', 10, 12),
+(48, 'IPM301 Final Exam', 100, 40.00, '2024-06-27', '2024-02-01 09:00:00', 10, 12),
+
+-- CAR101 Assessments (Total: 100%)
+(49, 'CAR101 Assignment 1: CPU Architecture', 100, 15.00, '2024-03-13', '2024-02-01 09:00:00', 11, 13),
+(50, 'CAR101 Test 1: Memory Systems', 100, 20.00, '2024-04-09', '2024-02-01 09:00:00', 11, 13),
+(51, 'CAR101 Assignment 2: Assembly Programming', 100, 15.00, '2024-05-07', '2024-02-01 09:00:00', 11, 13),
+(52, 'CAR101 Final Exam', 100, 50.00, '2024-06-14', '2024-02-01 09:00:00', 11, 13),
+
+-- OPS201 Assessments (Total: 100%)
+(53, 'OPS201 Assignment 1: Process Management', 100, 15.00, '2024-03-16', '2024-02-01 09:00:00', 11, 14),
+(54, 'OPS201 Test 1: File Systems', 100, 20.00, '2024-04-13', '2024-02-01 09:00:00', 11, 14),
+(55, 'OPS201 Assignment 2: Linux Administration', 100, 15.00, '2024-05-11', '2024-02-01 09:00:00', 11, 14),
+(56, 'OPS201 Final Exam', 100, 50.00, '2024-06-18', '2024-02-01 09:00:00', 11, 14),
+
+-- AIF301 Assessments (Total: 100%)
+(57, 'AIF301 Assignment 1: Search Algorithms', 100, 15.00, '2024-03-24', '2024-02-01 09:00:00', 8, 15),
+(58, 'AIF301 Test 1: Knowledge Representation', 100, 20.00, '2024-04-21', '2024-02-01 09:00:00', 8, 15),
+(59, 'AIF301 Assignment 2: AI Agent Project', 100, 25.00, '2024-05-24', '2024-02-01 09:00:00', 8, 15),
+(60, 'AIF301 Final Exam', 100, 40.00, '2024-06-26', '2024-02-01 09:00:00', 8, 15);
+
+-- =====================================================
+-- MARK ENTRIES (Realistic performance data)
+-- =====================================================
+-- PRG101 marks for students (13, 14, 26)
+INSERT INTO markentry (markEntryId, mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+-- Student 13 (Good performer)
+(1, 78.00, 1, '2024-03-14 15:30:00', 13, 1),
+(2, 82.00, 1, '2024-04-10 10:15:00', 13, 2),
+(3, 75.00, 1, '2024-05-07 16:20:00', 13, 3),
+(4, 70.00, 1, '2024-06-15 09:00:00', 13, 4),
+
+-- Student 14 (Struggling student - missing submissions)
+(5, 45.00, 1, '2024-03-15 23:45:00', 14, 1),
+(6, 0.00, 0, NULL, 14, 2), -- Did not submit
+(7, 38.00, 1, '2024-05-08 17:30:00', 14, 3),
+(8, 42.00, 1, '2024-06-15 09:00:00', 14, 4),
+
+-- Student 26 (Average performer)
+(9, 62.00, 1, '2024-03-15 14:20:00', 26, 1),
+(10, 68.00, 1, '2024-04-10 10:45:00', 26, 2),
+(11, 65.00, 1, '2024-05-08 15:10:00', 26, 3),
+(12, 60.00, 1, '2024-06-15 09:00:00', 26, 4),
+
+-- DSA201 marks for students (15, 16, 17, 27, 36)
+-- Student 15 (Excellent student)
+(13, 88.00, 1, '2024-03-19 14:00:00', 15, 5),
+(14, 92.00, 1, '2024-04-15 10:30:00', 15, 6),
+(15, 85.00, 1, '2024-05-11 16:45:00', 15, 7),
+(16, 90.00, 1, '2024-06-18 09:00:00', 15, 8),
+
+-- Student 16 (Good performer)
+(17, 74.00, 1, '2024-03-20 13:30:00', 16, 5),
+(18, 78.00, 1, '2024-04-15 11:00:00', 16, 6),
+(19, 72.00, 1, '2024-05-12 15:20:00', 16, 7),
+(20, 76.00, 1, '2024-06-18 09:00:00', 16, 8),
+
+-- Student 17 (At-risk student)
+(21, 50.00, 1, '2024-03-20 23:50:00', 17, 5),
+(22, 48.00, 1, '2024-04-15 10:20:00', 17, 6),
+(23, 0.00, 0, NULL, 17, 7), -- Did not submit
+(24, 45.00, 1, '2024-06-18 09:00:00', 17, 8),
+
+-- Student 27 (Average)
+(25, 65.00, 1, '2024-03-19 16:10:00', 27, 5),
+(26, 70.00, 1, '2024-04-15 10:50:00', 27, 6),
+(27, 68.00, 1, '2024-05-12 14:30:00', 27, 7),
+(28, 67.00, 1, '2024-06-18 09:00:00', 27, 8),
+
+-- Student 36 (ADCS - High performer)
+(29, 90.00, 1, '2024-03-19 12:00:00', 36, 5),
+(30, 95.00, 1, '2024-04-15 10:00:00', 36, 6),
+(31, 92.00, 1, '2024-05-11 14:00:00', 36, 7),
+(32, 94.00, 1, '2024-06-18 09:00:00', 36, 8),
+
+-- WEB201 marks for students (15, 16, 17)
+-- Student 15
+(33, 86.00, 1, '2024-03-24 15:00:00', 15, 13),
+(34, 88.00, 1, '2024-04-18 11:30:00', 15, 14),
+(35, 84.00, 1, '2024-05-19 17:00:00', 15, 15),
+(36, 87.00, 1, '2024-06-22 09:00:00', 15, 16),
+
+-- Student 16
+(37, 70.00, 1, '2024-03-25 14:30:00', 16, 13),
+(38, 75.00, 1, '2024-04-18 11:45:00', 16, 14),
+(39, 73.00, 1, '2024-05-20 16:30:00', 16, 15),
+(40, 72.00, 1, '2024-06-22 09:00:00', 16, 16),
+
+-- Student 17 (continuing to struggle)
+(41, 52.00, 1, '2024-03-25 23:45:00', 17, 13),
+(42, 0.00, 0, NULL, 17, 14), -- Did not submit
+(43, 48.00, 1, '2024-05-20 23:55:00', 17, 15),
+(44, 50.00, 1, '2024-06-22 09:00:00', 17, 16),
+
+-- SWE301 marks for students (18, 19, 28)
+-- Student 18 (Good performer)
+(45, 76.00, 1, '2024-03-21 14:45:00', 18, 21),
+(46, 80.00, 1, '2024-04-20 11:00:00', 18, 22),
+(47, 78.00, 1, '2024-05-24 16:30:00', 18, 23),
+(48, 75.00, 1, '2024-06-25 09:00:00', 18, 24),
+
+-- Student 19 (Excellent)
+(49, 85.00, 1, '2024-03-21 13:30:00', 19, 21),
+(50, 90.00, 1, '2024-04-20 10:30:00', 19, 22),
+(51, 88.00, 1, '2024-05-24 15:00:00', 19, 23),
+(52, 87.00, 1, '2024-06-25 09:00:00', 19, 24),
+
+-- Student 28 (Average)
+(53, 64.00, 1, '2024-03-22 15:20:00', 28, 21),
+(54, 68.00, 1, '2024-04-20 11:30:00', 28, 22),
+(55, 66.00, 1, '2024-05-25 17:00:00', 28, 23),
+(56, 65.00, 1, '2024-06-25 09:00:00', 28, 24),
+
+-- MAD301 marks for students (18, 19)
+-- Student 18
+(57, 74.00, 1, '2024-03-27 15:00:00', 18, 25),
+(58, 77.00, 1, '2024-04-22 11:15:00', 18, 26),
+(59, 76.00, 1, '2024-05-27 16:45:00', 18, 27),
+(60, 75.00, 1, '2024-06-28 09:00:00', 18, 28),
+
+-- Student 19
+(61, 83.00, 1, '2024-03-27 14:00:00', 19, 25),
+(62, 88.00, 1, '2024-04-22 10:45:00', 19, 26),
+(63, 85.00, 1, '2024-05-27 15:30:00', 19, 27),
+(64, 86.00, 1, '2024-06-28 09:00:00', 19, 28),
+
+-- NET101 marks for students (20, 21, 29, 32)
+-- Student 20 (Good)
+(65, 72.00, 1, '2024-03-13 14:30:00', 20, 29),
+(66, 76.00, 1, '2024-04-11 10:45:00', 20, 30),
+(67, 74.00, 1, '2024-05-08 16:00:00', 20, 31),
+(68, 73.00, 1, '2024-06-17 09:00:00', 20, 32),
+
+-- Student 21 (Struggling)
+(69, 48.00, 1, '2024-03-14 23:30:00', 21, 29),
+(70, 52.00, 1, '2024-04-11 11:00:00', 21, 30),
+(71, 0.00, 0, NULL, 21, 31), -- Did not submit
+(72, 46.00, 1, '2024-06-17 09:00:00', 21, 32),
+
+-- Student 29 (Average)
+(73, 66.00, 1, '2024-03-14 15:00:00', 29, 29),
+(74, 69.00, 1, '2024-04-11 10:30:00', 29, 30),
+(75, 67.00, 1, '2024-05-09 15:30:00', 29, 31),
+(76, 68.00, 1, '2024-06-17 09:00:00', 29, 32),
+
+-- Student 32 (Good)
+(77, 75.00, 1, '2024-03-13 13:45:00', 32, 29),
+(78, 78.00, 1, '2024-04-11 10:15:00', 32, 30),
+(79, 76.00, 1, '2024-05-08 15:00:00', 32, 31),
+(80, 77.00, 1, '2024-06-17 09:00:00', 32, 32),
+
+-- CYB201 marks for students (22, 23, 30)
+-- Student 22 (Good)
+(81, 77.00, 1, '2024-03-18 14:15:00', 22, 33),
+(82, 80.00, 1, '2024-04-16 10:30:00', 22, 34),
+(83, 78.00, 1, '2024-05-13 16:15:00', 22, 35),
+(84, 79.00, 1, '2024-06-19 09:00:00', 22, 36),
+
+-- Student 23 (Average)
+(85, 63.00, 1, '2024-03-19 15:30:00', 23, 33),
+(86, 67.00, 1, '2024-04-16 11:00:00', 23, 34),
+(87, 65.00, 1, '2024-05-14 16:45:00', 23, 35),
+(88, 66.00, 1, '2024-06-19 09:00:00', 23, 36),
+
+-- Student 30 (At-risk)
+(89, 51.00, 1, '2024-03-19 23:40:00', 30, 33),
+(90, 0.00, 0, NULL, 30, 34), -- Did not submit
+(91, 49.00, 1, '2024-05-14 23:50:00', 30, 35),
+(92, 47.00, 1, '2024-06-19 09:00:00', 30, 36),
+
+-- CLD301 marks for students (24, 25, 31)
+-- Student 24 (Excellent)
+(93, 84.00, 1, '2024-03-25 13:30:00', 24, 37),
+(94, 88.00, 1, '2024-04-24 10:15:00', 24, 38),
+(95, 86.00, 1, '2024-05-21 15:45:00', 24, 39),
+(96, 87.00, 1, '2024-06-24 09:00:00', 24, 40),
+
+-- Student 25 (Good)
+(97, 73.00, 1, '2024-03-26 14:00:00', 25, 37),
+(98, 76.00, 1, '2024-04-24 10:45:00', 25, 38),
+(99, 75.00, 1, '2024-05-22 16:15:00', 25, 39),
+(100, 74.00, 1, '2024-06-24 09:00:00', 25, 40),
+
+-- Student 31 (Average)
+(101, 64.00, 1, '2024-03-26 15:30:00', 31, 37),
+(102, 68.00, 1, '2024-04-24 11:15:00', 31, 38),
+(103, 66.00, 1, '2024-05-22 17:00:00', 31, 39),
+(104, 67.00, 1, '2024-06-24 09:00:00', 31, 40),
+
+-- SAD201 marks for students (22, 23, 33)
+-- Student 22
+(105, 75.00, 1, '2024-03-20 14:30:00', 22, 41),
+(106, 79.00, 1, '2024-04-19 10:45:00', 22, 42),
+(107, 77.00, 1, '2024-05-15 16:30:00', 22, 43),
+(108, 78.00, 1, '2024-06-21 09:00:00', 22, 44),
+
+-- Student 23
+(109, 62.00, 1, '2024-03-21 15:00:00', 23, 41),
+(110, 66.00, 1, '2024-04-19 11:15:00', 23, 42),
+(111, 64.00, 1, '2024-05-16 17:00:00', 23, 43),
+(112, 65.00, 1, '2024-06-21 09:00:00', 23, 44),
+
+-- Student 33 (Good)
+(113, 74.00, 1, '2024-03-20 13:45:00', 33, 41),
+(114, 77.00, 1, '2024-04-19 10:30:00', 33, 42),
+(115, 76.00, 1, '2024-05-15 15:45:00', 33, 43),
+(116, 75.00, 1, '2024-06-21 09:00:00', 33, 44),
+
+-- IPM301 marks for students (24, 25)
+-- Student 24
+(117, 82.00, 1, '2024-03-26 14:15:00', 24, 45),
+(118, 86.00, 1, '2024-04-25 10:30:00', 24, 46),
+(119, 84.00, 1, '2024-05-28 16:00:00', 24, 47),
+(120, 85.00, 1, '2024-06-27 09:00:00', 24, 48),
+
+-- Student 25
+(121, 71.00, 1, '2024-03-27 14:45:00', 25, 45),
+(122, 74.00, 1, '2024-04-25 11:00:00', 25, 46),
+(123, 73.00, 1, '2024-05-29 16:30:00', 25, 47),
+(124, 72.00, 1, '2024-06-27 09:00:00', 25, 48),
+
+-- CAR101 marks for students (13, 14)
+-- Student 13
+(125, 76.00, 1, '2024-03-12 14:30:00', 13, 49),
+(126, 80.00, 1, '2024-04-09 10:30:00', 13, 50),
+(127, 78.00, 1, '2024-05-06 16:00:00', 13, 51),
+(128, 77.00, 1, '2024-06-14 09:00:00', 13, 52),
+
+-- Student 14 (Struggling)
+(129, 42.00, 1, '2024-03-13 23:30:00', 14, 49),
+(130, 0.00, 0, NULL, 14, 50), -- Did not submit
+(131, 40.00, 1, '2024-05-07 23:45:00', 14, 51),
+(132, 44.00, 1, '2024-06-14 09:00:00', 14, 52),
+
+-- AIF301 marks for student 37 (ADCS student - High performer)
+(133, 92.00, 1, '2024-03-23 13:00:00', 37, 57),
+(134, 95.00, 1, '2024-04-21 10:00:00', 37, 58),
+(135, 93.00, 1, '2024-05-23 15:00:00', 37, 59),
+(136, 94.00, 1, '2024-06-26 09:00:00', 37, 60);
 
 -- =====================================================
 -- CLASS SESSIONS
 -- =====================================================
-INSERT INTO ClassSession (sessionId, classType, createdAt, expiresAt, attendanceCode, lecturerId, moduleId) VALUES
--- CS101 Sessions
-(1, 'Lecture', '2024-02-05 08:00:00', '2024-02-05 09:30:00', 'CS101L01', 2, 1),
-(2, 'Lecture', '2024-02-12 08:00:00', '2024-02-12 09:30:00', 'CS101L02', 2, 1),
-(3, 'Tutorial', '2024-02-07 14:00:00', '2024-02-07 15:00:00', 'CS101T01', 6, 1),
-(4, 'Lecture', '2024-02-19 08:00:00', '2024-02-19 09:30:00', 'CS101L03', 2, 1),
-(5, 'Tutorial', '2024-02-21 14:00:00', '2024-02-21 15:00:00', 'CS101T02', 6, 1),
-(6, 'Lecture', '2024-02-26 08:00:00', '2024-02-26 09:30:00', 'CS101L04', 2, 1),
-(7, 'Lecture', '2024-03-04 08:00:00', '2024-03-04 09:30:00', 'CS101L05', 2, 1),
-(8, 'Tutorial', '2024-03-06 14:00:00', '2024-03-06 15:00:00', 'CS101T03', 6, 1),
+INSERT INTO classsession (sessionId, classType, createdAt, expiresAt, attendanceCode, lecturerId, moduleId) VALUES
+-- PRG101 Sessions (David Williams)
+(1, 'Lecture', '2024-02-05 08:00:00', '2024-02-05 09:00:00', 'PRG001', 4, 1),
+(2, 'Tutorial', '2024-02-12 10:00:00', '2024-02-12 11:00:00', 'PRG002', 4, 1),
+(3, 'Lecture', '2024-02-19 08:00:00', '2024-02-19 09:00:00', 'PRG003', 4, 1),
+(4, 'Lab', '2024-02-26 14:00:00', '2024-02-26 16:00:00', 'PRG004', 4, 1),
 
--- CS201 Sessions
-(9, 'Lecture', '2024-02-06 10:00:00', '2024-02-06 11:30:00', 'CS201L01', 7, 2),
-(10, 'Lecture', '2024-02-13 10:00:00', '2024-02-13 11:30:00', 'CS201L02', 7, 2),
-(11, 'Tutorial', '2024-02-15 15:00:00', '2024-02-15 16:00:00', 'CS201T01', 7, 2),
-(12, 'Lecture', '2024-02-20 10:00:00', '2024-02-20 11:30:00', 'CS201L03', 7, 2),
-(13, 'Lecture', '2024-02-27 10:00:00', '2024-02-27 11:30:00', 'CS201L04', 7, 2),
+-- DSA201 Sessions (David Williams)
+(5, 'Lecture', '2024-02-06 09:00:00', '2024-02-06 10:00:00', 'DSA001', 4, 2),
+(6, 'Tutorial', '2024-02-13 11:00:00', '2024-02-13 12:00:00', 'DSA002', 4, 2),
+(7, 'Lecture', '2024-02-20 09:00:00', '2024-02-20 10:00:00', 'DSA003', 4, 2),
+(8, 'Lab', '2024-02-27 15:00:00', '2024-02-27 17:00:00', 'DSA004', 4, 2),
 
--- MATH101 Sessions
-(14, 'Lecture', '2024-02-05 12:00:00', '2024-02-05 13:30:00', 'MATH101L01', 10, 10),
-(15, 'Lecture', '2024-02-12 12:00:00', '2024-02-12 13:30:00', 'MATH101L02', 10, 10),
-(16, 'Tutorial', '2024-02-14 16:00:00', '2024-02-14 17:00:00', 'MATH101T01', 10, 10),
-(17, 'Lecture', '2024-02-19 12:00:00', '2024-02-19 13:30:00', 'MATH101L03', 10, 10),
-(18, 'Tutorial', '2024-02-21 16:00:00', '2024-02-21 17:00:00', 'MATH101T02', 10, 10),
+-- WEB201 Sessions (Jennifer Brown)
+(9, 'Lecture', '2024-02-07 10:00:00', '2024-02-07 11:00:00', 'WEB001', 5, 4),
+(10, 'Tutorial', '2024-02-14 13:00:00', '2024-02-14 14:00:00', 'WEB002', 5, 4),
+(11, 'Lecture', '2024-02-21 10:00:00', '2024-02-21 11:00:00', 'WEB003', 5, 4),
+(12, 'Lab', '2024-02-28 14:00:00', '2024-02-28 16:00:00', 'WEB004', 5, 4),
 
--- ACC101 Sessions
-(19, 'Lecture', '2024-02-06 08:00:00', '2024-02-06 09:30:00', 'ACC101L01', 4, 13),
-(20, 'Lecture', '2024-02-13 08:00:00', '2024-02-13 09:30:00', 'ACC101L02', 4, 13),
-(21, 'Tutorial', '2024-02-15 14:00:00', '2024-02-15 15:00:00', 'ACC101T01', 4, 13),
+-- SWE301 Sessions (Robert Miller)
+(13, 'Lecture', '2024-02-08 08:00:00', '2024-02-08 09:00:00', 'SWE001', 7, 6),
+(14, 'Tutorial', '2024-02-15 10:00:00', '2024-02-15 11:00:00', 'SWE002', 7, 6),
+(15, 'Lecture', '2024-02-22 08:00:00', '2024-02-22 09:00:00', 'SWE003', 7, 6),
 
--- EE101 Sessions
-(22, 'Lecture', '2024-02-07 10:00:00', '2024-02-07 11:30:00', 'EE101L01', 3, 7),
-(23, 'Lab', '2024-02-09 14:00:00', '2024-02-09 17:00:00', 'EE101LAB01', 3, 7),
-(24, 'Lecture', '2024-02-14 10:00:00', '2024-02-14 11:30:00', 'EE101L02', 3, 7);
+-- NET101 Sessions (Michael Davis)
+(16, 'Lecture', '2024-02-05 11:00:00', '2024-02-05 12:00:00', 'NET001', 6, 8),
+(17, 'Tutorial', '2024-02-12 14:00:00', '2024-02-12 15:00:00', 'NET002', 6, 8),
+(18, 'Lecture', '2024-02-19 11:00:00', '2024-02-19 12:00:00', 'NET003', 6, 8),
+(19, 'Lab', '2024-02-26 15:00:00', '2024-02-26 17:00:00', 'NET004', 6, 8),
+
+-- CYB201 Sessions (James Moore)
+(20, 'Lecture', '2024-02-06 13:00:00', '2024-02-06 14:00:00', 'CYB001', 9, 9),
+(21, 'Tutorial', '2024-02-13 15:00:00', '2024-02-13 16:00:00', 'CYB002', 9, 9),
+(22, 'Lecture', '2024-02-20 13:00:00', '2024-02-20 14:00:00', 'CYB003', 9, 9),
+
+-- CLD301 Sessions (Michael Davis)
+(23, 'Lecture', '2024-02-07 09:00:00', '2024-02-07 10:00:00', 'CLD001', 6, 10),
+(24, 'Tutorial', '2024-02-14 11:00:00', '2024-02-14 12:00:00', 'CLD002', 6, 10),
+(25, 'Lecture', '2024-02-21 09:00:00', '2024-02-21 10:00:00', 'CLD003', 6, 10),
+
+-- SAD201 Sessions (Linda Taylor)
+(26, 'Lecture', '2024-02-08 10:00:00', '2024-02-08 11:00:00', 'SAD001', 10, 11),
+(27, 'Tutorial', '2024-02-15 13:00:00', '2024-02-15 14:00:00', 'SAD002', 10, 11),
+
+-- IPM301 Sessions (Linda Taylor)
+(28, 'Lecture', '2024-02-09 11:00:00', '2024-02-09 12:00:00', 'IPM001', 10, 12),
+(29, 'Tutorial', '2024-02-16 14:00:00', '2024-02-16 15:00:00', 'IPM002', 10, 12);
 
 -- =====================================================
 -- ATTENDANCE RECORDS
 -- =====================================================
-INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
--- CS101 Attendance (Students: 19, 20, 29, 34)
-(19, 1), (19, 2), (19, 3), (19, 4), (19, 5), (19, 6), (19, 7), (19, 8),
-(20, 1), (20, 2), (20, 3), (20, 5), (20, 6), (20, 8), -- Missed sessions 4, 7
-(29, 1), (29, 2), (29, 4), (29, 6), (29, 7), -- Missed sessions 3, 5, 8
-(34, 1), (34, 3), (34, 4), (34, 5), (34, 7), -- Missed sessions 2, 6, 8
+INSERT INTO attendancerecord (attendanceRecordId, studentId, sessionId) VALUES
+-- PRG101 Session 1 (Good attendance)
+(1, 13, 1),
+(2, 14, 1),
+(3, 26, 1),
 
--- CS201 Attendance (Students: 23, 24)
-(23, 9), (23, 10), (23, 11), (23, 12), (23, 13),
-(24, 9), (24, 10), (24, 12), -- Missed sessions 11, 13
+-- PRG101 Session 2 (Student 14 absent)
+(4, 13, 2),
+(5, 26, 2),
 
--- MATH101 Attendance (Students: 19, 20, 21, 29, 34)
-(19, 14), (19, 15), (19, 16), (19, 17), (19, 18),
-(20, 14), (20, 15), (20, 17), -- Missed sessions 16, 18
-(21, 14), (21, 15), (21, 16), (21, 17), (21, 18),
-(29, 14), (29, 16), (29, 17), -- Missed sessions 15, 18
-(34, 14), (34, 15), (34, 16), -- Missed sessions 17, 18
+-- PRG101 Session 3 (All present)
+(6, 13, 3),
+(7, 14, 3),
+(8, 26, 3),
 
--- ACC101 Attendance (Student: 22)
-(22, 19), (22, 20), (22, 21),
+-- PRG101 Session 4 (Student 14 absent again)
+(9, 13, 4),
+(10, 26, 4),
 
--- EE101 Attendance (Student: 21)
-(21, 22), (21, 23), (21, 24);
+-- DSA201 Session 1 (Good attendance)
+(11, 15, 5),
+(12, 16, 5),
+(13, 17, 5),
+(14, 27, 5),
+(15, 36, 5),
 
--- =====================================================
--- MARK ENTRIES
--- =====================================================
-INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
--- CS101 Marks (Students: 19, 20, 29, 34)
--- Student 19 (Good performance)
-(85.00, TRUE, '2024-03-14 16:30:00', 19, 1),
-(78.50, TRUE, '2024-04-10 10:00:00', 19, 2),
-(82.00, TRUE, '2024-05-04 15:45:00', 19, 3),
-(88.00, TRUE, '2024-06-14 18:20:00', 19, 4),
-(80.00, TRUE, '2024-06-25 12:00:00', 19, 5),
+-- DSA201 Session 2 (Student 17 absent)
+(16, 15, 6),
+(17, 16, 6),
+(18, 27, 6),
+(19, 36, 6),
 
--- Student 20 (Average performance, some missed submissions)
-(72.00, TRUE, '2024-03-15 11:20:00', 20, 1),
-(65.00, TRUE, '2024-04-10 10:00:00', 20, 2),
-(NULL, FALSE, NULL, 20, 3), -- Missed Assignment 2
-(70.00, TRUE, '2024-06-15 20:15:00', 20, 4),
-(68.00, TRUE, '2024-06-25 12:00:00', 20, 5),
+-- DSA201 Session 3 (All present)
+(20, 15, 7),
+(21, 16, 7),
+(22, 17, 7),
+(23, 27, 7),
+(24, 36, 7),
 
--- Student 29 (At-risk student)
-(55.00, TRUE, '2024-03-15 23:45:00', 29, 1),
-(48.00, TRUE, '2024-04-10 10:00:00', 29, 2),
-(NULL, FALSE, NULL, 29, 3), -- Missed Assignment 2
-(NULL, FALSE, NULL, 29, 4), -- Missed Final Project
-(52.00, TRUE, '2024-06-25 12:00:00', 29, 5),
+-- DSA201 Session 4 (Student 17 absent again)
+(25, 15, 8),
+(26, 16, 8),
+(27, 27, 8),
+(28, 36, 8),
 
--- Student 34 (Moderate risk)
-(68.00, TRUE, '2024-03-14 19:30:00', 34, 1),
-(62.00, TRUE, '2024-04-10 10:00:00', 34, 2),
-(65.00, TRUE, '2024-05-05 14:20:00', 34, 3),
-(NULL, FALSE, NULL, 34, 4), -- Missed Final Project
-(64.00, TRUE, '2024-06-25 12:00:00', 34, 5),
+-- WEB201 Sessions
+(29, 15, 9),
+(30, 16, 9),
+(31, 17, 9),
+(32, 15, 10),
+(33, 16, 10),
+-- Student 17 absent from session 10
+(34, 15, 11),
+(35, 16, 11),
+(36, 17, 11),
+(37, 15, 12),
+(38, 16, 12),
+-- Student 17 absent from session 12
 
--- CS201 Marks (Students: 23, 24)
--- Student 23 (Excellent performance)
-(92.00, TRUE, '2024-03-19 14:30:00', 23, 6),
-(88.00, TRUE, '2024-04-15 10:00:00', 23, 7),
-(90.00, TRUE, '2024-05-09 16:45:00', 23, 8),
-(91.00, TRUE, '2024-06-20 12:00:00', 23, 9),
+-- NET101 Sessions
+(39, 20, 16),
+(40, 21, 16),
+(41, 29, 16),
+(42, 32, 16),
+(43, 20, 17),
+-- Student 21 absent from session 17
+(44, 29, 17),
+(45, 32, 17),
+(46, 20, 18),
+(47, 21, 18),
+(48, 29, 18),
+(49, 32, 18),
+(50, 20, 19),
+-- Student 21 absent from session 19
+(51, 29, 19),
+(52, 32, 19),
 
--- Student 24 (Good but inconsistent)
-(75.00, TRUE, '2024-03-20 10:15:00', 24, 6),
-(70.00, TRUE, '2024-04-15 10:00:00', 24, 7),
-(NULL, FALSE, NULL, 24, 8), -- Missed assignment
-(72.00, TRUE, '2024-06-20 12:00:00', 24, 9),
+-- CYB201 Sessions
+(53, 22, 20),
+(54, 23, 20),
+(55, 30, 20),
+(56, 22, 21),
+(57, 23, 21),
+-- Student 30 absent from session 21
+(58, 22, 22),
+(59, 23, 22),
+-- Student 30 absent from session 22 again
 
--- CS202 Marks (Students: 23, 24)
--- Student 23
-(88.00, TRUE, '2024-03-17 15:20:00', 23, 10),
-(85.00, TRUE, '2024-04-12 10:00:00', 23, 11),
-(89.00, TRUE, '2024-05-14 17:30:00', 23, 12),
-(87.00, TRUE, '2024-06-22 12:00:00', 23, 13),
-
--- Student 24
-(78.00, TRUE, '2024-03-18 12:45:00', 24, 10),
-(72.00, TRUE, '2024-04-12 10:00:00', 24, 11),
-(75.00, TRUE, '2024-05-15 19:20:00', 24, 12),
-(74.00, TRUE, '2024-06-22 12:00:00', 24, 13),
-
--- MATH101 Marks (Students: 19, 20, 21, 29, 34)
--- Student 19
-(76.00, TRUE, '2024-03-25 10:00:00', 19, 14),
-(80.00, TRUE, '2024-04-19 16:30:00', 19, 15),
-(78.00, TRUE, '2024-05-18 10:00:00', 19, 16),
-(79.00, TRUE, '2024-06-18 12:00:00', 19, 17),
-
--- Student 20
-(70.00, TRUE, '2024-03-25 10:00:00', 20, 14),
-(68.00, TRUE, '2024-04-20 14:20:00', 20, 15),
-(65.00, TRUE, '2024-05-18 10:00:00', 20, 16),
-(67.00, TRUE, '2024-06-18 12:00:00', 20, 17),
-
--- Student 21 (Excellent)
-(90.00, TRUE, '2024-03-25 10:00:00', 21, 14),
-(88.00, TRUE, '2024-04-19 15:45:00', 21, 15),
-(92.00, TRUE, '2024-05-18 10:00:00', 21, 16),
-(89.00, TRUE, '2024-06-18 12:00:00', 21, 17),
-
--- Student 29 (At-risk)
-(50.00, TRUE, '2024-03-25 10:00:00', 29, 14),
-(NULL, FALSE, NULL, 29, 15), -- Missed assignment
-(48.00, TRUE, '2024-05-18 10:00:00', 29, 16),
-(51.00, TRUE, '2024-06-18 12:00:00', 29, 17),
-
--- Student 34 (Moderate)
-(62.00, TRUE, '2024-03-25 10:00:00', 34, 14),
-(65.00, TRUE, '2024-04-20 11:30:00', 34, 15),
-(60.00, TRUE, '2024-05-18 10:00:00', 34, 16),
-(63.00, TRUE, '2024-06-18 12:00:00', 34, 17),
-
--- ACC101 Marks (Student: 22)
-(82.00, TRUE, '2024-03-22 10:00:00', 22, 18),
-(85.00, TRUE, '2024-04-24 18:30:00', 22, 19),
-(83.00, TRUE, '2024-06-19 12:00:00', 22, 20),
-
--- EE101 Marks (Student: 21)
-(87.00, TRUE, '2024-03-15 14:20:00', 21, 21),
-(86.00, TRUE, '2024-04-14 10:00:00', 21, 22),
-(88.00, TRUE, '2024-05-11 16:45:00', 21, 23),
-(87.00, TRUE, '2024-06-21 12:00:00', 21, 24);
+-- CLD301 Sessions
+(60, 24, 23),
+(61, 25, 23),
+(62, 31, 23),
+(63, 24, 24),
+(64, 25, 24),
+(65, 31, 24),
+(66, 24, 25),
+(67, 25, 25),
+(68, 31, 25);
 
 -- =====================================================
 -- RISK REPORTS
 -- =====================================================
-INSERT INTO RiskReport (studentModuleId, riskLevel, attendanceRate, submissionRate, averageMark, calculatedAt) VALUES
--- High Risk Students
-(3, 'HIGH', 62.50, 40.00, 51.67, '2024-05-20 08:00:00'),  -- Student 29 in CS101
-(4, 'HIGH', 50.00, 50.00, 49.50, '2024-05-20 08:00:00'),  -- Student 29 in MATH101
+INSERT INTO riskreport (riskReportId, studentModuleId, riskLevel, attendanceRate, submissionRate, averageMark, calculatedAt) VALUES
+-- At-risk students
+(1, 4, 'HIGH', 50.00, 50.00, 31.25, '2024-05-15 10:00:00'),     -- Student 14 in CAR101
+(2, 3, 'HIGH', 50.00, 75.00, 41.25, '2024-05-15 10:05:00'),     -- Student 14 in PRG101
+(3, 10, 'HIGH', 50.00, 75.00, 47.67, '2024-05-15 10:10:00'),    -- Student 17 in WEB201
+(4, 9, 'HIGH', 50.00, 75.00, 48.00, '2024-05-15 10:15:00'),     -- Student 17 in DSA201
+(5, 18, 'MODERATE', 50.00, 75.00, 48.67, '2024-05-15 10:20:00'), -- Student 21 in PRG101
+(6, 16, 'MODERATE', 50.00, 75.00, 49.00, '2024-05-15 10:25:00'), -- Student 21 in NET101
+(7, 20, 'MODERATE', 66.67, 75.00, 49.00, '2024-05-15 10:30:00'), -- Student 30 in CYB201
 
--- Moderate Risk Students
-(2, 'MODERATE', 75.00, 80.00, 69.00, '2024-05-20 08:00:00'), -- Student 20 in CS101
-(9, 'MODERATE', 66.67, 80.00, 63.25, '2024-05-20 08:00:00'), -- Student 34 in CS101
-(11, 'MODERATE', 60.00, 66.67, 62.50, '2024-05-20 08:00:00'), -- Student 34 in MATH101
-(7, 'MODERATE', 60.00, 75.00, 73.75, '2024-05-20 08:00:00'), -- Student 24 in CS201
+-- Moderate risk students
+(8, 28, 'MODERATE', 100.00, 100.00, 63.67, '2024-05-15 10:35:00'), -- Student 26 in PRG101
+(9, 25, 'MODERATE', 100.00, 100.00, 67.67, '2024-05-15 10:40:00'), -- Student 27 in DSA201
+(10, 22, 'MODERATE', 100.00, 100.00, 64.00, '2024-05-15 10:45:00'), -- Student 23 in SAD201
 
--- Low Risk Students
-(1, 'LOW', 100.00, 100.00, 82.70, '2024-05-20 08:00:00'),  -- Student 19 in CS101
-(5, 'LOW', 100.00, 100.00, 78.25, '2024-05-20 08:00:00'),  -- Student 19 in MATH101
-(6, 'LOW', 100.00, 100.00, 90.25, '2024-05-20 08:00:00'),  -- Student 23 in CS201
-(10, 'LOW', 100.00, 100.00, 89.50, '2024-05-20 08:00:00'), -- Student 21 in MATH101
-(12, 'LOW', 100.00, 100.00, 87.25, '2024-05-20 08:00:00'), -- Student 21 in EE101
-(14, 'LOW', 100.00, 100.00, 83.33, '2024-05-20 08:00:00'); -- Student 22 in ACC101
+-- Low risk students (good performers)
+(11, 5, 'LOW', 100.00, 100.00, 88.33, '2024-05-15 10:50:00'),  -- Student 15 in DSA201
+(12, 11, 'LOW', 100.00, 100.00, 87.33, '2024-05-15 10:55:00'); -- Student 18 in SWE301
 
 -- =====================================================
 -- INTERVENTIONS
 -- =====================================================
-INSERT INTO Intervention (interventionId, studentModuleId, coordinatorId, content, createdAt, status) VALUES
-(1, 3, 16, 
-'Student has shown concerning patterns in CS101: attendance at 62.5%, submission rate at 40%, and average mark of 51.67%. Contacted student via email to schedule a meeting to discuss challenges and provide academic support resources. Recommended tutoring sessions and study group participation.',
-'2024-05-21 09:30:00', 'FOLLOW_UP_DUE'),
+INSERT INTO intervention (interventionId, studentModuleId, coordinatorId, content, createdAt, status) VALUES
+-- Interventions for at-risk students
+(1, 3, 4, 'Student showing poor attendance (50%) and missed Test 1. Arranged meeting to discuss challenges and provide study support resources. Referred to academic support center for tutoring.', '2024-04-15 14:00:00', 'FOLLOW_UP_DUE'),
 
-(2, 4, 16,
-'Student enrolled in MATH101 is at high risk with 50% attendance, 50% submission rate, and 49.5% average. This is critical as MATH101 is a foundational course. Arranged meeting with student and academic advisor to create action plan. Discussed possible extension for missed assignments and connected student with peer mentor.',
-'2024-05-21 10:15:00', 'ACTIVE'),
+(2, 9, 4, 'Student has 50% attendance rate and failed to submit Assignment 2. Met with student who indicated personal difficulties. Agreed on catch-up plan and extended deadlines where possible. Monitoring progress closely.', '2024-05-14 10:30:00', 'ACTIVE'),
 
-(3, 2, 16,
-'Moderate risk identified in CS101. Student has 75% attendance and 80% submission rate with 69% average. Sent encouraging email highlighting improvement opportunities. Suggested attending office hours before next assessment. Will monitor progress over next two weeks.',
-'2024-05-22 11:00:00', 'FOLLOW_UP_DUE'),
+(3, 16, 6, 'Poor attendance pattern (50%) and missed Assignment 2. Student expressed difficulty understanding networking concepts. Arranged peer tutoring and additional lab sessions. Provided supplementary learning materials.', '2024-05-09 15:00:00', 'FOLLOW_UP_DUE'),
 
-(4, 9, 16,
-'CS101 student showing moderate risk signs with 66.67% attendance and one missed project submission. Current average is 63%. Reached out to discuss time management strategies and available support services. Student indicated work commitments affecting studies - discussed possible solutions.',
-'2024-05-22 14:30:00', 'ACTIVE'),
+(4, 20, 6, 'Attendance issues (66.67%) and low test scores. Student missed multiple tutorial sessions. Discussed time management and study techniques. Set up weekly check-ins with tutor.', '2024-05-14 11:00:00', 'ACTIVE'),
 
-(5, 7, 17,
-'CS201 student has moderate risk profile with 60% attendance and 75% submission rate (missed one assignment). Average mark is 73.75%. Contacted student to understand reasons for absences. Student reported family issues - referred to student counseling services. Granted extension for missed work.',
-'2024-05-23 09:00:00', 'ACTIVE');
+(5, 28, 4, 'Student performance borderline. Averaging 63% with consistent but moderate performance. Provided guidance on improving coding practices and problem-solving approaches. Recommended additional practice exercises.', '2024-05-10 13:00:00', 'CLOSED');
 
 -- =====================================================
 -- FOLLOW-UPS
 -- =====================================================
-INSERT INTO FollowUp (followUpId, interventionId, content, outcome, createdAt) VALUES
-(1, 1, 
-'Met with student for 30-minute consultation. Student acknowledged struggling with programming concepts and time management. Enrolled in twice-weekly tutoring sessions starting next week. Student committed to attending all remaining lectures and submitting outstanding work. Will review progress in 2 weeks.',
-'NO_CHANGE', '2024-05-28 13:00:00'),
+INSERT INTO followup (followUpId, interventionId, content, outcome, createdAt) VALUES
+(1, 1, 'Follow-up meeting held. Student attended tutoring sessions and showed improved engagement. Attendance improved in recent weeks. Completed catch-up assignments with passing grades.', 'IMPROVED', '2024-05-20 14:00:00'),
 
-(2, 3,
-'Follow-up email sent to student checking on progress. Student responded positively - attended last two office hours sessions and submitted recent assignment on time with improved quality (scored 75%). Attendance has improved to 85%. Will continue monitoring but signs are encouraging.',
-'IMPROVED', '2024-06-05 10:30:00'),
+(2, 3, 'Student attended two extra lab sessions and peer tutoring. Showed better understanding of networking fundamentals. However, still struggling with advanced concepts. Need continued support.', 'NO_CHANGE', '2024-05-23 10:00:00'),
 
-(3, 1,
-'Second follow-up after 2 weeks of intervention. Student has attended 3 out of 4 tutoring sessions and submitted one missing assignment (scored 58%). Attendance has increased to 75%. Average mark now at 54%. Progress is modest but positive. Student reports feeling more confident with material. Recommended continuing current support plan.',
-'IMPROVED', '2024-06-11 15:45:00');
+(3, 5, 'Student successfully completed recommended exercises and showed improvement in coding assignments. Final assessment performance was satisfactory. Student ready to proceed without further intervention.', 'IMPROVED', '2024-06-05 11:00:00');
 
+-- =====================================================
 -- Re-enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
+-- =====================================================
+SET FOREIGN_KEY_CHECKS=1;
