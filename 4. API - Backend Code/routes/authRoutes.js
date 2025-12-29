@@ -53,4 +53,15 @@ router.get('/modules/department/:departmentId', authController.getDepartmentModu
 router.post('/register/staff/step3', authController.registerStep3Staff);
 
 
+
+/**
+ * DEV ONLY - could not find a shorter/easier way to do this
+ * PUT /api/auth/update-password
+ * Update a user's password using student/staff number
+ * Body: { identifierNumber, newPassword }
+ */
+router.put('/update-password', authController.updateUserPassword);
+
+
+
 module.exports = router;

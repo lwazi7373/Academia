@@ -174,7 +174,55 @@ const loginUser = async (identifierNumber) => {
   }
 }
 
+/**
+ * DEV ONLY - the pain of writing this ;;;;;
+ * Updates a user's password using studentNumber or staffNumber
+ * @param {*} identifierNumber
+ * @param {*} hashedPassword
+ * @returns true if updated, false otherwise
+ */
+const updatePasswordByIdentifier = async (identifierNumber, hashedPassword) => {
+  let connection;
+
+  try {
+    connection = await connectDB.getConnection();
+    await connection.beginTransaction();
+
+    // Find userId first (same logic as login)
+    const user = await findUserByIdentifier(identifierNumber);
+
+    if (!user) {
+      await connection.rollback();
+      return false;
+    }
+
+    // Update password
+    const [result] = await connection.execute(
+      `
+      UPDATE Users
+      SET userPassword = ?
+      WHERE userId = ?
+      `,
+      [hashedPassword, user.userId]
+    );
+
+    await connection.commit();
+
+    return result.affectedRows > 0;
+
+  } catch (error) {
+    if (connection) await connection.rollback();
+    console.error("Failed to update password:", error);
+    throw error;
+  } finally {
+    if (connection) connection.release();
+  }
+};
+
+
+
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
+  updatePasswordByIdentifier
 };

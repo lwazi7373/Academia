@@ -285,4 +285,53 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = {login, registerStep1, registerStep2Student, registerStep2Staff, getDepartmentModules ,registerStep3Staff}
+
+/**
+ * DEV ONLY - like honestly, I tried everything
+ * Updates a user's password (admin/dev use only)
+ * Users cannot update their own information in production
+ * @param {*} req
+ * @param {*} res
+ */
+const updateUserPassword = async (req, res) => {
+  try {
+    const { identifierNumber, newPassword } = req.body;
+
+    if (!identifierNumber || !newPassword) {
+      return res.status(400).json({
+        code: "Unsuccessful",
+        msg: "identifierNumber and newPassword are required"
+      });
+    }
+
+    // Hash the new password
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+    // Update password via service
+    const updated = await authService.updatePasswordByIdentifier(
+      identifierNumber,
+      hashedPassword
+    );
+
+    if (!updated) {
+      return res.status(404).json({
+        code: "Unsuccessful",
+        msg: "User not found or inactive"
+      });
+    }
+
+    return res.status(200).json({
+      code: "Successful",
+      msg: "Password updated successfully (DEV ONLY)"
+    });
+
+  } catch (error) {
+    console.error("Update password error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+module.exports = {login, registerStep1, registerStep2Student, registerStep2Staff, getDepartmentModules ,registerStep3Staff, updateUserPassword}
