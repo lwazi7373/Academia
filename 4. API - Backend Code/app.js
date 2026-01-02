@@ -9,8 +9,10 @@ app.use(body_parser.json());
 app.use(cors({ origin: true }));
 
 const connectDB = require("./db/connect");
+
 const authRoutes = require("./routes/authRoutes");
 const lecturerRoutes = require("./routes/lecturerRoutes");
+const studentRoutes = require("./routes/studentRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const assessmentRoutes = require("./routes/assessmentsRoutes");
 
@@ -19,6 +21,7 @@ app.use('/api/', authRoutes);
 app.use('/api/', lecturerRoutes);
 app.use('/api/', attendanceRoutes);
 app.use('/api/', assessmentRoutes);
+app.use('/api/', studentRoutes);
 
 // Server Port
 const PORT = process.env.PORT || 3000;
