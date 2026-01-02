@@ -259,7 +259,115 @@ const getModulesByDepartment = async (departmentId) => {
   }
 };
 
+/**
+ * Get all students enrolled in a specific module
+ * Returns student basic information (student number, first name, last name)
+ * @param {number} moduleId - The ID of the module
+ * @returns {Array} Array of student objects with basic info
+ * @throws {Error} If database error occurs
+ * TO NOTE:
+ * - Only returns active students (isActive = 1)
+ * - Ordered alphabetically by last name, then first name
+ * - Includes student number for identification
+ */
+const getModuleStudents = async (moduleId) => {
+    try {
+        // Query to get all students enrolled in the module
+        const [students] = await connectDB.execute(
+            `SELECT 
+                s.studentId,
+                s.studentNumber,
+                u.firstName,
+                u.lastName
+             FROM Student s
+             INNER JOIN Users u ON s.studentId = u.userId
+             INNER JOIN StudentModule sm ON s.studentId = sm.studentId
+             WHERE sm.moduleId = ?
+                AND u.isActive = 1
+             ORDER BY u.lastName ASC, u.firstName ASC`,
+            [moduleId]
+        );
+
+        // Format the response into an array of student objects
+        return students.map(student => ({
+            studentId: student.studentId,
+            studentNumber: student.studentNumber,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            fullName: `${student.firstName} ${student.lastName}`
+        }));
+
+    } catch (error) {
+        console.error('Error getting module students:', error);
+        throw error;
+    }
+};
+
+/**
+ * Get all modules for a student with their performance metrics
+ * Returns module codes, average marks, and risk levels from the latest risk reports
+ * @param {number} studentId - The ID of the student
+ * @returns {Array} Array of module objects with performance data
+ * @throws {Error} If database error occurs
+ * TO NOTE:
+ * - Returns all modules the student is enrolled in
+ * - Average mark and risk level come from the most recent risk report
+ * - If no risk report exists for a module, averageMark and riskLevel will be null
+ * - Includes attendance and submission rates for context
+ * - Ordered by module code
+ */
+const getStudentModulePerformance = async (studentId) => {
+    try {
+        // Query to get all modules with latest risk report data
+        const [modules] = await connectDB.execute(
+            `SELECT 
+                m.moduleId,
+                m.moduleCode,
+                m.moduleName,
+                sm.studentModuleId,
+                rr.averageMark,
+                rr.riskLevel,
+                rr.attendanceRate,
+                rr.submissionRate,
+                rr.calculatedAt
+             FROM StudentModule sm
+             INNER JOIN Module m ON sm.moduleId = m.moduleId
+             LEFT JOIN (
+                 SELECT 
+                     studentModuleId,
+                     averageMark,
+                     riskLevel,
+                     attendanceRate,
+                     submissionRate,
+                     calculatedAt,
+                     ROW_NUMBER() OVER (PARTITION BY studentModuleId ORDER BY calculatedAt DESC) as rn
+                 FROM RiskReport
+             ) rr ON sm.studentModuleId = rr.studentModuleId AND rr.rn = 1
+             WHERE sm.studentId = ?
+             ORDER BY m.moduleCode ASC`,
+            [studentId]
+        );
+
+        // Format the response into an array of module performance objects
+        return modules.map(module => ({
+            moduleId: module.moduleId,
+            moduleCode: module.moduleCode,
+            moduleName: module.moduleName,
+            averageMark: module.averageMark !== null ? parseFloat(module.averageMark) : null,
+            riskLevel: module.riskLevel || null,
+            attendanceRate: module.attendanceRate !== null ? parseFloat(module.attendanceRate) : null,
+            submissionRate: module.submissionRate !== null ? parseFloat(module.submissionRate) : null,
+            lastCalculated: module.calculatedAt || null
+        }));
+
+    } catch (error) {
+        console.error('Error getting student module performance:', error);
+        throw error;
+    }
+};
+
 module.exports = {
+  getModuleStudents,
   assignModulesToStudent,
   assignModulesToLecturer,
   assignModulesToCoordinator,
@@ -267,4 +375,5 @@ module.exports = {
   getLecturerModules,
   getModulesByQualification,
   getModulesByDepartment,
+  getStudentModulePerformance
 };
