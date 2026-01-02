@@ -1,474 +1,220 @@
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
---
--- Host: localhost    Database: academia
--- ------------------------------------------------------
--- Server version	8.0.28
+CREATE DATABASE Academia;
+USE Academia;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE TABLE Users (
+    userId INT AUTO_INCREMENT PRIMARY KEY,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    title VARCHAR(10),
+    emailAddress VARCHAR(100) UNIQUE NOT NULL,
+    userPassword VARCHAR(255) NOT NULL,
+    contactNo VARCHAR(15),
+    isActive BOOLEAN DEFAULT TRUE,
+    dateRegistered DATETIME DEFAULT CURRENT_TIMESTAMP,
+    gender VARCHAR(20),
+    idNumber VARCHAR(20)
+);
 
---
--- Table structure for table `assessment`
---
+CREATE TABLE UserRoles (
+    userRoleId INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    userRole ENUM('ADMIN','HOD','LECTURER','COORDINATOR','STUDENT') NOT NULL,
+    FOREIGN KEY (userId) REFERENCES Users(userId),
+    UNIQUE KEY unique_user_role (userId, userRole)
+);
 
-DROP TABLE IF EXISTS `assessment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `assessment` (
-  `assessmentId` int NOT NULL AUTO_INCREMENT,
-  `assessmentName` varchar(100) NOT NULL,
-  `totalMark` int NOT NULL,
-  `weighting` decimal(5,2) NOT NULL,
-  `dueDate` date NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `lecturerId` int NOT NULL,
-  `moduleId` int NOT NULL,
-  PRIMARY KEY (`assessmentId`),
-  KEY `idx_lecturer` (`lecturerId`),
-  KEY `idx_module` (`moduleId`),
-  KEY `idx_due_date` (`dueDate`),
-  CONSTRAINT `assessment_ibfk_1` FOREIGN KEY (`lecturerId`) REFERENCES `lecturer` (`lecturerId`),
-  CONSTRAINT `assessment_ibfk_2` FOREIGN KEY (`moduleId`) REFERENCES `module` (`moduleId`),
-  CONSTRAINT `assessment_chk_1` CHECK ((`totalMark` > 0)),
-  CONSTRAINT `assessment_chk_2` CHECK (((`weighting` >= 0) and (`weighting` <= 100)))
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Faculty (
+    facultyId INT AUTO_INCREMENT PRIMARY KEY,
+    facultyName VARCHAR(100) NOT NULL
+);
 
---
--- Table structure for table `attendancerecord`
---
+CREATE TABLE Department (
+    departmentId INT AUTO_INCREMENT PRIMARY KEY,
+    departmentName VARCHAR(50) NOT NULL,
+    facultyId INT NOT NULL,
+    FOREIGN KEY (facultyId) REFERENCES Faculty(facultyId)
+);
 
-DROP TABLE IF EXISTS `attendancerecord`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `attendancerecord` (
-  `attendanceRecordId` int NOT NULL AUTO_INCREMENT,
-  `studentId` int NOT NULL,
-  `sessionId` int NOT NULL,
-  PRIMARY KEY (`attendanceRecordId`),
-  UNIQUE KEY `unique_student_session` (`studentId`,`sessionId`),
-  KEY `idx_student` (`studentId`),
-  KEY `idx_session` (`sessionId`),
-  CONSTRAINT `attendancerecord_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `student` (`studentId`),
-  CONSTRAINT `attendancerecord_ibfk_2` FOREIGN KEY (`sessionId`) REFERENCES `classsession` (`sessionId`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Qualification (
+    qualificationId INT AUTO_INCREMENT PRIMARY KEY,
+    qualificationName VARCHAR(100) NOT NULL,
+    qualificationCode VARCHAR(20) UNIQUE NOT NULL,
+    duration INT NOT NULL,
+    totalCredits INT NOT NULL,
+    departmentId INT NOT NULL,
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
 
---
--- Table structure for table `classsession`
---
+CREATE TABLE academicPeriod (
+    periodId INT AUTO_INCREMENT PRIMARY KEY,
+    academicYear INT NOT NULL,
+    semesterNo INT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    isActive BOOLEAN DEFAULT FALSE,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_year_semester (academicYear, semesterNo),
+    CHECK (semesterNo > 0),
+    CHECK (endDate > startDate)
+);
 
-DROP TABLE IF EXISTS `classsession`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `classsession` (
-  `sessionId` int NOT NULL AUTO_INCREMENT,
-  `classType` varchar(20) NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `expiresAt` datetime NOT NULL,
-  `attendanceCode` varchar(10) DEFAULT NULL,
-  `lecturerId` int NOT NULL,
-  `moduleId` int NOT NULL,
-  PRIMARY KEY (`sessionId`),
-  KEY `idx_lecturer` (`lecturerId`),
-  KEY `idx_module` (`moduleId`),
-  KEY `idx_expires` (`expiresAt`),
-  CONSTRAINT `classsession_ibfk_1` FOREIGN KEY (`lecturerId`) REFERENCES `lecturer` (`lecturerId`),
-  CONSTRAINT `classsession_ibfk_2` FOREIGN KEY (`moduleId`) REFERENCES `module` (`moduleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Student (
+    studentId INT PRIMARY KEY,
+    studentNumber VARCHAR(20) UNIQUE NOT NULL,
+    levelOfEducation VARCHAR(20),
+    yearOfStudy INT NOT NULL,
+    qualificationId INT NOT NULL,
+    FOREIGN KEY (studentId) REFERENCES Users(userId),
+    FOREIGN KEY (qualificationId) REFERENCES Qualification(qualificationId)
+);
 
---
--- Table structure for table `coordinator`
---
+CREATE TABLE Lecturer (
+    lecturerId INT PRIMARY KEY,
+    staffNumber VARCHAR(20) UNIQUE NOT NULL,
+    departmentId INT NOT NULL,
+    FOREIGN KEY (lecturerId) REFERENCES Users(userId),
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
 
-DROP TABLE IF EXISTS `coordinator`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `coordinator` (
-  `coordinatorId` int NOT NULL,
-  `departmentId` int NOT NULL,
-  `staffNumber` varchar(20) NOT NULL,
-  PRIMARY KEY (`coordinatorId`),
-  UNIQUE KEY `staffNumber` (`staffNumber`),
-  KEY `idx_department` (`departmentId`),
-  CONSTRAINT `coordinator_ibfk_1` FOREIGN KEY (`coordinatorId`) REFERENCES `users` (`userId`),
-  CONSTRAINT `coordinator_ibfk_2` FOREIGN KEY (`departmentId`) REFERENCES `department` (`departmentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Coordinator (
+    coordinatorId INT PRIMARY KEY,
+    staffNumber VARCHAR(20) UNIQUE NOT NULL,
+    departmentId INT NOT NULL,
+    FOREIGN KEY (coordinatorId) REFERENCES Users(userId),
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
 
---
--- Table structure for table `coordinatormodule`
---
+CREATE TABLE HOD (
+    hodId INT PRIMARY KEY,
+    staffNumber VARCHAR(20) UNIQUE NOT NULL,
+    departmentId INT NOT NULL,
+    FOREIGN KEY (hodId) REFERENCES Users(userId),
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
 
-DROP TABLE IF EXISTS `coordinatormodule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `coordinatormodule` (
-  `coordinatorModuleId` int NOT NULL AUTO_INCREMENT,
-  `coordinatorId` int NOT NULL,
-  `moduleId` int NOT NULL,
-  PRIMARY KEY (`coordinatorModuleId`),
-  UNIQUE KEY `unique_coordinator_module` (`coordinatorId`,`moduleId`),
-  KEY `idx_coordinator` (`coordinatorId`),
-  KEY `idx_module` (`moduleId`),
-  CONSTRAINT `coordinatormodule_ibfk_1` FOREIGN KEY (`coordinatorId`) REFERENCES `coordinator` (`coordinatorId`),
-  CONSTRAINT `coordinatormodule_ibfk_2` FOREIGN KEY (`moduleId`) REFERENCES `module` (`moduleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Module (
+    moduleId INT AUTO_INCREMENT PRIMARY KEY,
+    moduleName VARCHAR(100) NOT NULL,
+    moduleCode VARCHAR(20) UNIQUE NOT NULL,
+    credits INT NOT NULL,
+    departmentId INT NOT NULL,
+    FOREIGN KEY (departmentId) REFERENCES Department(departmentId)
+);
 
---
--- Table structure for table `department`
---
+CREATE TABLE QualificationModule (
+    qualificationModuleId INT AUTO_INCREMENT PRIMARY KEY,
+    qualificationId INT NOT NULL,
+    moduleId INT NOT NULL,
+    academicYear INT NOT NULL,
+    semesterNo INT NOT NULL,
+    isCompulsory BOOLEAN NOT NULL,
+    FOREIGN KEY (qualificationId) REFERENCES Qualification(qualificationId),
+    FOREIGN KEY (moduleId) REFERENCES Module(moduleId)
+);
 
-DROP TABLE IF EXISTS `department`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `department` (
-  `departmentId` int NOT NULL AUTO_INCREMENT,
-  `departmentName` varchar(50) NOT NULL,
-  `facultyId` int NOT NULL,
-  PRIMARY KEY (`departmentId`),
-  KEY `idx_faculty` (`facultyId`),
-  CONSTRAINT `department_ibfk_1` FOREIGN KEY (`facultyId`) REFERENCES `faculty` (`facultyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE StudentModule (
+    studentModuleId INT AUTO_INCREMENT PRIMARY KEY,
+    studentId INT NOT NULL,
+    moduleId INT NOT NULL,
+    FOREIGN KEY (studentId) REFERENCES Student(studentId),
+    FOREIGN KEY (moduleId) REFERENCES Module(moduleId),
+    UNIQUE KEY unique_student_module (studentId, moduleId)
+);
 
---
--- Table structure for table `faculty`
---
+CREATE TABLE LecturerModule (
+    lecturerModuleId INT AUTO_INCREMENT PRIMARY KEY,
+    lecturerId INT NOT NULL,
+    moduleId INT NOT NULL,
+    FOREIGN KEY (lecturerId) REFERENCES Lecturer(lecturerId),
+    FOREIGN KEY (moduleId) REFERENCES Module(moduleId),
+    UNIQUE KEY unique_lecturer_module (lecturerId, moduleId)
+);
 
-DROP TABLE IF EXISTS `faculty`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `faculty` (
-  `facultyId` int NOT NULL AUTO_INCREMENT,
-  `facultyName` varchar(100) NOT NULL,
-  PRIMARY KEY (`facultyId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE CoordinatorModule (
+    coordinatorModuleId INT AUTO_INCREMENT PRIMARY KEY,
+    coordinatorId INT NOT NULL,
+    moduleId INT NOT NULL,
+    FOREIGN KEY (coordinatorId) REFERENCES Coordinator(coordinatorId),
+    FOREIGN KEY (moduleId) REFERENCES Module(moduleId),
+    UNIQUE KEY unique_coordinator_module (coordinatorId, moduleId)
+);
 
---
--- Table structure for table `followup`
---
+CREATE TABLE Assessment (
+    assessmentId INT AUTO_INCREMENT PRIMARY KEY,
+    assessmentName VARCHAR(100) NOT NULL,
+    totalMark INT NOT NULL,
+    weighting DECIMAL(5,2) NOT NULL,
+    dueDate DATE NOT NULL,
+    createdAt DATETIME NOT NULL,
+    lecturerId INT NOT NULL,
+    moduleId INT NOT NULL,
+    FOREIGN KEY (lecturerId) REFERENCES Lecturer(lecturerId),
+    FOREIGN KEY (moduleId) REFERENCES Module(moduleId)
+);
 
-DROP TABLE IF EXISTS `followup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `followup` (
-  `followUpId` int NOT NULL AUTO_INCREMENT,
-  `interventionId` int NOT NULL,
-  `content` text NOT NULL,
-  `outcome` enum('IMPROVED','NO_CHANGE','WORSENED') NOT NULL,
-  `createdAt` datetime NOT NULL,
-  PRIMARY KEY (`followUpId`),
-  KEY `idx_intervention` (`interventionId`),
-  CONSTRAINT `followup_ibfk_1` FOREIGN KEY (`interventionId`) REFERENCES `intervention` (`interventionId`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE ClassSession (
+    sessionId INT AUTO_INCREMENT PRIMARY KEY,
+    classType VARCHAR(20) NOT NULL,
+    createdAt DATETIME NOT NULL,
+    expiresAt DATETIME NOT NULL,
+    attendanceCode VARCHAR(10),
+    lecturerId INT NOT NULL,
+    moduleId INT NOT NULL,
+    FOREIGN KEY (lecturerId) REFERENCES Lecturer(lecturerId),
+    FOREIGN KEY (moduleId) REFERENCES Module(moduleId)
+);
 
---
--- Table structure for table `hod`
---
+CREATE TABLE AttendanceRecord (
+    attendanceRecordId INT AUTO_INCREMENT PRIMARY KEY,
+    studentId INT NOT NULL,
+    sessionId INT NOT NULL,
+    FOREIGN KEY (studentId) REFERENCES Student(studentId),
+    FOREIGN KEY (sessionId) REFERENCES ClassSession(sessionId),
+    UNIQUE KEY unique_student_session (studentId, sessionId)
+);
 
-DROP TABLE IF EXISTS `hod`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `hod` (
-  `hodId` int NOT NULL,
-  `departmentId` int NOT NULL,
-  `staffNumber` varchar(20) NOT NULL,
-  PRIMARY KEY (`hodId`),
-  UNIQUE KEY `staffNumber` (`staffNumber`),
-  KEY `idx_department` (`departmentId`),
-  CONSTRAINT `hod_ibfk_1` FOREIGN KEY (`hodId`) REFERENCES `users` (`userId`),
-  CONSTRAINT `hod_ibfk_2` FOREIGN KEY (`departmentId`) REFERENCES `department` (`departmentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE MarkEntry (
+    markEntryId INT AUTO_INCREMENT PRIMARY KEY,
+    mark DECIMAL(5,2),
+    submission BOOLEAN DEFAULT FALSE,
+    dateSubmitted DATETIME,
+    studentId INT NOT NULL,
+    assessmentId INT NOT NULL,
+    FOREIGN KEY (studentId) REFERENCES Student(studentId),
+    FOREIGN KEY (assessmentId) REFERENCES Assessment(assessmentId),
+    UNIQUE KEY unique_student_assessment (studentId, assessmentId)
+);
 
---
--- Table structure for table `intervention`
---
+CREATE TABLE RiskReport (
+    riskReportId INT AUTO_INCREMENT PRIMARY KEY,
+    studentModuleId INT NOT NULL,
+    periodId INT NOT NULL,
+    riskLevel ENUM('LOW','MODERATE','HIGH') NOT NULL,
+    attendanceRate DECIMAL(5,2) NOT NULL,
+    submissionRate DECIMAL(5,2) NOT NULL,
+    averageMark DECIMAL(5,2) NOT NULL,
+    calculatedAt DATETIME NOT NULL,
+    FOREIGN KEY (studentModuleId) REFERENCES StudentModule(studentModuleId),
+    FOREIGN KEY (periodId) REFERENCES academicPeriod(periodId),
+    UNIQUE KEY unique_student_module_period (studentModuleId, periodId)
+);
 
-DROP TABLE IF EXISTS `intervention`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `intervention` (
-  `interventionId` int NOT NULL AUTO_INCREMENT,
-  `studentModuleId` int NOT NULL,
-  `coordinatorId` int NOT NULL,
-  `content` text NOT NULL,
-  `createdAt` datetime NOT NULL,
-  `status` enum('ACTIVE','FOLLOW_UP_DUE','CLOSED') NOT NULL,
-  PRIMARY KEY (`interventionId`),
-  KEY `idx_student_module` (`studentModuleId`),
-  KEY `idx_coordinator` (`coordinatorId`),
-  KEY `idx_status` (`status`),
-  CONSTRAINT `intervention_ibfk_1` FOREIGN KEY (`studentModuleId`) REFERENCES `studentmodule` (`studentModuleId`),
-  CONSTRAINT `intervention_ibfk_2` FOREIGN KEY (`coordinatorId`) REFERENCES `coordinator` (`coordinatorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Intervention (
+    interventionId INT AUTO_INCREMENT PRIMARY KEY,
+    studentModuleId INT NOT NULL,
+    coordinatorId INT NOT NULL,
+    content TEXT NOT NULL,
+    createdAt DATETIME NOT NULL,
+    status ENUM('ACTIVE','FOLLOW_UP_DUE','CLOSED') NOT NULL,
+    FOREIGN KEY (studentModuleId) REFERENCES StudentModule(studentModuleId),
+    FOREIGN KEY (coordinatorId) REFERENCES Coordinator(coordinatorId)
+);
 
---
--- Table structure for table `lecturer`
---
-
-DROP TABLE IF EXISTS `lecturer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `lecturer` (
-  `lecturerId` int NOT NULL,
-  `departmentId` int NOT NULL,
-  `staffNumber` varchar(20) NOT NULL,
-  PRIMARY KEY (`lecturerId`),
-  UNIQUE KEY `staffNumber` (`staffNumber`),
-  KEY `idx_department` (`departmentId`),
-  CONSTRAINT `lecturer_ibfk_1` FOREIGN KEY (`lecturerId`) REFERENCES `users` (`userId`),
-  CONSTRAINT `lecturer_ibfk_2` FOREIGN KEY (`departmentId`) REFERENCES `department` (`departmentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `lecturermodule`
---
-
-DROP TABLE IF EXISTS `lecturermodule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `lecturermodule` (
-  `lecturerModuleId` int NOT NULL AUTO_INCREMENT,
-  `lecturerId` int NOT NULL,
-  `moduleId` int NOT NULL,
-  PRIMARY KEY (`lecturerModuleId`),
-  UNIQUE KEY `unique_lecturer_module` (`lecturerId`,`moduleId`),
-  KEY `idx_lecturer` (`lecturerId`),
-  KEY `idx_module` (`moduleId`),
-  CONSTRAINT `lecturermodule_ibfk_1` FOREIGN KEY (`lecturerId`) REFERENCES `lecturer` (`lecturerId`),
-  CONSTRAINT `lecturermodule_ibfk_2` FOREIGN KEY (`moduleId`) REFERENCES `module` (`moduleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `markentry`
---
-
-DROP TABLE IF EXISTS `markentry`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `markentry` (
-  `markEntryId` int NOT NULL AUTO_INCREMENT,
-  `mark` decimal(5,2) DEFAULT NULL,
-  `submission` tinyint(1) NOT NULL DEFAULT '0',
-  `dateSubmitted` datetime DEFAULT NULL,
-  `studentId` int NOT NULL,
-  `assessmentId` int NOT NULL,
-  PRIMARY KEY (`markEntryId`),
-  UNIQUE KEY `unique_student_assessment` (`studentId`,`assessmentId`),
-  KEY `idx_student` (`studentId`),
-  KEY `idx_assessment` (`assessmentId`),
-  KEY `idx_submission` (`submission`),
-  CONSTRAINT `markentry_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `student` (`studentId`),
-  CONSTRAINT `markentry_ibfk_2` FOREIGN KEY (`assessmentId`) REFERENCES `assessment` (`assessmentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `module`
---
-
-DROP TABLE IF EXISTS `module`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `module` (
-  `moduleId` int NOT NULL AUTO_INCREMENT,
-  `moduleName` varchar(100) NOT NULL,
-  `moduleCode` varchar(20) NOT NULL,
-  `credits` int NOT NULL,
-  `departmentId` int NOT NULL,
-  PRIMARY KEY (`moduleId`),
-  UNIQUE KEY `moduleCode` (`moduleCode`),
-  KEY `idx_code` (`moduleCode`),
-  KEY `idx_department` (`departmentId`),
-  CONSTRAINT `module_ibfk_1` FOREIGN KEY (`departmentId`) REFERENCES `department` (`departmentId`),
-  CONSTRAINT `module_chk_1` CHECK ((`credits` > 0))
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `qualification`
---
-
-DROP TABLE IF EXISTS `qualification`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `qualification` (
-  `qualificationId` int NOT NULL AUTO_INCREMENT,
-  `qualificationName` varchar(100) NOT NULL,
-  `qualificationCode` varchar(20) NOT NULL,
-  `duration` int NOT NULL,
-  `totalCredits` int NOT NULL,
-  `departmentId` int NOT NULL,
-  PRIMARY KEY (`qualificationId`),
-  UNIQUE KEY `qualificationCode` (`qualificationCode`),
-  KEY `idx_department` (`departmentId`),
-  KEY `idx_code` (`qualificationCode`),
-  CONSTRAINT `qualification_ibfk_1` FOREIGN KEY (`departmentId`) REFERENCES `department` (`departmentId`),
-  CONSTRAINT `qualification_chk_1` CHECK ((`duration` > 0)),
-  CONSTRAINT `qualification_chk_2` CHECK ((`totalCredits` > 0))
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `qualificationmodule`
---
-
-DROP TABLE IF EXISTS `qualificationmodule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `qualificationmodule` (
-  `qualificationModuleId` int NOT NULL AUTO_INCREMENT,
-  `qualificationId` int NOT NULL,
-  `moduleId` int NOT NULL,
-  `academicYear` int NOT NULL,
-  `semesterNo` int NOT NULL,
-  `isCompulsory` tinyint(1) NOT NULL,
-  PRIMARY KEY (`qualificationModuleId`),
-  KEY `idx_qualification` (`qualificationId`),
-  KEY `idx_module` (`moduleId`),
-  CONSTRAINT `qualificationmodule_ibfk_1` FOREIGN KEY (`qualificationId`) REFERENCES `qualification` (`qualificationId`),
-  CONSTRAINT `qualificationmodule_ibfk_2` FOREIGN KEY (`moduleId`) REFERENCES `module` (`moduleId`),
-  CONSTRAINT `qualificationmodule_chk_1` CHECK ((`academicYear` > 0)),
-  CONSTRAINT `qualificationmodule_chk_2` CHECK ((`semesterNo` > 0))
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `riskreport`
---
-
-DROP TABLE IF EXISTS `riskreport`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `riskreport` (
-  `riskReportId` int NOT NULL AUTO_INCREMENT,
-  `studentModuleId` int NOT NULL,
-  `riskLevel` enum('LOW','MODERATE','HIGH') NOT NULL,
-  `attendanceRate` decimal(5,2) NOT NULL,
-  `submissionRate` decimal(5,2) NOT NULL,
-  `averageMark` decimal(5,2) NOT NULL,
-  `calculatedAt` datetime NOT NULL,
-  PRIMARY KEY (`riskReportId`),
-  KEY `idx_student_module` (`studentModuleId`),
-  KEY `idx_calculated` (`calculatedAt`),
-  CONSTRAINT `riskreport_ibfk_1` FOREIGN KEY (`studentModuleId`) REFERENCES `studentmodule` (`studentModuleId`),
-  CONSTRAINT `riskreport_chk_1` CHECK (((`attendanceRate` >= 0) and (`attendanceRate` <= 100))),
-  CONSTRAINT `riskreport_chk_2` CHECK (((`submissionRate` >= 0) and (`submissionRate` <= 100))),
-  CONSTRAINT `riskreport_chk_3` CHECK (((`averageMark` >= 0) and (`averageMark` <= 100)))
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `student`
---
-
-DROP TABLE IF EXISTS `student`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `student` (
-  `studentId` int NOT NULL,
-  `studentNumber` varchar(20) NOT NULL,
-  `levelOfEducation` varchar(20) DEFAULT NULL,
-  `yearOfStudy` int NOT NULL,
-  `qualificationId` int NOT NULL,
-  PRIMARY KEY (`studentId`),
-  UNIQUE KEY `studentNumber` (`studentNumber`),
-  KEY `idx_student_number` (`studentNumber`),
-  KEY `idx_qualification` (`qualificationId`),
-  CONSTRAINT `student_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `users` (`userId`),
-  CONSTRAINT `student_ibfk_2` FOREIGN KEY (`qualificationId`) REFERENCES `qualification` (`qualificationId`),
-  CONSTRAINT `student_chk_1` CHECK ((`yearOfStudy` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `studentmodule`
---
-
-DROP TABLE IF EXISTS `studentmodule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `studentmodule` (
-  `studentModuleId` int NOT NULL AUTO_INCREMENT,
-  `studentId` int NOT NULL,
-  `moduleId` int NOT NULL,
-  PRIMARY KEY (`studentModuleId`),
-  UNIQUE KEY `unique_student_module` (`studentId`,`moduleId`),
-  KEY `idx_student` (`studentId`),
-  KEY `idx_module` (`moduleId`),
-  CONSTRAINT `studentmodule_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `student` (`studentId`),
-  CONSTRAINT `studentmodule_ibfk_2` FOREIGN KEY (`moduleId`) REFERENCES `module` (`moduleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `userroles`
---
-
-DROP TABLE IF EXISTS `userroles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `userroles` (
-  `userRoleId` int NOT NULL AUTO_INCREMENT,
-  `userId` int NOT NULL,
-  `userRole` enum('ADMIN','HOD','LECTURER','COORDINATOR','STUDENT') NOT NULL,
-  PRIMARY KEY (`userRoleId`),
-  UNIQUE KEY `unique_user_role` (`userId`,`userRole`),
-  KEY `idx_role` (`userRole`),
-  CONSTRAINT `userroles_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `userId` int NOT NULL AUTO_INCREMENT,
-  `firstName` varchar(50) NOT NULL,
-  `lastName` varchar(50) NOT NULL,
-  `title` varchar(10) DEFAULT NULL,
-  `emailAddress` varchar(100) NOT NULL,
-  `userPassword` varchar(255) NOT NULL,
-  `contactNo` varchar(15) DEFAULT NULL,
-  `isActive` tinyint(1) NOT NULL DEFAULT '1',
-  `dateRegistered` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `gender` varchar(20) DEFAULT NULL,
-  `idNumber` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`userId`),
-  UNIQUE KEY `emailAddress` (`emailAddress`),
-  KEY `idx_email` (`emailAddress`),
-  KEY `idx_active` (`isActive`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-12-29  9:17:31
+CREATE TABLE FollowUp (
+    followUpId INT AUTO_INCREMENT PRIMARY KEY,
+    interventionId INT NOT NULL,
+    content TEXT NOT NULL,
+    outcome ENUM('IMPROVED','NO_CHANGE','WORSENED') NOT NULL,
+    createdAt DATETIME NOT NULL,
+    FOREIGN KEY (interventionId) REFERENCES Intervention(interventionId)
+);
