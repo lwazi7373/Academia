@@ -395,9 +395,75 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
     }
 };
 
+/**
+ * Get the top 3 upcoming assessments for a student across all their modules
+ * Returns assessments with the closest due dates that haven't passed yet
+ * @param {number} studentId - The ID of the student
+ * @returns {Array} Array of up to 3 assessment objects ordered by due date (earliest first)
+ * @throws {Error} If database error occurs
+ * TO NOTE:
+ * - Only returns assessments with future due dates (dueDate >= current date)
+ * - Includes module information for context
+ * - Shows submission status for each assessment
+ * - Limited to 3 most urgent assessments
+ */
+const getUpcomingAssessments = async (studentId) => {
+    try {
+        // Query to get the 3 nearest upcoming assessments across all student's modules
+        const [assessments] = await connectDB.execute(
+            `SELECT 
+                a.assessmentId,
+                a.assessmentName,
+                a.totalMark,
+                a.weighting,
+                a.dueDate,
+                m.moduleId,
+                m.moduleName,
+                m.moduleCode,
+                me.mark AS studentMark,
+                me.submission,
+                me.dateSubmitted,
+                DATEDIFF(a.dueDate, CURDATE()) AS daysUntilDue
+             FROM Assessment a
+             INNER JOIN Module m ON a.moduleId = m.moduleId
+             INNER JOIN StudentModule sm ON m.moduleId = sm.moduleId
+             LEFT JOIN MarkEntry me ON a.assessmentId = me.assessmentId 
+                AND me.studentId = ?
+             WHERE sm.studentId = ?
+                AND a.dueDate >= CURDATE()
+             ORDER BY a.dueDate ASC
+             LIMIT 3`,
+            [studentId, studentId]
+        );
+
+        // Format the response into an array of assessment objects
+        return assessments.map(assessment => ({
+            assessmentId: assessment.assessmentId,
+            assessmentName: assessment.assessmentName,
+            totalMark: assessment.totalMark,
+            weighting: assessment.weighting,
+            dueDate: assessment.dueDate,
+            daysUntilDue: assessment.daysUntilDue,
+            module: {
+                moduleId: assessment.moduleId,
+                moduleName: assessment.moduleName,
+                moduleCode: assessment.moduleCode
+            },
+            studentMark: assessment.studentMark || null,
+            submission: assessment.submission || false,
+            dateSubmitted: assessment.dateSubmitted || null
+        }));
+
+    } catch (error) {
+        console.error('Error getting upcoming assessments:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getStudentModuleAssessments,
     getLecturerModuleAssessments,
+    getUpcomingAssessments,
     createAssessment,
     updateAssessment,
     deleteAssessment,
