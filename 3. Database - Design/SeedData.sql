@@ -1,324 +1,776 @@
-use academia;
+-- Academia Database Seed Data
+-- Academic Year 2025-2026
 
--- Insert Faculties (2)
+USE Academia;
+
+-- ============================================
+-- FACULTY DATA
+-- ============================================
 INSERT INTO Faculty (facultyName) VALUES
-('Faculty of Engineering and Technology'),
-('Faculty of Business and Management Sciences');
+('Faculty of Engineering and the Built Environment'),
+('Faculty of Science'),
+('Faculty of Commerce, Law and Management'),
+('Faculty of Health Sciences');
 
--- Insert Departments (4)
+-- ============================================
+-- DEPARTMENT DATA
+-- ============================================
 INSERT INTO Department (departmentName, facultyId) VALUES
-('Department of Civil Engineering', 1),
-('Department of Electrical Engineering', 1),
-('Department of Accounting', 2),
-('Department of Business Management', 2);
+-- Engineering Departments
+('Computer Science', 1),
+('Electrical Engineering', 1),
+('Civil Engineering', 1),
+('Mechanical Engineering', 1),
+-- Science Departments
+('Mathematics', 2),
+('Physics', 2),
+('Chemistry', 2),
+('Biological Sciences', 2),
+-- Commerce Departments
+('Accounting', 3),
+('Business Management', 3),
+('Economics', 3),
+-- Health Sciences Departments
+('Nursing', 4),
+('Physiotherapy', 4);
 
--- Insert Users (10 Students, 3 Lecturers, 2 Coordinators, 1 HOD, 1 Admin = 17 total)
-INSERT INTO Users (firstName, lastName, title, emailAddress, userPassword, contactNo, gender, idNumber) VALUES
--- Admin
-('Admin', 'System', 'Mr', 'admin@academia.ac.za', '$2y$10$hashedpassword', '0111234567', 'Male', '8501011234081'),
-
--- Lecturers (3)
-('John', 'Smith', 'Dr', 'john.smith@academia.ac.za', '$2y$10$hashedpassword', '0112345678', 'Male', '7502151234082'),
-('Sarah', 'Johnson', 'Prof', 'sarah.johnson@academia.ac.za', '$2y$10$hashedpassword', '0113456789', 'Female', '7803301234083'),
-('David', 'Brown', 'Mr', 'david.brown@academia.ac.za', '$2y$10$hashedpassword', '0114567890', 'Male', '8205121234084'),
-
--- Coordinators (2)
-('Michael', 'Wilson', 'Dr', 'michael.wilson@academia.ac.za', '$2y$10$hashedpassword', '0115678901', 'Male', '7607081234085'),
-('Emily', 'Davis', 'Ms', 'emily.davis@academia.ac.za', '$2y$10$hashedpassword', '0116789012', 'Female', '8311221234086'),
-
--- HOD (1)
-('Robert', 'Taylor', 'Prof', 'robert.taylor@academia.ac.za', '$2y$10$hashedpassword', '0117890123', 'Male', '7104091234087'),
-
--- Students (10)
-('James', 'Miller', 'Mr', 'james.miller@student.academia.ac.za', '$2y$10$hashedpassword', '0821112222', 'Male', '0101011234088'),
-('Sophia', 'Anderson', 'Ms', 'sophia.anderson@student.academia.ac.za', '$2y$10$hashedpassword', '0822223333', 'Female', '0102021234089'),
-('William', 'Thomas', 'Mr', 'william.thomas@student.academia.ac.za', '$2y$10$hashedpassword', '0823334444', 'Male', '0103031234090'),
-('Olivia', 'Jackson', 'Ms', 'olivia.jackson@student.academia.ac.za', '$2y$10$hashedpassword', '0824445555', 'Female', '0104041234091'),
-('Benjamin', 'White', 'Mr', 'benjamin.white@student.academia.ac.za', '$2y$10$hashedpassword', '0825556666', 'Male', '0105051234092'),
-('Emma', 'Harris', 'Ms', 'emma.harris@student.academia.ac.za', '$2y$10$hashedpassword', '0826667777', 'Female', '0106061234093'),
-('Daniel', 'Martin', 'Mr', 'daniel.martin@student.academia.ac.za', '$2y$10$hashedpassword', '0827778888', 'Male', '0107071234094'),
-('Ava', 'Thompson', 'Ms', 'ava.thompson@student.academia.ac.za', '$2y$10$hashedpassword', '0828889999', 'Female', '0108081234095'),
-('Matthew', 'Garcia', 'Mr', 'matthew.garcia@student.academia.ac.za', '$2y$10$hashedpassword', '0829990000', 'Male', '0109091234096'),
-('Isabella', 'Martinez', 'Ms', 'isabella.martinez@student.academia.ac.za', '$2y$10$hashedpassword', '0820001111', 'Female', '0110101234097');
-
--- Insert UserRoles
-INSERT INTO UserRoles (userId, userRole) VALUES
-(1, 'ADMIN'),
-(2, 'LECTURER'),
-(3, 'LECTURER'),
-(4, 'LECTURER'),
-(5, 'COORDINATOR'),
-(6, 'COORDINATOR'),
-(7, 'HOD'),
-(8, 'STUDENT'),
-(9, 'STUDENT'),
-(10, 'STUDENT'),
-(11, 'STUDENT'),
-(12, 'STUDENT'),
-(13, 'STUDENT'),
-(14, 'STUDENT'),
-(15, 'STUDENT'),
-(16, 'STUDENT'),
-(17, 'STUDENT');
-
--- Insert Qualifications (2)
+-- ============================================
+-- QUALIFICATION DATA
+-- ============================================
 INSERT INTO Qualification (qualificationName, qualificationCode, duration, totalCredits, departmentId) VALUES
-('Bachelor of Engineering in Civil Engineering', 'BENGCE', 4, 480, 1),
-('Bachelor of Commerce in Accounting', 'BCOMACC', 3, 360, 3);
+('Bachelor of Science in Computer Science', 'BSCS', 3, 360, 1),
+('Bachelor of Science in Electrical Engineering', 'BSEE', 4, 480, 2),
+('Bachelor of Science in Mathematics', 'BSMATH', 3, 360, 5),
+('Bachelor of Commerce in Accounting', 'BCOM-ACC', 3, 360, 9),
+('Bachelor of Science in Nursing', 'BSNURS', 4, 480, 12);
 
--- Insert Modules (6)
-INSERT INTO Module (moduleName, moduleCode, credits, departmentId) VALUES
--- Civil Engineering modules
-('Structural Analysis', 'CIV101', 15, 1),
-('Geotechnical Engineering', 'CIV102', 15, 1),
-('Construction Management', 'CIV201', 15, 1),
-
--- Electrical Engineering modules
-('Circuit Theory', 'ELE101', 15, 2),
-('Digital Systems', 'ELE102', 15, 2),
-
--- Accounting module
-('Financial Accounting', 'ACC101', 15, 3);
-
--- Insert QualificationModule
-INSERT INTO QualificationModule (qualificationId, moduleId, academicYear, semesterNo, isCompulsory) VALUES
-(1, 1, 2025, 1, TRUE),  -- Civil Eng: Structural Analysis
-(1, 2, 2025, 1, TRUE),  -- Civil Eng: Geotechnical Engineering
-(1, 3, 2025, 2, TRUE),  -- Civil Eng: Construction Management
-(1, 4, 2025, 1, TRUE),  -- Civil Eng: Circuit Theory (service module)
-(2, 5, 2025, 1, TRUE),  -- Accounting: Digital Systems (service module)
-(2, 6, 2025, 1, TRUE);  -- Accounting: Financial Accounting
-
--- Insert Academic Period (only one active)
+-- ============================================
+-- ACADEMIC PERIODS
+-- ============================================
 INSERT INTO academicPeriod (academicYear, semesterNo, startDate, endDate, isActive) VALUES
-(2025, 1, '2025-02-01', '2025-06-30', TRUE),
-(2025, 2, '2025-07-15', '2025-11-30', FALSE);
+(2024, 1, '2024-02-01', '2024-06-30', FALSE),
+(2024, 2, '2024-07-15', '2024-11-30', FALSE),
+(2025, 1, '2025-02-01', '2025-06-30', FALSE),
+(2025, 2, '2025-07-15', '2025-11-30', TRUE),  -- ACTIVE PERIOD
+(2026, 1, '2026-02-01', '2026-06-30', FALSE);
 
--- Insert Student records
-INSERT INTO Student (studentId, studentNumber, levelOfEducation, yearOfStudy, qualificationId) VALUES
-(8, 'STU2025001', 'Undergraduate', 1, 1),
-(9, 'STU2025002', 'Undergraduate', 1, 1),
-(10, 'STU2025003', 'Undergraduate', 1, 1),
-(11, 'STU2025004', 'Undergraduate', 1, 1),
-(12, 'STU2025005', 'Undergraduate', 1, 1),
-(13, 'STU2025006', 'Undergraduate', 1, 2),
-(14, 'STU2025007', 'Undergraduate', 1, 2),
-(15, 'STU2025008', 'Undergraduate', 1, 2),
-(16, 'STU2025009', 'Undergraduate', 1, 2),
-(17, 'STU2025010', 'Undergraduate', 1, 2);
+-- ============================================
+-- USERS DATA (Students, Lecturers, Coordinators, HODs, Admin)
+-- ============================================
 
--- Insert Lecturer records
-INSERT INTO Lecturer (lecturerId, staffNumber, departmentId) VALUES
-(2, 'STF2025001', 1),  -- John Smith - Civil Engineering
-(3, 'STF2025002', 2),  -- Sarah Johnson - Electrical Engineering
-(4, 'STF2025003', 3);  -- David Brown - Accounting
+-- Admin Users
+INSERT INTO Users (firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, gender, idNumber) VALUES
+('Sarah', 'Johnson', 'Dr', 'sarah.johnson@academia.ac.za', 'hashed_password_1', '0821234567', TRUE, 'Female', '8505120234567'),
+('Michael', 'Chen', 'Prof', 'michael.chen@academia.ac.za', 'hashed_password_2', '0827654321', TRUE, 'Male', '7803150345678');
 
--- Insert Coordinator records
-INSERT INTO Coordinator (coordinatorId, staffNumber, departmentId) VALUES
-(5, 'STF2025004', 1),  -- Michael Wilson - Civil Engineering
-(6, 'STF2025005', 3);  -- Emily Davis - Accounting
+-- HOD Users
+INSERT INTO Users (firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, gender, idNumber) VALUES
+('David', 'Nkosi', 'Prof', 'david.nkosi@academia.ac.za', 'hashed_password_3', '0831234567', TRUE, 'Male', '7209080456789'),
+('Linda', 'van der Merwe', 'Dr', 'linda.vandermerwe@academia.ac.za', 'hashed_password_4', '0834567890', TRUE, 'Female', '7811230567890'),
+('James', 'Mbeki', 'Prof', 'james.mbeki@academia.ac.za', 'hashed_password_5', '0837654321', TRUE, 'Male', '7504140678901'),
+('Patricia', 'Smith', 'Dr', 'patricia.smith@academia.ac.za', 'hashed_password_6', '0839876543', TRUE, 'Female', '8006250789012');
 
--- Insert HOD record
+-- Coordinator Users
+INSERT INTO Users (firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, gender, idNumber) VALUES
+('Robert', 'Botha', 'Dr', 'robert.botha@academia.ac.za', 'hashed_password_7', '0841234567', TRUE, 'Male', '8107080890123'),
+('Nomsa', 'Dlamini', 'Dr', 'nomsa.dlamini@academia.ac.za', 'hashed_password_8', '0845678901', TRUE, 'Female', '8309150901234'),
+('Peter', 'Williams', 'Dr', 'peter.williams@academia.ac.za', 'hashed_password_9', '0848765432', TRUE, 'Male', '7906200012345'),
+('Thandi', 'Mthembu', 'Dr', 'thandi.mthembu@academia.ac.za', 'hashed_password_10', '0842345678', TRUE, 'Female', '8512100123456');
+
+-- Lecturer Users
+INSERT INTO Users (firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, gender, idNumber) VALUES
+('John', 'Patel', 'Mr', 'john.patel@academia.ac.za', 'hashed_password_11', '0851234567', TRUE, 'Male', '8808120234567'),
+('Mary', 'Ndlovu', 'Ms', 'mary.ndlovu@academia.ac.za', 'hashed_password_12', '0854567890', TRUE, 'Female', '9002180345678'),
+('Ahmed', 'Hassan', 'Dr', 'ahmed.hassan@academia.ac.za', 'hashed_password_13', '0857654321', TRUE, 'Male', '8605050456789'),
+('Susan', 'Khumalo', 'Ms', 'susan.khumalo@academia.ac.za', 'hashed_password_14', '0859876543', TRUE, 'Female', '9104120567890'),
+('Thomas', 'Brown', 'Mr', 'thomas.brown@academia.ac.za', 'hashed_password_15', '0852345678', TRUE, 'Male', '8711250678901'),
+('Rachel', 'Zulu', 'Dr', 'rachel.zulu@academia.ac.za', 'hashed_password_16', '0856789012', TRUE, 'Female', '8903080789012'),
+('Daniel', 'Coetzee', 'Mr', 'daniel.coetzee@academia.ac.za', 'hashed_password_17', '0853456789', TRUE, 'Male', '9006150890123'),
+('Jennifer', 'Sithole', 'Ms', 'jennifer.sithole@academia.ac.za', 'hashed_password_18', '0858901234', TRUE, 'Female', '9108200901234');
+
+-- Student Users (15 students with varied profiles)
+INSERT INTO Users (firstName, lastName, title, emailAddress, userPassword, contactNo, isActive, gender, idNumber) VALUES
+('Sipho', 'Mahlangu', 'Mr', 'sipho.mahlangu@student.academia.ac.za', 'hashed_password_19', '0731234567', TRUE, 'Male', '0301150123456'),
+('Lerato', 'Mokoena', 'Ms', 'lerato.mokoena@student.academia.ac.za', 'hashed_password_20', '0734567890', TRUE, 'Female', '0405200234567'),
+('Thabo', 'Radebe', 'Mr', 'thabo.radebe@student.academia.ac.za', 'hashed_password_21', '0737654321', TRUE, 'Male', '0308100345678'),
+('Zanele', 'Ntuli', 'Ms', 'zanele.ntuli@student.academia.ac.za', 'hashed_password_22', '0739876543', TRUE, 'Female', '0506250456789'),
+('Lungile', 'Shabangu', 'Mr', 'lungile.shabangu@student.academia.ac.za', 'hashed_password_23', '0732345678', TRUE, 'Male', '0407050567890'),
+('Precious', 'Ndaba', 'Ms', 'precious.ndaba@student.academia.ac.za', 'hashed_password_24', '0736789012', TRUE, 'Female', '0509120678901'),
+('Mandla', 'Kgomo', 'Mr', 'mandla.kgomo@student.academia.ac.za', 'hashed_password_25', '0733456789', TRUE, 'Male', '0402150789012'),
+('Nosipho', 'Cele', 'Ms', 'nosipho.cele@student.academia.ac.za', 'hashed_password_26', '0738901234', TRUE, 'Female', '0510200890123'),
+('Bongani', 'Vilakazi', 'Mr', 'bongani.vilakazi@student.academia.ac.za', 'hashed_password_27', '0735678901', TRUE, 'Male', '0311080901234'),
+('Noluthando', 'Buthelezi', 'Ms', 'noluthando.buthelezi@student.academia.ac.za', 'hashed_password_28', '0741234567', TRUE, 'Female', '0412100012345'),
+('Sibusiso', 'Dube', 'Mr', 'sibusiso.dube@student.academia.ac.za', 'hashed_password_29', '0744567890', TRUE, 'Male', '0306150123456'),
+('Thembisile', 'Ngwenya', 'Ms', 'thembisile.ngwenya@student.academia.ac.za', 'hashed_password_30', '0747654321', TRUE, 'Female', '0508200234567'),
+('Kagiso', 'Molefe', 'Mr', 'kagiso.molefe@student.academia.ac.za', 'hashed_password_31', '0749876543', TRUE, 'Male', '0410050345678'),
+('Ayanda', 'Nkosi', 'Ms', 'ayanda.nkosi@student.academia.ac.za', 'hashed_password_32', '0742345678', TRUE, 'Female', '0501120456789'),
+('Mthokozisi', 'Zwane', 'Mr', 'mthokozisi.zwane@student.academia.ac.za', 'hashed_password_33', '0746789012', TRUE, 'Male', '0403180567890');
+
+-- ============================================
+-- USER ROLES
+-- ============================================
+INSERT INTO UserRoles (userId, userRole) VALUES
+-- Admins
+(1, 'ADMIN'),
+(2, 'ADMIN'),
+-- HODs
+(3, 'HOD'),
+(4, 'HOD'),
+(5, 'HOD'),
+(6, 'HOD'),
+-- Coordinators
+(7, 'COORDINATOR'),
+(8, 'COORDINATOR'),
+(9, 'COORDINATOR'),
+(10, 'COORDINATOR'),
+-- Lecturers
+(11, 'LECTURER'),
+(12, 'LECTURER'),
+(13, 'LECTURER'),
+(14, 'LECTURER'),
+(15, 'LECTURER'),
+(16, 'LECTURER'),
+(17, 'LECTURER'),
+(18, 'LECTURER'),
+-- Students
+(19, 'STUDENT'),
+(20, 'STUDENT'),
+(21, 'STUDENT'),
+(22, 'STUDENT'),
+(23, 'STUDENT'),
+(24, 'STUDENT'),
+(25, 'STUDENT'),
+(26, 'STUDENT'),
+(27, 'STUDENT'),
+(28, 'STUDENT'),
+(29, 'STUDENT'),
+(30, 'STUDENT'),
+(31, 'STUDENT'),
+(32, 'STUDENT'),
+(33, 'STUDENT');
+
+-- ============================================
+-- HOD ASSIGNMENTS
+-- ============================================
 INSERT INTO HOD (hodId, staffNumber, departmentId) VALUES
-(7, 'STF2025006', 1);  -- Robert Taylor - Civil Engineering
+(3, 'STF2020001', 1),  -- Computer Science
+(4, 'STF2020002', 5),  -- Mathematics
+(5, 'STF2021001', 9),  -- Accounting
+(6, 'STF2021002', 12); -- Nursing
 
--- Insert StudentModule (assign students to their modules based on qualification)
-INSERT INTO StudentModule (studentId, moduleId) VALUES
--- Civil Engineering students (first 5) take CIV101, CIV102, ELE101
-(8, 1), (8, 2), (8, 4),
-(9, 1), (9, 2), (9, 4),
-(10, 1), (10, 2), (10, 4),
-(11, 1), (11, 2), (11, 4),
-(12, 1), (12, 2), (12, 4),
+-- ============================================
+-- COORDINATOR ASSIGNMENTS
+-- ============================================
+INSERT INTO Coordinator (coordinatorId, staffNumber, departmentId) VALUES
+(7, 'STF2022001', 1),  -- Computer Science
+(8, 'STF2022002', 5),  -- Mathematics
+(9, 'STF2023001', 9),  -- Accounting
+(10, 'STF2023002', 12); -- Nursing
 
--- Accounting students (last 5) take ACC101, ELE102
-(13, 5), (13, 6),
-(14, 5), (14, 6),
-(15, 5), (15, 6),
-(16, 5), (16, 6),
-(17, 5), (17, 6);
+-- ============================================
+-- LECTURER ASSIGNMENTS
+-- ============================================
+INSERT INTO Lecturer (lecturerId, staffNumber, departmentId) VALUES
+(11, 'STF2024001', 1),  -- Computer Science
+(12, 'STF2024002', 1),  -- Computer Science
+(13, 'STF2024003', 5),  -- Mathematics
+(14, 'STF2024004', 5),  -- Mathematics
+(15, 'STF2025001', 9),  -- Accounting
+(16, 'STF2025002', 9),  -- Accounting
+(17, 'STF2025003', 12), -- Nursing
+(18, 'STF2025004', 12); -- Nursing
 
--- Insert LecturerModule
+-- ============================================
+-- STUDENT ASSIGNMENTS
+-- ============================================
+INSERT INTO Student (studentId, studentNumber, levelOfEducation, yearOfStudy, qualificationId) VALUES
+-- Computer Science Students (varied year levels)
+(19, 'STU2023001', 'Undergraduate', 3, 1),
+(20, 'STU2024001', 'Undergraduate', 2, 1),
+(21, 'STU2024002', 'Undergraduate', 2, 1),
+(22, 'STU2025001', 'Undergraduate', 1, 1),
+-- Mathematics Students
+(23, 'STU2023002', 'Undergraduate', 3, 3),
+(24, 'STU2024003', 'Undergraduate', 2, 3),
+(25, 'STU2025002', 'Undergraduate', 1, 3),
+-- Accounting Students
+(26, 'STU2023003', 'Undergraduate', 3, 4),
+(27, 'STU2024004', 'Undergraduate', 2, 4),
+(28, 'STU2025003', 'Undergraduate', 1, 4),
+-- Nursing Students
+(29, 'STU2022001', 'Undergraduate', 4, 5),
+(30, 'STU2023004', 'Undergraduate', 3, 5),
+(31, 'STU2024005', 'Undergraduate', 2, 5),
+(32, 'STU2025004', 'Undergraduate', 1, 5),
+(33, 'STU2025005', 'Undergraduate', 1, 5);
+
+-- ============================================
+-- MODULE DATA
+-- ============================================
+INSERT INTO Module (moduleName, moduleCode, credits, departmentId) VALUES
+-- Computer Science Modules
+('Programming Fundamentals', 'CSC101', 15, 1),
+('Data Structures and Algorithms', 'CSC201', 15, 1),
+('Database Systems', 'CSC202', 15, 1),
+('Software Engineering', 'CSC301', 20, 1),
+('Artificial Intelligence', 'CSC302', 20, 1),
+-- Mathematics Modules
+('Calculus I', 'MAT101', 15, 5),
+('Linear Algebra', 'MAT102', 15, 5),
+('Statistics', 'MAT201', 15, 5),
+('Abstract Algebra', 'MAT301', 20, 5),
+-- Accounting Modules
+('Financial Accounting I', 'ACC101', 15, 9),
+('Management Accounting', 'ACC201', 15, 9),
+('Taxation', 'ACC202', 15, 9),
+('Auditing', 'ACC301', 20, 9),
+-- Nursing Modules
+('Anatomy and Physiology', 'NUR101', 20, 12),
+('Fundamentals of Nursing', 'NUR102', 20, 12),
+('Pharmacology', 'NUR201', 20, 12),
+('Clinical Practice', 'NUR301', 25, 12);
+
+-- ============================================
+-- QUALIFICATION MODULES
+-- ============================================
+INSERT INTO QualificationModule (qualificationId, moduleId, academicYear, semesterNo, isCompulsory) VALUES
+-- Computer Science Curriculum
+(1, 1, 1, 1, TRUE),  -- Programming Fundamentals
+(1, 2, 2, 1, TRUE),  -- Data Structures
+(1, 3, 2, 2, TRUE),  -- Database Systems
+(1, 4, 3, 1, TRUE),  -- Software Engineering
+(1, 5, 3, 2, FALSE), -- AI (elective)
+-- Mathematics Curriculum
+(3, 6, 1, 1, TRUE),  -- Calculus I
+(3, 7, 1, 2, TRUE),  -- Linear Algebra
+(3, 8, 2, 1, TRUE),  -- Statistics
+(3, 9, 3, 1, TRUE),  -- Abstract Algebra
+-- Accounting Curriculum
+(4, 10, 1, 1, TRUE), -- Financial Accounting I
+(4, 11, 2, 1, TRUE), -- Management Accounting
+(4, 12, 2, 2, TRUE), -- Taxation
+(4, 13, 3, 1, TRUE), -- Auditing
+-- Nursing Curriculum
+(5, 14, 1, 1, TRUE), -- Anatomy
+(5, 15, 1, 2, TRUE), -- Fundamentals
+(5, 16, 2, 1, TRUE), -- Pharmacology
+(5, 17, 3, 1, TRUE); -- Clinical Practice
+
+-- ============================================
+-- LECTURER MODULE ASSIGNMENTS
+-- ============================================
 INSERT INTO LecturerModule (lecturerId, moduleId) VALUES
-(2, 1),  -- John Smith teaches Structural Analysis
-(2, 2),  -- John Smith teaches Geotechnical Engineering
-(2, 3),  -- John Smith teaches Construction Management
-(3, 4),  -- Sarah Johnson teaches Circuit Theory
-(3, 5),  -- Sarah Johnson teaches Digital Systems
-(4, 6);  -- David Brown teaches Financial Accounting
+-- Computer Science Lecturers
+(11, 1), (11, 2),  -- John Patel
+(12, 3), (12, 4),  -- Mary Ndlovu
+-- Mathematics Lecturers
+(13, 6), (13, 8),  -- Ahmed Hassan
+(14, 7), (14, 9),  -- Susan Khumalo
+-- Accounting Lecturers
+(15, 10), (15, 11), -- Thomas Brown
+(16, 12), (16, 13), -- Rachel Zulu
+-- Nursing Lecturers
+(17, 14), (17, 15), -- Daniel Coetzee
+(18, 16), (18, 17); -- Jennifer Sithole
 
--- Insert CoordinatorModule
+-- ============================================
+-- COORDINATOR MODULE ASSIGNMENTS
+-- ============================================
 INSERT INTO CoordinatorModule (coordinatorId, moduleId) VALUES
-(5, 1),  -- Michael Wilson coordinates Structural Analysis
-(5, 2),  -- Michael Wilson coordinates Geotechnical Engineering
-(5, 3),  -- Michael Wilson coordinates Construction Management
-(6, 6);  -- Emily Davis coordinates Financial Accounting
+-- Computer Science Coordinator
+(7, 1), (7, 2), (7, 3), (7, 4), (7, 5),
+-- Mathematics Coordinator
+(8, 6), (8, 7), (8, 8), (8, 9),
+-- Accounting Coordinator
+(9, 10), (9, 11), (9, 12), (9, 13),
+-- Nursing Coordinator
+(10, 14), (10, 15), (10, 16), (10, 17);
 
--- Insert Assessments (3 per module, total weighting = 100)
+-- ============================================
+-- STUDENT MODULE REGISTRATIONS (Current Semester 2025-2)
+-- ============================================
+INSERT INTO StudentModule (studentId, moduleId) VALUES
+-- Sipho (3rd year CS) - Module 4
+(19, 4),
+-- Lerato (2nd year CS) - Modules 2, 3
+(20, 2), (20, 3),
+-- Thabo (2nd year CS) - Modules 2, 3
+(21, 2), (21, 3),
+-- Zanele (1st year CS) - Module 1
+(22, 1),
+-- Lungile (3rd year Math) - Module 9
+(23, 9),
+-- Precious (2nd year Math) - Module 8
+(24, 8),
+-- Mandla (1st year Math) - Modules 6, 7
+(25, 6), (25, 7),
+-- Nosipho (3rd year Accounting) - Module 13
+(26, 13),
+-- Bongani (2nd year Accounting) - Modules 11, 12
+(27, 11), (27, 12),
+-- Noluthando (1st year Accounting) - Module 10
+(28, 10),
+-- Sibusiso (4th year Nursing) - Module 17
+(29, 17),
+-- Thembisile (3rd year Nursing) - Module 17
+(30, 17),
+-- Kagiso (2nd year Nursing) - Module 16
+(31, 16),
+-- Ayanda (1st year Nursing) - Modules 14, 15
+(32, 14), (32, 15),
+-- Mthokozisi (1st year Nursing) - Modules 14, 15
+(33, 14), (33, 15);
+
+-- ============================================
+-- ASSESSMENTS (Weightings total 100% per module)
+-- ============================================
+
+-- Module 1: Programming Fundamentals (CSC101)
 INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
--- Module 1: Structural Analysis
-('Test 1', 50, 30.00, '2025-03-15', '2025-02-01', 2, 1),
-('Assignment 1', 100, 20.00, '2025-04-15', '2025-02-01', 2, 1),
-('Exam', 100, 50.00, '2025-06-01', '2025-02-01', 2, 1),
+('Assignment 1', 100, 15.00, '2025-08-15', '2025-07-20 10:00:00', 11, 1),
+('Test 1', 100, 20.00, '2025-09-10', '2025-07-20 10:00:00', 11, 1),
+('Assignment 2', 100, 15.00, '2025-10-05', '2025-07-20 10:00:00', 11, 1),
+('Final Exam', 100, 50.00, '2025-11-20', '2025-07-20 10:00:00', 11, 1);
 
--- Module 2: Geotechnical Engineering
-('Quiz 1', 25, 15.00, '2025-03-10', '2025-02-01', 2, 2),
-('Project', 100, 35.00, '2025-05-01', '2025-02-01', 2, 2),
-('Exam', 100, 50.00, '2025-06-05', '2025-02-01', 2, 2),
+-- Module 2: Data Structures (CSC201)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Practical 1', 100, 20.00, '2025-08-20', '2025-07-20 10:00:00', 11, 2),
+('Test 1', 100, 15.00, '2025-09-15', '2025-07-20 10:00:00', 11, 2),
+('Practical 2', 100, 20.00, '2025-10-10', '2025-07-20 10:00:00', 11, 2),
+('Project', 100, 15.00, '2025-11-05', '2025-07-20 10:00:00', 11, 2),
+('Final Exam', 100, 30.00, '2025-11-22', '2025-07-20 10:00:00', 11, 2);
 
--- Module 4: Circuit Theory
-('Lab Report 1', 50, 20.00, '2025-03-20', '2025-02-01', 3, 4),
-('Midterm', 75, 30.00, '2025-04-20', '2025-02-01', 3, 4),
-('Final Exam', 100, 50.00, '2025-06-10', '2025-02-01', 3, 4),
+-- Module 3: Database Systems (CSC202)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Assignment 1', 100, 15.00, '2025-08-18', '2025-07-20 10:00:00', 12, 3),
+('Test 1', 100, 20.00, '2025-09-12', '2025-07-20 10:00:00', 12, 3),
+('Project', 100, 25.00, '2025-10-20', '2025-07-20 10:00:00', 12, 3),
+('Final Exam', 100, 40.00, '2025-11-21', '2025-07-20 10:00:00', 12, 3);
 
--- Module 5: Digital Systems
-('Assignment 1', 50, 25.00, '2025-03-25', '2025-02-01', 3, 5),
-('Test', 50, 25.00, '2025-05-01', '2025-02-01', 3, 5),
-('Exam', 100, 50.00, '2025-06-15', '2025-02-01', 3, 5),
+-- Module 4: Software Engineering (CSC301)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Sprint 1', 100, 20.00, '2025-08-25', '2025-07-20 10:00:00', 12, 4),
+('Sprint 2', 100, 20.00, '2025-09-25', '2025-07-20 10:00:00', 12, 4),
+('Sprint 3', 100, 20.00, '2025-10-25', '2025-07-20 10:00:00', 12, 4),
+('Final Exam', 100, 40.00, '2025-11-23', '2025-07-20 10:00:00', 12, 4);
 
--- Module 6: Financial Accounting
-('Homework 1', 20, 10.00, '2025-03-05', '2025-02-01', 4, 6),
-('Test 1', 50, 30.00, '2025-04-10', '2025-02-01', 4, 6),
-('Final Exam', 100, 60.00, '2025-06-20', '2025-02-01', 4, 6);
+-- Module 6: Calculus I (MAT101)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Test 1', 100, 25.00, '2025-08-22', '2025-07-20 10:00:00', 13, 6),
+('Test 2', 100, 25.00, '2025-09-20', '2025-07-20 10:00:00', 13, 6),
+('Final Exam', 100, 50.00, '2025-11-18', '2025-07-20 10:00:00', 13, 6);
 
--- Insert ClassSessions (5 sessions per module)
+-- Module 7: Linear Algebra (MAT102)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Assignment 1', 100, 20.00, '2025-08-17', '2025-07-20 10:00:00', 14, 7),
+('Test 1', 100, 30.00, '2025-09-18', '2025-07-20 10:00:00', 14, 7),
+('Final Exam', 100, 50.00, '2025-11-19', '2025-07-20 10:00:00', 14, 7);
+
+-- Module 8: Statistics (MAT201)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Assignment 1', 100, 15.00, '2025-08-19', '2025-07-20 10:00:00', 13, 8),
+('Test 1', 100, 20.00, '2025-09-16', '2025-07-20 10:00:00', 13, 8),
+('Assignment 2', 100, 15.00, '2025-10-14', '2025-07-20 10:00:00', 13, 8),
+('Final Exam', 100, 50.00, '2025-11-24', '2025-07-20 10:00:00', 13, 8);
+
+-- Module 9: Abstract Algebra (MAT301)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Test 1', 100, 25.00, '2025-08-28', '2025-07-20 10:00:00', 14, 9),
+('Test 2', 100, 25.00, '2025-09-28', '2025-07-20 10:00:00', 14, 9),
+('Final Exam', 100, 50.00, '2025-11-25', '2025-07-20 10:00:00', 14, 9);
+
+-- Module 10: Financial Accounting I (ACC101)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Test 1', 100, 20.00, '2025-08-21', '2025-07-20 10:00:00', 15, 10),
+('Assignment', 100, 15.00, '2025-09-17', '2025-07-20 10:00:00', 15, 10),
+('Test 2', 100, 20.00, '2025-10-15', '2025-07-20 10:00:00', 15, 10),
+('Final Exam', 100, 45.00, '2025-11-26', '2025-07-20 10:00:00', 15, 10);
+
+-- Module 11: Management Accounting (ACC201)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Case Study 1', 100, 25.00, '2025-08-30', '2025-07-20 10:00:00', 15, 11),
+('Test 1', 100, 25.00, '2025-09-30', '2025-07-20 10:00:00', 15, 11),
+('Final Exam', 100, 50.00, '2025-11-27', '2025-07-20 10:00:00', 15, 11);
+
+-- Module 12: Taxation (ACC202)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Assignment 1', 100, 20.00, '2025-08-23', '2025-07-20 10:00:00', 16, 12),
+('Test 1', 100, 30.00, '2025-09-22', '2025-07-20 10:00:00', 16, 12),
+('Final Exam', 100, 50.00, '2025-11-28', '2025-07-20 10:00:00', 16, 12);
+
+-- Module 13: Auditing (ACC301)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Case Study', 100, 30.00, '2025-09-05', '2025-07-20 10:00:00', 16, 13),
+('Test 1', 100, 20.00, '2025-10-03', '2025-07-20 10:00:00', 16, 13),
+('Final Exam', 100, 50.00, '2025-11-29', '2025-07-20 10:00:00', 16, 13);
+
+-- Module 14: Anatomy and Physiology (NUR101)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Test 1', 100, 20.00, '2025-08-16', '2025-07-20 10:00:00', 17, 14),
+('Practical Assessment', 100, 30.00, '2025-09-14', '2025-07-20 10:00:00', 17, 14),
+('Final Exam', 100, 50.00, '2025-11-17', '2025-07-20 10:00:00', 17, 14);
+
+-- Module 15: Fundamentals of Nursing (NUR102)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Skills Assessment', 100, 25.00, '2025-08-27', '2025-07-20 10:00:00', 17, 15),
+('Test 1', 100, 25.00, '2025-09-24', '2025-07-20 10:00:00', 17, 15),
+('Final Exam', 100, 50.00, '2025-11-30', '2025-07-20 10:00:00', 17, 15);
+
+-- Module 16: Pharmacology (NUR201)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Test 1', 100, 25.00, '2025-08-26', '2025-07-20 10:00:00', 18, 16),
+('Test 2', 100, 25.00, '2025-09-26', '2025-07-20 10:00:00', 18, 16),
+('Final Exam', 100, 50.00, '2025-12-01', '2025-07-20 10:00:00', 18, 16);
+
+-- Module 17: Clinical Practice (NUR301)
+INSERT INTO Assessment (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId) VALUES
+('Clinical Portfolio', 100, 40.00, '2025-10-30', '2025-07-20 10:00:00', 18, 17),
+('OSCE Exam', 100, 30.00, '2025-11-10', '2025-07-20 10:00:00', 18, 17),
+('Final Exam', 100, 30.00, '2025-12-02', '2025-07-20 10:00:00', 18, 17);
+
+-- ============================================
+-- CLASS SESSIONS
+-- ============================================
 INSERT INTO ClassSession (classType, createdAt, expiresAt, attendanceCode, lecturerId, moduleId) VALUES
--- Module 1 sessions
-('Lecture', '2025-02-05 08:00:00', '2025-02-05 10:00:00', 'ABC123', 2, 1),
-('Tutorial', '2025-02-12 10:00:00', '2025-02-12 12:00:00', 'DEF456', 2, 1),
-('Lecture', '2025-02-19 08:00:00', '2025-02-19 10:00:00', 'GHI789', 2, 1),
-('Practical', '2025-02-26 14:00:00', '2025-02-26 16:00:00', 'JKL012', 2, 1),
-('Lecture', '2025-03-05 08:00:00', '2025-03-05 10:00:00', 'MNO345', 2, 1),
+-- Module 1 Sessions
+('Lecture', '2025-07-16 08:00:00', '2025-07-16 10:00:00', 'LEC001', 11, 1),
+('Tutorial', '2025-07-18 10:00:00', '2025-07-18 12:00:00', 'TUT001', 11, 1),
+('Lecture', '2025-07-23 08:00:00', '2025-07-23 10:00:00', 'LEC002', 11, 1),
+('Practical', '2025-07-25 14:00:00', '2025-07-25 17:00:00', 'PRC001', 11, 1),
+-- Module 2 Sessions
+('Lecture', '2025-07-17 09:00:00', '2025-07-17 11:00:00', 'LEC003', 11, 2),
+('Practical', '2025-07-19 13:00:00', '2025-07-19 16:00:00', 'PRC002', 11, 2),
+('Lecture', '2025-07-24 09:00:00', '2025-07-24 11:00:00', 'LEC004', 11, 2),
+-- Module 3 Sessions
+('Lecture', '2025-07-16 10:00:00', '2025-07-16 12:00:00', 'LEC005', 12, 3),
+('Practical', '2025-07-18 14:00:00', '2025-07-18 17:00:00', 'PRC003', 12, 3),
+('Lecture', '2025-07-23 10:00:00', '2025-07-23 12:00:00', 'LEC006', 12, 3),
+-- Module 4 Sessions
+('Lecture', '2025-07-17 11:00:00', '2025-07-17 13:00:00', 'LEC007', 12, 4),
+('Workshop', '2025-07-22 09:00:00', '2025-07-22 12:00:00', 'WRK001', 12, 4),
+-- Module 6 Sessions
+('Lecture', '2025-07-16 08:00:00', '2025-07-16 10:00:00', 'LEC008', 13, 6),
+('Tutorial', '2025-07-18 08:00:00', '2025-07-18 10:00:00', 'TUT002', 13, 6),
+('Lecture', '2025-07-23 08:00:00', '2025-07-23 10:00:00', 'LEC009', 13, 6),
+-- Module 8 Sessions
+('Lecture', '2025-07-17 13:00:00', '2025-07-17 15:00:00', 'LEC010', 13, 8),
+('Practical', '2025-07-19 10:00:00', '2025-07-19 13:00:00', 'PRC004', 13, 8),
+-- Module 10 Sessions
+('Lecture', '2025-07-16 13:00:00', '2025-07-16 15:00:00', 'LEC011', 15, 10),
+('Tutorial', '2025-07-20 09:00:00', '2025-07-20 11:00:00', 'TUT003', 15, 10),
+-- Module 14 Sessions
+('Lecture', '2025-07-17 08:00:00', '2025-07-17 10:00:00', 'LEC012', 17, 14),
+('Practical', '2025-07-19 08:00:00', '2025-07-19 11:00:00', 'PRC005', 17, 14),
+('Lecture', '2025-07-24 08:00:00', '2025-07-24 10:00:00', 'LEC013', 17, 14);
 
--- Module 2 sessions
-('Lecture', '2025-02-06 09:00:00', '2025-02-06 11:00:00', 'PQR678', 2, 2),
-('Tutorial', '2025-02-13 11:00:00', '2025-02-13 13:00:00', 'STU901', 2, 2),
-('Lecture', '2025-02-20 09:00:00', '2025-02-20 11:00:00', 'VWX234', 2, 2),
-('Practical', '2025-02-27 15:00:00', '2025-02-27 17:00:00', 'YZA567', 2, 2),
-('Lecture', '2025-03-06 09:00:00', '2025-03-06 11:00:00', 'BCD890', 2, 2),
+-- ============================================
+-- ATTENDANCE RECORDS (Varying attendance patterns)
+-- ============================================
 
--- Module 4 sessions
-('Lecture', '2025-02-07 10:00:00', '2025-02-07 12:00:00', 'EFG123', 3, 4),
-('Lab', '2025-02-14 14:00:00', '2025-02-14 16:00:00', 'HIJ456', 3, 4),
-('Lecture', '2025-02-21 10:00:00', '2025-02-21 12:00:00', 'KLM789', 3, 4),
-('Tutorial', '2025-02-28 16:00:00', '2025-02-28 18:00:00', 'NOP012', 3, 4),
-('Lecture', '2025-03-07 10:00:00', '2025-03-07 12:00:00', 'QRS345', 3, 4),
-
--- Module 5 sessions
-('Lecture', '2025-02-08 11:00:00', '2025-02-08 13:00:00', 'TUV678', 3, 5),
-('Lab', '2025-02-15 15:00:00', '2025-02-15 17:00:00', 'WXY901', 3, 5),
-('Lecture', '2025-02-22 11:00:00', '2025-02-22 13:00:00', 'ZAB234', 3, 5),
-('Tutorial', '2025-03-01 17:00:00', '2025-03-01 19:00:00', 'CDE567', 3, 5),
-('Lecture', '2025-03-08 11:00:00', '2025-03-08 13:00:00', 'FGH890', 3, 5),
-
--- Module 6 sessions
-('Lecture', '2025-02-09 12:00:00', '2025-02-09 14:00:00', 'IJK123', 4, 6),
-('Tutorial', '2025-02-16 16:00:00', '2025-02-16 18:00:00', 'LMN456', 4, 6),
-('Lecture', '2025-02-23 12:00:00', '2025-02-23 14:00:00', 'OPQ789', 4, 6),
-('Workshop', '2025-03-02 18:00:00', '2025-03-02 20:00:00', 'RST012', 4, 6),
-('Lecture', '2025-03-09 12:00:00', '2025-03-09 14:00:00', 'UVW345', 4, 6);
-
--- Insert AttendanceRecords (varying attendance to create risk profiles)
--- Creating: 3 HIGH risk (attendance < 60%), 4 MODERATE (60-80%), 3 LOW (>80%)
+-- HIGH RISK Student (Zanele - studentId 22, poor attendance)
+-- Module 1 - Only 2 out of 4 sessions attended (50%)
 INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
--- Student 8 (HIGH risk - attends only 2/5 sessions in module 1)
-(8, 1), (8, 3),  -- Attends 2 sessions
+(22, 1),  -- Attended lecture 1
+(22, 3);  -- Attended lecture 2
 
--- Student 9 (MODERATE risk - attends 3/5 sessions in module 1)
-(9, 1), (9, 2), (9, 4),
+-- MODERATE RISK Student (Lerato - studentId 20, average attendance)
+-- Module 2 - 5 out of 7 sessions (71%)
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(20, 5), (20, 6), (20, 7);  -- Module 2 - 3 out of 3
 
--- Student 10 (LOW risk - attends all 5 sessions in module 1)
-(10, 1), (10, 2), (10, 3), (10, 4), (10, 5),
+-- Module 3 - 2 out of 3 sessions (67%)
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(20, 8), (20, 10);
 
--- Student 11 (HIGH risk - attends 1/5 sessions in module 2)
-(11, 6),  -- Attends only 1 session
+-- LOW RISK Student (Thabo - studentId 21, excellent attendance)
+-- Module 2 - All sessions
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(21, 5), (21, 6), (21, 7);
 
--- Student 12 (MODERATE risk - attends 4/5 sessions in module 2)
-(12, 6), (12, 7), (12, 8), (12, 9),
+-- Module 3 - All sessions
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(21, 8), (21, 9), (21, 10);
 
--- Continue similar pattern for other modules...
+-- HIGH RISK Student (Sipho - studentId 19, poor attendance)
+-- Module 4 - 1 out of 2 sessions (50%)
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(19, 11);
 
--- Module 4: Circuit Theory
-(8, 11), (8, 12),  -- HIGH risk (2/5)
-(9, 11), (9, 12), (9, 13),  -- MODERATE (3/5)
-(10, 11), (10, 12), (10, 13), (10, 14), (10, 15),  -- LOW (5/5)
-(11, 11),  -- HIGH (1/5)
-(12, 11), (12, 12), (12, 13), (12, 14),  -- MODERATE (4/5)
+-- MODERATE RISK Student (Mandla - studentId 25)
+-- Module 6 - 2 out of 3 sessions (67%)
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(25, 13), (25, 15);
 
--- Module 5: Digital Systems (Accounting students)
-(13, 16), (13, 17),  -- HIGH risk (2/5)
-(14, 16), (14, 17), (14, 18),  -- MODERATE (3/5)
-(15, 16), (15, 17), (15, 18), (15, 19), (15, 20),  -- LOW (5/5)
-(16, 16),  -- HIGH (1/5)
-(17, 16), (17, 17), (17, 18), (17, 19);  -- MODERATE (4/5)
+-- LOW RISK Student (Precious - studentId 24)
+-- Module 8 - All sessions
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(24, 16), (24, 17);
 
--- Insert MarkEntries (varying marks to create risk profiles)
+-- HIGH RISK Student (Noluthando - studentId 28, poor attendance)
+-- Module 10 - 1 out of 2 sessions (50%)
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(28, 18);
+
+-- LOW RISK Student (Ayanda - studentId 32)
+-- Module 14 - All sessions
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(32, 20), (32, 21), (32, 22);
+
+-- MODERATE RISK Student (Mthokozisi - studentId 33)
+-- Module 14 - 2 out of 3 sessions (67%)
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(33, 20), (33, 22);
+
+-- Additional good attendance records for other students
+INSERT INTO AttendanceRecord (studentId, sessionId) VALUES
+(23, 13), (23, 14), (23, 15),  -- Lungile - Module 9 (no sessions created yet, but Module 6)
+(26, 18), (26, 19),  -- Nosipho
+(27, 18), (27, 19),  -- Bongani
+(29, 20), (29, 21), (29, 22),  -- Sibusiso
+(30, 20), (30, 21), (30, 22),  -- Thembisile
+(31, 16), (31, 17);  -- Kagiso
+
+-- ============================================
+-- MARK ENTRIES (Realistic marks for risk stratification)
+-- ============================================
+
+-- HIGH RISK Student - Zanele (studentId 22) - Low marks, poor submission
+-- Module 1 Assessments
 INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
--- Module 1 assessments for students 8-12
--- Student 8 (HIGH risk: low marks, missing submissions)
-(35.00, TRUE, '2025-03-14', 8, 1),
-(NULL, FALSE, NULL, 8, 2),
-(45.00, TRUE, '2025-06-01', 8, 3),
+(35.00, TRUE, '2025-08-16 14:30:00', 22, 1),   -- Assignment 1: 35%
+(42.00, TRUE, '2025-09-10 15:45:00', 22, 2),   -- Test 1: 42%
+(NULL, FALSE, NULL, 22, 3),                     -- Assignment 2: Not submitted
+(NULL, FALSE, NULL, 22, 4);                     -- Final Exam: Not yet
 
--- Student 9 (MODERATE risk: average marks)
-(62.00, TRUE, '2025-03-14', 9, 1),
-(70.00, TRUE, '2025-04-14', 9, 2),
-(58.00, TRUE, '2025-06-01', 9, 3),
+-- MODERATE RISK - Lerato (studentId 20) - Average marks
+-- Module 2 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(62.00, TRUE, '2025-08-20 16:00:00', 20, 5),   -- Practical 1: 62%
+(58.00, TRUE, '2025-09-15 14:20:00', 20, 6),   -- Test 1: 58%
+(65.00, TRUE, '2025-10-10 17:30:00', 20, 7),   -- Practical 2: 65%
+(NULL, FALSE, NULL, 20, 8),                     -- Project: Not yet
+(NULL, FALSE, NULL, 20, 9);                     -- Final Exam: Not yet
 
--- Student 10 (LOW risk: good marks)
-(85.00, TRUE, '2025-03-14', 10, 1),
-(92.00, TRUE, '2025-04-14', 10, 2),
-(88.00, TRUE, '2025-06-01', 10, 3),
+-- Module 3 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(60.00, TRUE, '2025-08-18 15:00:00', 20, 10),  -- Assignment 1: 60%
+(55.00, TRUE, '2025-09-12 16:30:00', 20, 11),  -- Test 1: 55%
+(NULL, FALSE, NULL, 20, 12),                    -- Project: Not yet
+(NULL, FALSE, NULL, 20, 13);                    -- Final Exam: Not yet
 
--- Student 11 (HIGH risk: very low marks)
-(28.00, TRUE, '2025-03-14', 11, 1),
-(NULL, FALSE, NULL, 11, 2),
-(32.00, TRUE, '2025-06-01', 11, 3),
+-- LOW RISK - Thabo (studentId 21) - Good marks, all submitted
+-- Module 2 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(78.00, TRUE, '2025-08-19 12:00:00', 21, 5),   -- Practical 1: 78%
+(82.00, TRUE, '2025-09-15 13:15:00', 21, 6),   -- Test 1: 82%
+(76.00, TRUE, '2025-10-09 14:00:00', 21, 7),   -- Practical 2: 76%
+(85.00, TRUE, '2025-11-05 16:00:00', 21, 8),   -- Project: 85%
+(NULL, FALSE, NULL, 21, 9);                     -- Final Exam: Not yet
 
--- Student 12 (MODERATE risk: borderline marks)
-(55.00, TRUE, '2025-03-14', 12, 1),
-(60.00, TRUE, '2025-04-14', 12, 2),
-(52.00, TRUE, '2025-06-01', 12, 3),
+-- Module 3 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(75.00, TRUE, '2025-08-17 14:30:00', 21, 10),  -- Assignment 1: 75%
+(80.00, TRUE, '2025-09-12 15:00:00', 21, 11),  -- Test 1: 80%
+(82.00, TRUE, '2025-10-20 17:00:00', 21, 12),  -- Project: 82%
+(NULL, FALSE, NULL, 21, 13);                    -- Final Exam: Not yet
 
--- Module 2 assessments
-(30.00, TRUE, '2025-03-09', 8, 4),
-(NULL, FALSE, NULL, 8, 5),
-(40.00, TRUE, '2025-06-04', 8, 6),
+-- HIGH RISK - Sipho (studentId 19) - Very poor performance
+-- Module 4 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(38.00, TRUE, '2025-08-26 23:45:00', 19, 14),  -- Sprint 1: 38% (late)
+(NULL, FALSE, NULL, 19, 15),                    -- Sprint 2: Not submitted
+(45.00, TRUE, '2025-10-25 16:00:00', 19, 16),  -- Sprint 3: 45%
+(NULL, FALSE, NULL, 19, 17);                    -- Final Exam: Not yet
 
--- Module 4 assessments
-(65.00, TRUE, '2025-03-19', 13, 7),
-(70.00, TRUE, '2025-04-19', 13, 8),
-(75.00, TRUE, '2025-06-09', 13, 9),
+-- MODERATE RISK - Mandla (studentId 25) - Inconsistent performance
+-- Module 6 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(68.00, TRUE, '2025-08-22 14:00:00', 25, 21),  -- Test 1: 68%
+(52.00, TRUE, '2025-09-20 15:30:00', 25, 22),  -- Test 2: 52%
+(NULL, FALSE, NULL, 25, 23);                    -- Final Exam: Not yet
 
--- Module 6 assessments
-(15.00, TRUE, '2025-03-04', 13, 13),
-(40.00, TRUE, '2025-04-09', 13, 14),
-(55.00, TRUE, '2025-06-19', 13, 15);
+-- Module 7 - Good marks
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(72.00, TRUE, '2025-08-17 13:00:00', 25, 24),  -- Assignment 1: 72%
+(70.00, TRUE, '2025-09-18 14:30:00', 25, 25),  -- Test 1: 70%
+(NULL, FALSE, NULL, 25, 26);                    -- Final Exam: Not yet
 
--- Insert RiskReport (based on calculated performance)
+-- LOW RISK - Precious (studentId 24) - Excellent performance
+-- Module 8 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(88.00, TRUE, '2025-08-18 11:00:00', 24, 27),  -- Assignment 1: 88%
+(85.00, TRUE, '2025-09-16 13:00:00', 24, 28),  -- Test 1: 85%
+(90.00, TRUE, '2025-10-14 12:00:00', 24, 29),  -- Assignment 2: 90%
+(NULL, FALSE, NULL, 24, 30);                    -- Final Exam: Not yet
+
+-- HIGH RISK - Noluthando (studentId 28) - Poor marks and submissions
+-- Module 10 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(40.00, TRUE, '2025-08-21 15:00:00', 28, 31),  -- Test 1: 40%
+(NULL, FALSE, NULL, 28, 32),                    -- Assignment: Not submitted
+(38.00, TRUE, '2025-10-15 16:00:00', 28, 33),  -- Test 2: 38%
+(NULL, FALSE, NULL, 28, 34);                    -- Final Exam: Not yet
+
+-- MODERATE RISK - Bongani (studentId 27)
+-- Module 11 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(65.00, TRUE, '2025-08-30 14:00:00', 27, 35),  -- Case Study 1: 65%
+(60.00, TRUE, '2025-09-30 15:00:00', 27, 36),  -- Test 1: 60%
+(NULL, FALSE, NULL, 27, 37);                    -- Final Exam: Not yet
+
+-- Module 12 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(58.00, TRUE, '2025-08-23 16:00:00', 27, 38),  -- Assignment 1: 58%
+(62.00, TRUE, '2025-09-22 14:30:00', 27, 39),  -- Test 1: 62%
+(NULL, FALSE, NULL, 27, 40);                    -- Final Exam: Not yet
+
+-- LOW RISK - Nosipho (studentId 26) - Good performance
+-- Module 13 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(75.00, TRUE, '2025-09-04 15:00:00', 26, 41),  -- Case Study: 75%
+(78.00, TRUE, '2025-10-03 14:00:00', 26, 42),  -- Test 1: 78%
+(NULL, FALSE, NULL, 26, 43);                    -- Final Exam: Not yet
+
+-- LOW RISK - Ayanda (studentId 32) - Excellent nursing student
+-- Module 14 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(82.00, TRUE, '2025-08-16 13:00:00', 32, 44),  -- Test 1: 82%
+(88.00, TRUE, '2025-09-14 15:00:00', 32, 45),  -- Practical: 88%
+(NULL, FALSE, NULL, 32, 46);                    -- Final Exam: Not yet
+
+-- Module 15 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(85.00, TRUE, '2025-08-27 14:00:00', 32, 47),  -- Skills: 85%
+(80.00, TRUE, '2025-09-24 13:00:00', 32, 48),  -- Test 1: 80%
+(NULL, FALSE, NULL, 32, 49);                    -- Final Exam: Not yet
+
+-- MODERATE RISK - Mthokozisi (studentId 33)
+-- Module 14 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(62.00, TRUE, '2025-08-16 16:00:00', 33, 44),  -- Test 1: 62%
+(58.00, TRUE, '2025-09-14 17:00:00', 33, 45),  -- Practical: 58%
+(NULL, FALSE, NULL, 33, 46);                    -- Final Exam: Not yet
+
+-- Module 15 Assessments
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(60.00, TRUE, '2025-08-27 16:00:00', 33, 47),  -- Skills: 60%
+(65.00, TRUE, '2025-09-24 15:00:00', 33, 48),  -- Test 1: 65%
+(NULL, FALSE, NULL, 33, 49);                    -- Final Exam: Not yet
+
+-- Additional students with good performance
+-- Lungile (studentId 23) - Module 9
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(76.00, TRUE, '2025-08-28 12:00:00', 23, 50),  -- Test 1: 76%
+(74.00, TRUE, '2025-09-28 13:00:00', 23, 51),  -- Test 2: 74%
+(NULL, FALSE, NULL, 23, 52);                    -- Final Exam: Not yet
+
+-- Sibusiso (studentId 29) - Module 17
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(80.00, TRUE, '2025-10-30 16:00:00', 29, 53),  -- Clinical Portfolio: 80%
+(82.00, TRUE, '2025-11-10 14:00:00', 29, 54),  -- OSCE: 82%
+(NULL, FALSE, NULL, 29, 55);                    -- Final Exam: Not yet
+
+-- Thembisile (studentId 30) - Module 17
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(78.00, TRUE, '2025-10-30 15:00:00', 30, 53),  -- Clinical Portfolio: 78%
+(75.00, TRUE, '2025-11-10 15:00:00', 30, 54),  -- OSCE: 75%
+(NULL, FALSE, NULL, 30, 55);                    -- Final Exam: Not yet
+
+-- Kagiso (studentId 31) - Module 16 (Skipped)
+INSERT INTO MarkEntry (mark, submission, dateSubmitted, studentId, assessmentId) VALUES
+(70.00, TRUE, '2025-08-26 14:00:00', 31, 56),  -- Test 1: 70%
+(68.00, TRUE, '2025-09-26 15:00:00', 31, 57),  -- Test 2: 68%
+(NULL, FALSE, NULL, 31, 58);                    -- Final Exam: Not yet
+
+-- ============================================
+-- RISK REPORTS (For active period 2025-2)
+-- ============================================
+
+-- HIGH RISK Students
 INSERT INTO RiskReport (studentModuleId, periodId, riskLevel, attendanceRate, submissionRate, averageMark, calculatedAt) VALUES
--- HIGH risk students
-(1, 1, 'HIGH', 40.00, 66.67, 40.00, '2025-06-30'),  -- Student 8, Module 1
-(4, 1, 'HIGH', 20.00, 66.67, 30.00, '2025-06-30'),  -- Student 11, Module 2
-(19, 1, 'HIGH', 40.00, 100.00, 48.33, '2025-06-30'),  -- Student 13, Module 6
+-- Zanele (studentId 22) - Module 1 (studentModuleId 4)
+(4, 4, 'HIGH', 50.00, 50.00, 38.50, '2025-10-01 08:00:00'),
 
--- MODERATE risk students
-(2, 1, 'MODERATE', 60.00, 100.00, 63.33, '2025-06-30'),  -- Student 9, Module 1
-(5, 1, 'MODERATE', 80.00, 100.00, 55.67, '2025-06-30'),  -- Student 12, Module 2
-(20, 1, 'MODERATE', 60.00, 100.00, 70.00, '2025-06-30'),  -- Student 14, Module 5
+-- Sipho (studentId 19) - Module 4 (studentModuleId 1)
+(1, 4, 'HIGH', 50.00, 66.67, 41.50, '2025-10-01 08:00:00'),
 
--- LOW risk students
-(3, 1, 'LOW', 100.00, 100.00, 88.33, '2025-06-30'),  -- Student 10, Module 1
-(21, 1, 'LOW', 100.00, 100.00, 82.50, '2025-06-30'),  -- Student 15, Module 5
-(22, 1, 'LOW', 80.00, 100.00, 78.00, '2025-06-30');  -- Student 16, Module 6
+-- Noluthando (studentId 28) - Module 10 (studentModuleId 10)
+(10, 4, 'HIGH', 50.00, 66.67, 39.00, '2025-10-01 08:00:00');
 
--- Insert Interventions (for HIGH risk students)
+-- MODERATE RISK Students
+INSERT INTO RiskReport (studentModuleId, periodId, riskLevel, attendanceRate, submissionRate, averageMark, calculatedAt) VALUES
+-- Lerato (studentId 20) - Module 2 (studentModuleId 2)
+(2, 4, 'MODERATE', 71.43, 75.00, 61.67, '2025-10-01 08:00:00'),
+
+-- Lerato (studentId 20) - Module 3 (studentModuleId 3)
+(3, 4, 'MODERATE', 66.67, 50.00, 57.50, '2025-10-01 08:00:00'),
+
+-- Mandla (studentId 25) - Module 6 (studentModuleId 7)
+(7, 4, 'MODERATE', 66.67, 66.67, 60.00, '2025-10-01 08:00:00'),
+
+-- Mthokozisi (studentId 33) - Module 14 (studentModuleId 15)
+(15, 4, 'MODERATE', 66.67, 66.67, 60.00, '2025-10-01 08:00:00'),
+
+-- Bongani (studentId 27) - Module 11 (studentModuleId 9)
+(9, 4, 'MODERATE', 100.00, 66.67, 62.50, '2025-10-01 08:00:00');
+
+-- LOW RISK Students
+INSERT INTO RiskReport (studentModuleId, periodId, riskLevel, attendanceRate, submissionRate, averageMark, calculatedAt) VALUES
+-- Thabo (studentId 21) - Module 2 (studentModuleId 5)
+(5, 4, 'LOW', 100.00, 100.00, 80.25, '2025-10-01 08:00:00'),
+
+-- Thabo (studentId 21) - Module 3 (studentModuleId 6)
+(6, 4, 'LOW', 100.00, 75.00, 79.00, '2025-10-01 08:00:00'),
+
+-- Precious (studentId 24) - Module 8 (studentModuleId 8)
+(8, 4, 'LOW', 100.00, 75.00, 87.67, '2025-10-01 08:00:00'),
+
+-- Ayanda (studentId 32) - Module 14 (studentModuleId 13)
+(13, 4, 'LOW', 100.00, 66.67, 85.00, '2025-10-01 08:00:00'),
+
+-- Ayanda (studentId 32) - Module 15 (studentModuleId 14)
+(14, 4, 'LOW', 100.00, 66.67, 82.50, '2025-10-01 08:00:00'),
+
+-- Nosipho (studentId 26) - Module 13 (studentModuleId 11)
+(11, 4, 'LOW', 100.00, 66.67, 76.50, '2025-10-01 08:00:00'),
+
+-- Lungile (studentId 23) - Module 9 (studentModuleId 16)  
+-- Note: Using Module 6 attendance as proxy since Module 9 sessions weren't tracked
+(16, 4, 'LOW', 100.00, 66.67, 75.00, '2025-10-01 08:00:00');
+
+-- ============================================
+-- INTERVENTIONS (For high and moderate risk students)
+-- ============================================
+
+-- Interventions for HIGH RISK students
 INSERT INTO Intervention (studentModuleId, coordinatorId, content, createdAt, status) VALUES
-(1, 5, 'Student has poor attendance and low marks. Schedule meeting to discuss study strategies.', '2025-04-01', 'ACTIVE'),
-(4, 5, 'Multiple missed submissions and very low marks. Requires academic support.', '2025-04-05', 'FOLLOW_UP_DUE'),
-(19, 6, 'Borderline performance in Financial Accounting. Recommend tutoring.', '2025-04-10', 'CLOSED');
+-- Zanele - Module 1
+(4, 7, 'Student is struggling with Programming Fundamentals. Poor attendance (50%) and failing grades (avg 38.5%). Contacted student via email and scheduled a meeting to discuss academic support options including tutoring and study groups. Student advised to attend all remaining classes and submit outstanding Assignment 2.', '2025-10-02 09:00:00', 'ACTIVE'),
 
--- Insert FollowUps
+-- Sipho - Module 4
+(1, 7, 'Senior student showing concerning decline in Software Engineering module. Only 50% attendance and missed Sprint 2 submission entirely. Average mark of 41.5% indicates risk of failure. Met with student who cited personal challenges. Referred to student wellness services and arranged weekly check-ins with lecturer.', '2025-10-02 10:30:00', 'FOLLOW_UP_DUE'),
+
+-- Noluthando - Module 10
+(10, 9, 'First-year student struggling significantly in Financial Accounting (39% average). Poor attendance at tutorials and missed one assignment. Student appears overwhelmed with university transition. Arranged peer mentoring with successful second-year student and enrolled in supplementary tutorial program.', '2025-10-02 11:00:00', 'ACTIVE');
+
+-- Interventions for MODERATE RISK students
+INSERT INTO Intervention (studentModuleId, coordinatorId, content, createdAt, status) VALUES
+-- Lerato - Module 2
+(2, 7, 'Student showing moderate risk in Data Structures with 71% attendance and 61.67% average. Performance is passing but inconsistent. Discussed time management strategies and provided additional practice materials. Student committed to improving attendance and completing project on time.', '2025-10-03 09:00:00', 'ACTIVE'),
+
+-- Mandla - Module 6
+(8, 8, 'First-year mathematics student with concerning drop in Test 2 performance (52% down from 68%). Attendance at 67%. Student struggling with integration concepts. Arranged additional tutorial sessions and provided past exam papers for practice.', '2025-10-03 10:00:00', 'ACTIVE'),
+
+-- Mthokozisi - Module 14
+(15, 10, 'Nursing student showing moderate concerns in Anatomy. Attendance at 67% and marks averaging 60%. Student is working part-time which affects study time. Discussed workload balance and connected with financial aid office to explore bursary options.', '2025-10-03 11:30:00', 'ACTIVE');
+
+-- ============================================
+-- FOLLOW-UPS
+-- ============================================
+
 INSERT INTO FollowUp (interventionId, content, outcome, createdAt) VALUES
-(2, 'Student attended one tutoring session but still struggling with basic concepts.', 'NO_CHANGE', '2025-04-20'),
-(3, 'Student improved after attending extra tutoring sessions. Now passing.', 'IMPROVED', '2025-05-15');
+-- Follow-up for Sipho (HIGH RISK - intervention 2)
+(2, 'Met with student for scheduled check-in. Student has engaged with wellness services and reports improved mental health. Attended last two lectures and submitted Sprint 3 on time with mark of 45%. Still at risk but showing commitment to improvement. Agreed to continue weekly meetings until end of semester.', 'IMPROVED', '2025-10-16 14:00:00'),
+
+-- Additional follow-up for Sipho
+(2, 'Second follow-up meeting held. Student maintaining improved attendance pattern. Lecturer reports active participation in workshop sessions. Student expressed confidence about final exam preparation. Will schedule one final check-in before exam period.', 'IMPROVED', '2025-10-30 15:00:00');
