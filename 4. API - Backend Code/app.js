@@ -3,6 +3,8 @@ const cors = require('cors');
 const body_parser = require('body-parser');
 require('dotenv').config();
 
+require('./jobs/riskCalculationJob'); // make sure the node-cron runs
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(body_parser.json());
@@ -15,6 +17,7 @@ const lecturerRoutes = require("./routes/lecturerRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const assessmentRoutes = require("./routes/assessmentsRoutes");
+const coordinatorRoutes = require('./routes/CoordinatorRoutes');
 
 // Routes
 app.use('/api/', authRoutes);
@@ -22,6 +25,7 @@ app.use('/api/', lecturerRoutes);
 app.use('/api/', attendanceRoutes);
 app.use('/api/', assessmentRoutes);
 app.use('/api/', studentRoutes);
+app.use('/api/', coordinatorRoutes);
 
 // Server Port
 const PORT = process.env.PORT || 3000;
