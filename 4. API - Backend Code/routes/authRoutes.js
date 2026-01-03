@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const authController = require('../controllers/authController');
-const authenticateToken = require('../middleware/authMiddleware');
-const authorizeRoles = require("../middleware/authRolesMiddleware");
+
+//const authenticateToken = require('../middleware/authMiddleware');
+//const authorizeRoles = require("../middleware/authRolesMiddleware");
 
 /**
  * POST /api/auth/login

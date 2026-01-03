@@ -121,7 +121,7 @@ const registerStep2Student = async (req, res) => {
     );
 
     // Automatically assign modules based on qualification, year, and semester
-    const assignedModules = await moduleService.assignModulesToStudent(
+    const assignedModules = await authService.assignModulesToStudent(
       userId,
       qualificationId,
       yearOfStudy,
@@ -234,9 +234,9 @@ const registerStep3Staff = async (req, res) => {
     let assignedModules;
     
     if (userRole === 'LECTURER') {
-      assignedModules = await moduleService.assignModulesToLecturer(userId, moduleIds);
+      assignedModules = await authService.assignModulesToLecturer(userId, moduleIds);
     } else if (userRole === 'COORDINATOR') {
-      assignedModules = await moduleService.assignModulesToCoordinator(userId, moduleIds);
+      assignedModules = await authService.assignModulesToCoordinator(userId, moduleIds);
     } else {
       return res.status(400).json({code: "Unsuccessful" , msg: "Invalid user Role"});
     }
