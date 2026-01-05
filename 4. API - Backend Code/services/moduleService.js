@@ -1,9 +1,6 @@
  //Database connection
 const connectDB = require("../db/connect"); 
 
-
-
-
 /**
  * Gets all modules assigned to a student
  * @param {number} studentId - The student's user ID
