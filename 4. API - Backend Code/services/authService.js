@@ -1,6 +1,208 @@
 //Database connection
 const connectDB = require("../db/connect"); 
 
+/**
+ * Get current user with all their profile data based on roles
+ * @param {number} userId - The user's ID from JWT token
+ * @returns {Promise<Object>} Complete user profile with role-specific data
+ */
+const getCurrentUser = async (userId) => {
+  try {
+    // Get base user info
+    const [userRows] = await connectDB.query(
+      `SELECT 
+        userId, 
+        firstName, 
+        lastName, 
+        title, 
+        emailAddress, 
+        contactNo, 
+        gender, 
+        isActive,
+        dateRegistered
+      FROM Users 
+      WHERE userId = ? AND isActive = TRUE`,
+      [userId]
+    );
+    
+    if (userRows.length === 0) {
+      return null;
+    }
+    
+    const user = userRows[0];
+    
+    // Get user roles (using existing function)
+    const roles = await getUserRoles(userId);
+    
+    // Get role-specific data
+    const roleDetails = await getRoleSpecificData(userId, roles);
+    
+    return {
+      userId: user.userId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      title: user.title,
+      emailAddress: user.emailAddress,
+      contactNo: user.contactNo,
+      gender: user.gender,
+      isActive: user.isActive,
+      dateRegistered: user.dateRegistered,
+      roles: roles,
+      ...roleDetails // Spreads role-specific data
+    };
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get role-specific data for each role the user has
+ * @param {number} userId 
+ * @param {Array<string>} roles - Array of role strings
+ * @returns {Promise<Object>} Object with role-specific profile data
+ */
+const getRoleSpecificData = async (userId, roles) => {
+  const roleData = {};
+  
+  for (const role of roles) {
+    switch (role) {
+      case 'STUDENT':
+        roleData.studentProfile = await getStudentProfile(userId);
+        break;
+      case 'LECTURER':
+        roleData.lecturerProfile = await getLecturerProfile(userId);
+        break;
+      case 'COORDINATOR':
+        roleData.coordinatorProfile = await getCoordinatorProfile(userId);
+        break;
+      case 'HOD':
+        roleData.hodProfile = await getHODProfile(userId);
+        break;
+      case 'ADMIN':
+        roleData.adminProfile = { role: 'ADMIN' };
+        break;
+    }
+  }
+  
+  return roleData;
+};
+
+/**
+ * Get student-specific profile data
+ */
+const getStudentProfile = async (studentId) => {
+  try {
+    const [rows] = await connectDB.query(
+      `SELECT 
+        s.studentId,
+        s.studentNumber,
+        s.levelOfEducation,
+        s.yearOfStudy,
+        s.qualificationId,
+        q.qualificationName,
+        q.qualificationCode,
+        q.duration,
+        q.totalCredits,
+        d.departmentId,
+        d.departmentName,
+        f.facultyId,
+        f.facultyName
+      FROM Student s
+      JOIN Qualification q ON s.qualificationId = q.qualificationId
+      JOIN Department d ON q.departmentId = d.departmentId
+      JOIN Faculty f ON d.facultyId = f.facultyId
+      WHERE s.studentId = ?`,
+      [studentId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error('Error getting student profile:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get lecturer-specific profile data
+ */
+const getLecturerProfile = async (lecturerId) => {
+  try {
+    const [rows] = await connectDB.query(
+      `SELECT 
+        l.lecturerId,
+        l.staffNumber,
+        l.departmentId,
+        d.departmentName,
+        f.facultyId,
+        f.facultyName
+      FROM Lecturer l
+      JOIN Department d ON l.departmentId = d.departmentId
+      JOIN Faculty f ON d.facultyId = f.facultyId
+      WHERE l.lecturerId = ?`,
+      [lecturerId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error('Error getting lecturer profile:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get coordinator-specific profile data
+ */
+const getCoordinatorProfile = async (coordinatorId) => {
+  try {
+    const [rows] = await connectDB.query(
+      `SELECT 
+        c.coordinatorId,
+        c.staffNumber,
+        c.departmentId,
+        d.departmentName,
+        f.facultyId,
+        f.facultyName
+      FROM Coordinator c
+      JOIN Department d ON c.departmentId = d.departmentId
+      JOIN Faculty f ON d.facultyId = f.facultyId
+      WHERE c.coordinatorId = ?`,
+      [coordinatorId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error('Error getting coordinator profile:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get HOD-specific profile data
+ */
+const getHODProfile = async (hodId) => {
+  try {
+    const [rows] = await connectDB.query(
+      `SELECT 
+        h.hodId,
+        h.staffNumber,
+        h.departmentId,
+        d.departmentName,
+        f.facultyId,
+        f.facultyName
+      FROM HOD h
+      JOIN Department d ON h.departmentId = d.departmentId
+      JOIN Faculty f ON d.facultyId = f.facultyId
+      WHERE h.hodId = ?`,
+      [hodId]
+    );
+    
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error('Error getting HOD profile:', error);
+    throw error;
+  }
+};
 
 /**
  * Service to register a user to the database
@@ -397,4 +599,5 @@ module.exports = {
   assignModulesToStudent,
   assignModulesToLecturer,
   assignModulesToCoordinator,
+  getCurrentUser
 };
