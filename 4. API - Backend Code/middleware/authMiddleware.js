@@ -7,13 +7,19 @@ const authenticateToken = (req, res, next) => {
     const token = authHeader && authHeader.split(" ")[1]; // Expected format: "Bearer TOKEN"
     
     if (!token) {
-      return res.status(401).json({ code: "Unsuccessful", msg: "No token provided" });
+      return res.status(401).json({
+        code: "AUTH_NO_TOKEN",
+        msg: "No authentication token provided"
+      });
     }
 
     // Verify token
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        return res.status(403).json({ code: "Unsuccessful", msg: "Invalid or expired token" });
+        return res.status(401).json({
+          code: "AUTH_INVALID_TOKEN",
+          msg: "Invalid or expired authentication token"
+        });
       }
       
       // Attach decoded payload to request object
@@ -25,7 +31,7 @@ const authenticateToken = (req, res, next) => {
     
   } catch (err) {
     console.error("authenticateToken error:", err);
-    return res.status(500).json({ code: "Unsuccessful", msg: "Server error" });
+    return res.status(500).json({ code: "SERVER_ERROR", msg: "Server error" });
   }
 };
 

@@ -22,11 +22,14 @@ const authorizeRoles = (...allowedRoles) => {
     // Decide what to do
     if (!hasPermission) {
       // User doesn't have required role - STOP
-      return res.status(403).json({ code: "Unsuccessful", msg: "Access denied" });
+      return res.status(403).json({
+        code: "AUTH_FORBIDDEN",
+        msg: "No permission - Access denied"
+      });
       // Request ENDS here
     }
     
-    // ✅ User has permission - continue
+    // User has permission - continue
     next(); // Move to next middleware/controller
   };
 };

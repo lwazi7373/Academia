@@ -312,23 +312,20 @@ const login = async (req, res) => {
     const { identifierNumber, userPassword } = req.body;
     const { user } = await authService.loginUser(identifierNumber); // Immediately destructure the user
 
-    if (!user) {
-      return res
-        .status(401)
-        .json({ code: "Unsuccessful", msg: "User Not found" });
-    }
     // After getting the user object, validate if the password is correct
     const isPasswordValid = await bcrypt.compare(
       userPassword,
       user.userPassword
     );
-
-    if (!isPasswordValid) {
-      return res
-        .status(401)
-        .json({ code: "Unsuccessful", msg: "User password is incorrect" });
-    }
-
+	
+	//No seperation for security purposes, to avoid giving out too much information.
+	if (!user || !isPasswordValid) {
+	  return res.status(400).json({ //400 status code, will match the frontend (axios error handling)
+		code: "INVALID_CREDENTIALS",
+		msg: "Invalid identifier or password"
+	  });
+	}
+	
     // If correct create token
     const payload = { userId: user.userId, userRoles: user.roles };
     const secret = process.env.JWT_SECRET;
@@ -343,7 +340,7 @@ const login = async (req, res) => {
       });
   } catch (error) {
     console.error("Login error:", error); // Testing purposes
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ code: "SERVER_ERROR" , msg: "Server error" });
   }
 };
 
