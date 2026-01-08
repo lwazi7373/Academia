@@ -33,6 +33,16 @@ router.post('/register/step1', authController.registerStep1);
 router.post('/register/student/step2', authController.registerStep2Student);
 
 /**
+ * Get all the departments in the database (available for assignment to lecturer when registering them) 
+ */
+router.get('/departments', authController.getAllDepartments);
+
+/**
+ * Get all qual;ifications in the database (available for assignment to student when registering them )
+ */
+router.get('/qualifications', authController.getAllQualifications);
+
+/**
  * POST /api/auth/register/staff/step2
  * Step 2 (Staff): Assign department to staff member
  * Body: { userId, staffNumber, departmentId, userRole }

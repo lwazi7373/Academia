@@ -147,6 +147,26 @@ const registerStep2Student = async (req, res) => {
   }
 };
 
+const getAllQualifications = async (req, res) => {
+  try {
+    const qualifications = await qualificationService.getAllQualifications();
+    return res.status(201).json({code: "Successful", msg: "Retrieved qualifications", qualifications: qualifications});
+  } catch (error) {
+     console.error("Error fetching qualifications:", error); // Testing purposes
+     res.status(500).json({ error: error.message })
+  }
+}
+
+const getAllDepartments = async(req, res) => {
+  try {
+      const departments = await departmentService.getAllDepartments();
+      return res.status(201).json({code: "Successful", msg: "Retrieved departments", departments: departments});
+  } catch (error) {
+    console.error("Error fetching departments:", error); // Testing purposes
+    res.status(500).json({ error: error.message });
+  }
+}
+
 /**
  * STEP 2 (If staff): Assign department to staff member
  * Creates the appropriate staff record (Lecturer/Coordinator/HOD)
@@ -395,6 +415,8 @@ module.exports = {
   registerStep1,
   registerStep2Student,
   registerStep2Staff,
+  getAllDepartments,
+  getAllQualifications,
   getDepartmentModules,
   registerStep3Staff,
   updateUserPassword,

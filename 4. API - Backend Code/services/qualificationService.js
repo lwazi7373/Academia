@@ -21,4 +21,14 @@ const getQualificationByName = async (qualificationName) => {
     }
 }
 
-module.exports = {getQualificationByName};
+const getAllQualifications = async () => {
+    try {
+        const [qualifications] = await connectDB.execute('SELECT * FROM Qualification');
+        return qualifications;
+    } catch (error) {
+        console.error("Failed to fetch qualifications:", error);
+        throw error;
+    }
+}
+
+module.exports = {getQualificationByName, getAllQualifications};

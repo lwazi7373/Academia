@@ -21,4 +21,14 @@ const getDepartmentByName = async (departmentName) => {
     }
 }
 
-module.exports = {getDepartmentByName};
+const getAllDepartments = async () => {
+    try {
+        const [departments] = await connectDB.execute('SELECT * FROM Department');
+        return departments;
+    } catch (error) {
+        console.error("Failed to fetch departments:", error);
+        throw error;
+    }
+}
+
+module.exports = {getDepartmentByName, getAllDepartments};
