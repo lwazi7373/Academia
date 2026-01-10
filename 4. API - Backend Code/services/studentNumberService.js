@@ -109,9 +109,24 @@ const reserveStudentNumber = async (userId, studentNumber, qualificationId, year
        VALUES (?, ?, ?, ?, ?)`,
       [userId, studentNumber, levelOfEducation, yearOfStudy, qualificationId]
     );
-    
+
+     // Adding this at a later stage 
+     // Re-query the canonical record -> initial setup gave me issues with the return types (studentId & yearOfStudy being strings)
+     // return was manually made initially hence the switch 
+    const [rows] = await connection.query(
+      `SELECT 
+         studentId,
+         studentNumber,
+         levelOfEducation,
+         yearOfStudy,
+         qualificationId
+       FROM Student
+       WHERE studentId = ?`,
+      [userId]
+    );
+
     await connection.commit();
-    
+    /*
     return {
       studentId: userId,
       studentNumber,
@@ -119,7 +134,11 @@ const reserveStudentNumber = async (userId, studentNumber, qualificationId, year
       yearOfStudy,
       qualificationId
     };
-    
+    */
+   
+    // rows[0] is now typed according to the DB schema
+    return rows[0];
+
   } catch (error) {
     await connection.rollback();
     throw new Error(`Failed to reserve student number: ${error.message}`);

@@ -155,8 +155,26 @@ const reserveStaffNumber = async (userId, staffNumber, departmentId, userRole) =
       [userId, departmentId, staffNumber]
     );
     
+     // Re-query canonical record (Same issue as studentNumber service)
+    const [rows] = await connection.query(
+      `SELECT 
+         ${idField} AS userId,
+         staffNumber,
+         departmentId
+       FROM ${tableName}
+       WHERE ${idField} = ?`,
+      [userId]
+    );
+
     await connection.commit();
-    
+
+    // Add role explicitly (it does not live in the table)
+    return {
+      ...rows[0],
+      userRole
+    };
+    // Never return data you didn’t read from the database. (JavaScript will shock you)
+    /*
     return {
       userId,
       staffNumber,
@@ -164,7 +182,8 @@ const reserveStaffNumber = async (userId, staffNumber, departmentId, userRole) =
       userRole,
       tableName
     };
-    
+    */
+
   } catch (error) {
     await connection.rollback();
     throw new Error(`Failed to reserve staff number: ${error.message}`);
