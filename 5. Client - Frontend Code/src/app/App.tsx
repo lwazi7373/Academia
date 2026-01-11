@@ -15,6 +15,7 @@ function App() {
         <Route path="/register2/staff" element={<RegisterStaffStep2Page />} />
         <Route path="/register3/staff" element={<RegisterStaffStep3Page />} />
         <Route path="/dashboard" element={<div>Dashboard placeholder</div>} />
+        <Route path="/registration-complete" element={<div>Registration completed...</div>} />
       </Routes>
     </Router>
   );
