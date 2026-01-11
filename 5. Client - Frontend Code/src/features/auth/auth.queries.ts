@@ -3,32 +3,36 @@ import { authApi } from "./auth.api";
 
 // Query keys - hierarchical structure for easy cache management
 export const authKeys = {
-  all: ['auth'] as const,
-  me: () => [...authKeys.all, 'me'] as const,
-  departments: () => [...authKeys.all, 'departments'] as const,
-  qualifications: () => [...authKeys.all, 'qualifications'] as const,
+  // Keys are always arrays, even for single objects
+  //Static Keys
+  all: ['auth'] as const, // purely just a convenience pattern for cache invalidation. (Invalidate all that starts with auth)
+  me: () => [...authKeys.all, 'me'] as const, // ['auth', 'me']
+  departments: () => [...authKeys.all, 'departments'] as const, // ['auth', 'departments']
+  qualifications: () => [...authKeys.all, 'qualifications'] as const, // ['auth', 'qualifications']
+  //Dynamic keys
   departmentModules: (departmentId: number) => [...authKeys.all, 'department-modules', departmentId] as const,
   
 };
 
 // Get current user
-export const useGetMe = (enabled = true) => { 
+export const useGetMe = (enabled = true) => { // I might want to conditionally control whether the query runs.
   return useQuery({
     queryKey: authKeys.me(),
     queryFn: authApi.getMe, 
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes 
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-    retry: false, // Don't retry on 401
+    retry: false, // Don't retry on 401 (you are simply not authenticated)
     enabled: enabled && !!localStorage.getItem('authToken'), // Only fetch if token exists
   });
 };
 
 // Get department modules (for staff registration step 2)
-export const useGetDepartmentModules = (departmentId: number, enabled = true) => {
+export const useGetDepartmentModules = (departmentId: number, enabled = true) => { // I might want to conditionally control whether the query runs.
   return useQuery({
     queryKey: authKeys.departmentModules(departmentId),
-    queryFn: () => authApi.getDepartmentModules(departmentId),
-    enabled: enabled && departmentId > 0,
+    // Capture departmentId from the hook's scope with arrow function
+    queryFn: () => authApi.getDepartmentModules(departmentId), // React Query calls this function with no arguments, so we need to "bake in" the parameter
+    enabled: enabled && departmentId > 0, // if the dapartment key exists (maybe not exists exactly, but you get the idea)
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };
