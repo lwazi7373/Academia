@@ -75,7 +75,7 @@ export default function RegisterPage() {
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center">
           <h1 className="text-3xl font-bold text-white mb-2">Academic Portal</h1>
-          <p className="text-blue-100">Create Your Account - Step 1 of {isStudent ? '2' : '3'}</p>
+          <p className="text-blue-100">Create An Account - Step 1 of {isStudent ? '2' : '3'}</p>
         </div>
         
         {/* Visual indicator (not interactive) */}
@@ -126,7 +126,7 @@ export default function RegisterPage() {
             {/* Role Selection - FIRST FIELD */}
             <div>
               <label htmlFor="userRole" className="block text-sm font-medium text-gray-700 mb-2">
-                I am registering as *
+                I am registering a *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
