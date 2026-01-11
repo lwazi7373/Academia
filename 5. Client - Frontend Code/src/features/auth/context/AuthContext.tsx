@@ -1,19 +1,27 @@
 import { createContext, useContext, ReactNode } from 'react';
 import { useGetMe } from '../auth.queries';
 import { useLogout } from '../auth.mutations';
-import type { AuthContextType } from '../auth.types';
+import type { User } from '../auth.types';
+
+// Updated context type (removed login)
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  logout: () => void;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  // Check if token exists
   const hasToken = !!localStorage.getItem('authToken');
+  
+  // Fetch user data if token exists
   const { data: user, isLoading } = useGetMe(hasToken);
+  
+  // Logout mutation
   const logoutMutation = useLogout();
-
-  const login = (token: string) => {
-    // Just store the token - the user data is automatically cached by the login mutation
-    localStorage.setItem('authToken', token);
-  };
 
   const logout = () => {
     logoutMutation.mutate();
@@ -23,7 +31,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     user: user || null,
     isAuthenticated: !!user,
     isLoading,
-    login,
     logout,
   };
 
