@@ -46,7 +46,7 @@ export interface UpdatePasswordRequest {
 }
 
 // ======================================================================================================================================= //
-// ============= RESPONSE TYPES =============
+// ============= RESPONSE TYPES =============(Checked and verified to match to backend)
 // Note : In my response types, I did not add (msg: string) anywhere, even though most responses do have a msg 
 // ============= BASE USER TYPE (common fields) ============= (getMe returns data dependent on type of user retrieved hence BaseUser)
 interface BaseUser {
@@ -157,23 +157,27 @@ export interface LoginUser {
 }
 
 export interface LoginResponse {
+  msg: string;
   authToken: string;
   user: LoginUser;
 }
 
 export type RegisterStep1Response = 
   | {
+      msg: string;
       userId: number;
       studentNumber: string;
       role: 'STUDENT';
     }
   | {
+      msg: string;
       userId: number;
       staffNumber: string;
       role: 'LECTURER' | 'COORDINATOR' | 'ADMIN';  // All staff roles
     };
 
 export interface RegisterStudentStep2Response {
+  msg: string;
   student: {
     studentId: number;          
     studentNumber: string;
@@ -186,6 +190,7 @@ export interface RegisterStudentStep2Response {
 }
 
 export interface RegisterStaffStep2Response {
+  msg: string;
   staff: {
     userId: number;
     staffNumber: string;
@@ -195,6 +200,7 @@ export interface RegisterStaffStep2Response {
 }
 
 export interface RegisterStaffStep3Response {
+  msg: string;
   modulesAssigned: number;
   modules: Module[];
 }
@@ -208,6 +214,7 @@ export interface Module {
 
 // The moddules you select from on step 3, when registering staff
 export interface DepartmentModulesResponse {
+  msg: string;
   modules: Module[];
 }
 
@@ -220,6 +227,7 @@ export interface Department {
 }
 
 export interface DepartmentsResponse {
+  msg: string;
   departments: Department[];
 }
 
@@ -233,6 +241,7 @@ export interface Qualification {
 }
 
 export interface QualificationsResponse {
+  msg: string;
   qualifications: Qualification[];
 }
 
