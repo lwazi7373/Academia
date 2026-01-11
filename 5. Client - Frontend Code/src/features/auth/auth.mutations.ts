@@ -11,27 +11,34 @@ import type {
   UpdatePasswordRequest,
 } from './auth.types';
 
-// Login mutation
+// Login mutation is a bit complicated at this point so here is whats going on for a mental note:
+/**
+1. User clicks "Login"
+2. useLogin mutation runs
+3. Token is stored in localStorage
+4. Cache for ['auth', 'me'] is invalidated (marked stale)
+5. AuthProvider's useGetMe detects token exists
+6. useGetMe automatically refetches (because cache is stale)
+7. Full user data with profile is fetched and cached
+8. User sees authenticated UI with complete data
+*/
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  // Login IS a mutation because :
-  /**
-   * It creates a session/token on the server
-   * It modifies state (stores token in localStorage)
-   * It's a POST request & It's user-initiated (clicking "Login" button)
-   * */  
+  
   return useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
     onSuccess: (data) => {
       // Store token
-      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('authToken', data.authToken);
       
-      // Set user data in cache
-      queryClient.setQueryData(authKeys.me(), data.user);
+      // Did not use data.user because data.user is incomplete (remember we need the profile depending on the type of user it was)
+      // queryClient.setQueryData(authKeys.me(), data.user);
+      
+      // Invalidate to trigger a fresh fetch of full user data
+      queryClient.invalidateQueries({ queryKey: authKeys.me() });
       
       toast.success('Login successful!');
     },
-    // Error handling is done at component level for form validation
   });
 };
 
@@ -91,7 +98,7 @@ export const useRegisterStaffStep3 = () => {
   });
 };
 
-// Update password (DEV ONLY)
+// Update password (DEV ONLY) -> I have no idea why I am still proceeding with the logic for this, but hey :)
 export const useUpdatePassword = () => {
   return useMutation({
     mutationFn: (data: UpdatePasswordRequest) => authApi.updatePassword(data),
