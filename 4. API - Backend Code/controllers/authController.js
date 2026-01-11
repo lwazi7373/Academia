@@ -66,24 +66,23 @@ const registerStep1 = async (req, res) => {
       generatedNumber = await staffNumberService.generateStaffNumber();
       numberType = "staffNumber";
     } else {
-      // ADMIN doesn't need a student/staff number 
+      // ADMIN doesn't need a student/staff number
       // (I will never really register an Admin, no need to stress on responseTypes in the frontend)
-      return res.status(200).json({msg: "Admin user created successfully",
-        data: {
-          userId: newUserId,
-          role: userRole,
-        },
+      return res.status(200).json({
+        msg: "Admin user created successfully",
+
+        userId: newUserId,
+        role: userRole,
       });
     }
 
     // Return the userId and generated number for step 2 of registration
     return res.status(200).json({
       msg: "Step 1 completed - User created and number generated",
-      data: {
-        userId: newUserId,
-        [numberType]: generatedNumber, // Dynamic key: either "studentNumber" or "staffNumber"
-        role: userRole,
-      },
+
+      userId: newUserId,
+      [numberType]: generatedNumber, // Dynamic key: either "studentNumber" or "staffNumber"
+      role: userRole,
     });
   } catch (error) {
     console.error("Registration step 1: error:", error); // Testing purposes
@@ -100,7 +99,7 @@ const registerStep1 = async (req, res) => {
 const registerStep2Student = async (req, res) => {
   try {
     const {
-      userId, // userId will match as studentId (received from the registerStep1), not sure how I will store it though 
+      userId, // userId will match as studentId (received from the registerStep1), not sure how I will store it though
       studentNumber,
       qualificationName, // What is arriving here is the qualification name not id
       yearOfStudy,
@@ -132,11 +131,10 @@ const registerStep2Student = async (req, res) => {
 
     return res.status(201).json({
       msg: "Student registration completed successfully",
-      data: {
-        student: studentRecord,
-        modulesAssigned: assignedModules.length,
-        modules: assignedModules,
-      },
+
+      student: studentRecord,
+      modulesAssigned: assignedModules.length,
+      modules: assignedModules,
     });
   } catch (error) {
     console.error("Student Registration step 2 : error:", error); // Testing purposes
@@ -146,43 +144,43 @@ const registerStep2Student = async (req, res) => {
 
 /**
  * Used to get the all the qualifications as options to select from when registering a student
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  * @returns qualifications (all) in the database
  */
 const getAllQualifications = async (req, res) => {
   try {
     const qualifications = await qualificationService.getAllQualifications();
-    return res.status(201).json({msg: "Retrieved qualifications",
-        data: {
-          qualifications: qualifications,
-        }
-      });
+    return res.status(201).json({
+      msg: "Retrieved qualifications",
+
+      qualifications: qualifications,
+    });
   } catch (error) {
-     console.error("Error fetching qualifications:", error); // Testing purposes
-     res.status(500).json({ error: error.message })
+    console.error("Error fetching qualifications:", error); // Testing purposes
+    res.status(500).json({ error: error.message });
   }
-}
+};
 
 /**
  * Used to get the all the departments as options to select from when registering a staff member
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req
+ * @param {*} res
  * @returns departments (all) in the database
  */
-const getAllDepartments = async(req, res) => {
+const getAllDepartments = async (req, res) => {
   try {
-      const departments = await departmentService.getAllDepartments();
-      return res.status(201).json({msg: "Retrieved departments",
-        data: {
-          departments: departments,
-        }
-      });
+    const departments = await departmentService.getAllDepartments();
+    return res.status(201).json({
+      msg: "Retrieved departments",
+
+      departments: departments,
+    });
   } catch (error) {
     console.error("Error fetching departments:", error); // Testing purposes
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 /**
  * STEP 2 (If staff): Assign department to staff member
@@ -210,10 +208,10 @@ const registerStep2Staff = async (req, res) => {
       userRole
     );
 
-    return res.status(201).json({msg: `Step 2 completed - ${userRole} assigned to department`,
-      data: {
-        staff: staffRecord,
-      },
+    return res.status(201).json({
+      msg: `Step 2 completed - ${userRole} assigned to department`,
+
+      staff: staffRecord,
     });
   } catch (error) {
     console.error("Staff Registration step 2 : error:", error); // Testing purposes
@@ -238,9 +236,8 @@ const getDepartmentModules = async (req, res) => {
 
     return res.status(200).json({
       msg: "Modules retrieved successfully",
-      data: {
-        modules: modules, // important for module id's to be present, because there will be used for step 3 registration for staff
-      },
+
+      modules: modules, // important for module id's to be present, because there will be used for step 3 registration for staff
     });
   } catch (error) {
     console.error("Get department modules error:", error);
@@ -265,11 +262,9 @@ const registerStep3Staff = async (req, res) => {
 
     // HOD doesn't need module assignment
     if (userRole === "HOD") {
-      return res
-        .status(200)
-        .json({
-          msg: "HOD registration completed - No modules to assign",
-        });
+      return res.status(200).json({
+        msg: "HOD registration completed - No modules to assign",
+      });
     }
 
     // Assign modules to Lecturer or Coordinator
@@ -286,16 +281,14 @@ const registerStep3Staff = async (req, res) => {
         moduleIds
       );
     } else {
-      return res
-        .status(400)
-        .json({msg: "Invalid user Role" });
+      return res.status(400).json({ msg: "Invalid user Role" });
     }
 
-    return res.status(201).json({msg: `${userRole} registration completed successfully`,
-      data: {
-        modulesAssigned: assignedModules.length,
-        modules: assignedModules,
-      },
+    return res.status(201).json({
+      msg: `${userRole} registration completed successfully`,
+
+      modulesAssigned: assignedModules.length,
+      modules: assignedModules,
     });
   } catch (error) {
     console.error("Staff Register Step 3 Staff error:", error); //Testing purposes
@@ -313,8 +306,10 @@ const getMe = async (req, res) => {
   try {
     const userId = req.user.userId;
     const userData = await authService.getCurrentUser(userId);
-    if (!userData) {return res.status(404).json({msg: "User not found"});}
-    res.status(200).json({msg: "User found", user: userData});
+    if (!userData) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+    res.status(200).json({ msg: "User found", user: userData });
   } catch (error) {
     console.error("Get me error:", error);
     res.status(500).json({ error: error.message });
@@ -338,39 +333,39 @@ const login = async (req, res) => {
       userPassword,
       user.userPassword
     );
-	
-	//No seperation for security purposes, to avoid giving out too much information.
-	if (!user || !isPasswordValid) {
-	  return res.status(400).json({ //400 status code, will match the frontend (axios error handling)
-      code: "INVALID_CREDENTIALS",
-      msg: "Invalid identifier or password"
-	  });
-	}
-	
+
+    //No seperation for security purposes, to avoid giving out too much information.
+    if (!user || !isPasswordValid) {
+      return res.status(400).json({
+        //400 status code, will match the frontend (axios error handling)
+        code: "INVALID_CREDENTIALS",
+        msg: "Invalid identifier or password",
+      });
+    }
+
     // If correct create token
     const payload = { userId: user.userId, userRoles: user.roles };
     const secret = process.env.JWT_SECRET;
     const authToken = jwt.sign(payload, secret, { expiresIn: "1d" });
     // Send response
     res.status(200).json({
-        data: {
-          authToken, // I want to name it this way, its not like i will have any other types of tokens
-          user: {
-            userId: user.userId,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            title: user.title,
-            emailAddress: user.emailAddress,
-            contactNo: user.contactNo,
-            gender: user.gender,
-            roles: user.roles
-            // userPassword is NOT included
-          }
-        }
+      msg : "Sucessfully logged In User",
+      authToken, // I want to name it this way, its not like i will have any other types of tokens
+      user: {
+        userId: user.userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        title: user.title,
+        emailAddress: user.emailAddress,
+        contactNo: user.contactNo,
+        gender: user.gender,
+        roles: user.roles,
+        // userPassword is NOT included
+      },
     });
   } catch (error) {
     console.error("Login error:", error); // Testing purposes
-    res.status(500).json({ code: "SERVER_ERROR" , msg: "Server error" });
+    res.status(500).json({ code: "SERVER_ERROR", msg: "Server error" });
   }
 };
 
@@ -403,10 +398,12 @@ const updateUserPassword = async (req, res) => {
     );
 
     if (!updated) {
-      return res.status(404).json({msg: "User not found or inactive"});
+      return res.status(404).json({ msg: "User not found or inactive" });
     }
 
-    return res.status(200).json({msg: "Password updated successfully (DEV ONLY)"});
+    return res
+      .status(200)
+      .json({ msg: "Password updated successfully (DEV ONLY)" });
   } catch (error) {
     console.error("Update password error:", error);
     res.status(500).json({ error: error.message });
