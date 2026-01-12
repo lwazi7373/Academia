@@ -85,7 +85,7 @@ const registerStep1 = async (req, res) => {
       role: userRole,
     });
   } catch (error) {
-    
+
     if (error.code === "ER_DUP_ENTRY") {
     return res.status(409).json({
       msg: "A user with this email or ID number already exists",
@@ -177,9 +177,9 @@ const getAllQualifications = async (req, res) => {
 const getAllDepartments = async (req, res) => {
   try {
     const departments = await departmentService.getAllDepartments();
+
     return res.status(201).json({
       msg: "Retrieved departments",
-
       departments: departments,
     });
   } catch (error) {
