@@ -26,7 +26,7 @@ export default function StaffRegistrationStep2() {
   const [formData, setFormData] = useState<RegisterStaffStep2Request>({
     userId: userId || 0,
     staffNumber: staffNumber || '',
-    departmentId: 0,  // ← Backend expects departmentId (number)
+    departmentId: 0,  
     userRole: role || 'LECTURER',
   });
 
@@ -47,7 +47,7 @@ export default function StaffRegistrationStep2() {
     try {
       const result = await registerMutation.mutateAsync(formData);
       
-      // Success! Result contains { staff: { userId, staffNumber, departmentId, userRole } }
+      // Result contains { staff: { userId, staffNumber, departmentId, userRole } }
       console.log('Staff step 2 complete:', result);
       
       // HOD doesn't need step 3 (module assignment)

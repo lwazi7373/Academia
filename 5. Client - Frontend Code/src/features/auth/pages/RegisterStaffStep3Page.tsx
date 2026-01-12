@@ -114,7 +114,7 @@ export default function StaffRegistrationStep3() {
             </div>
             <div>
               <div className="font-medium text-gray-800">Role: {role}</div>
-              <div className="text-sm text-gray-600">Select modules you'll be teaching</div>
+              <div className="text-sm text-gray-600">Select modules they will be teaching</div>
             </div>
           </div>
         </div>
