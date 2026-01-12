@@ -17,7 +17,9 @@ const createClassSession = async (moduleId, lecturerId, attendanceCode, classTyp
     const [assigned] = await connectDB.execute(`SELECT 1 FROM LecturerModule WHERE lecturerId = ? AND moduleId = ?`,[lecturerId, moduleId]);
 
     if (assigned.length === 0) {
-        throw new Error('Lecturer not assigned to this module');
+        const error = new Error('Lecturer not assigned to this module');
+        error.statusCode = 404;
+        throw error;
     }
 
     // Create the class session
@@ -63,10 +65,13 @@ const getActiveSession = async (moduleId, lecturerId) => {
   );
 
   if (rows.length === 0) {
-    throw new Error('No active attendance session');
-  }
+    const error = new Error('No active attendance session');
+    error.statusCode = 404;
+    throw error;
+ }
 
   return rows[0];
+
   } catch (error) {
       console.error('Error getting active session:', error);
       throw error;
@@ -93,17 +98,20 @@ const markStudentAttendance = async (attendanceCode,studentId) => {
             [attendanceCode]
         );
 
+    // Need a way to classify errors (client or server) for controller
     if (sessions.length === 0) {
-        throw new Error('Invalid or expired attendance code');
+        const error = new Error('Invalid or expired attendance code');
+        error.statusCode = 400; // the client sent an invalid code
+        throw error;
     }
 
     const sessionId = sessions[0].sessionId;
 
     await connectDB.execute(
-    `INSERT INTO AttendanceRecord (studentId, sessionId)
-     VALUES (?, ?)`,
-    [studentId, sessionId]
-  );
+        `INSERT INTO AttendanceRecord (studentId, sessionId)
+        VALUES (?, ?)`,
+        [studentId, sessionId]
+    );
 
     } catch (error) {
         console.error('Error marking attendance:', error);

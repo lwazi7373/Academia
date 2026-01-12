@@ -8,7 +8,7 @@ const authorizeRoles = require("../middleware/authRolesMiddleware");
 /**
  * POST /api/attendance/sessions
  * Generate the attendance code and Create classSession 
- * Body: { classType }
+ * Params: { moduleId } , Body: { classType } , Middleware: { lecturerId }
  */
 router.post(
   '/modules/:moduleId/attendance-sessions',
@@ -20,6 +20,7 @@ router.post(
 /**
  * GET /api/attendance/view
  * Get the generated attendance code
+ * Params: { moduleId } , Middleware: { lecturerId }
  */
 router.get(
   '/modules/:moduleId/attendance-sessions/active',
@@ -31,7 +32,7 @@ router.get(
 /**
  * POST /api/attendance/submit
  * Submit the generated class attendance code
- * Body: { attendanceCode }
+ * Body: { attendanceCode } , Middleware: { studentId }
  */
 router.post(
   '/attendance/submit',

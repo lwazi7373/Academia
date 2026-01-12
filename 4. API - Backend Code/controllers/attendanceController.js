@@ -34,13 +34,19 @@ const createClassSession = async (req, res) => {
             moduleId,
             lecturerId,
             attendanceCode,
-            classType
-            
+            classType  
         );
-        res.status(201).json({code: "Successful", msg: "Class Session Created", session});
+
+        res.status(201).json({msg: "Class Session Created - now active", createdSession: session});
   } catch (error) {
         console.error('Class Session Creation error:', error); // Testing purposes
-        res.status(500).json({ error: error.message });
+
+        const status = error.statusCode || 500;
+        res.status(status).json({
+        error: status === 500
+            ? 'Failed to create class session'
+            : error.message, // else its 404, lecturer is not authorized to create session for this module
+        });
   }
 };
 
@@ -62,10 +68,16 @@ const getActiveSession = async (req, res) => {
       lecturerId
     );
 
-    res.status(201).json({code: "Successful", msg: "Active class session retrieved", session});
+    res.status(201).json({msg: "Active class session retrieved", activeSession: session});
   } catch (error) {
-    console.error('Get active session error:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Get active session error:', error); // Testing purposes
+
+    const status = error.statusCode || 500;
+    res.status(status).json({
+    error: status === 500
+        ? 'Failed to retrieve active session'
+        : error.message, // else its 404, there was no specified active session to be found
+    }); 
   }
 };
 
@@ -81,12 +93,17 @@ const markStudentAttendance = async (req, res) => {
     const { attendanceCode } = req.body;
     const studentId = req.user.userId;
 
-    const hasAttended = await attendanceService.markStudentAttendance(attendanceCode, studentId);
+    await attendanceService.markStudentAttendance(attendanceCode, studentId);
 
     res.json({ msg: 'Attendance marked successfully' });
   } catch (error) {
-    console.error('Mark attendance error:', error);
-    res.status(400).json({ error: error.message });
+    console.error('Mark attendance error:', error); //Testing purposes
+    const status = error.statusCode || 500;
+    res.status(status).json({
+    error: status === 500
+      ? 'Failed to mark attendance. Please try again.'
+      : error.message, //else its 400, the client sent an invalid code
+  });
   }
 };
 
