@@ -1,5 +1,11 @@
-// Every api call passes through this point 
-// Every feature API file (auth.api.ts, student.api.ts, etc.) should depend on this and nothing else
+// We are basically handling errors that are global, impersonal, and non-recoverable by the current screen.
+/**
+ * attaching tokens
+ * handling session death (401)
+ * handling permission walls (403)
+ * handling “the server is on fire” (500, 503)
+ * handling “the internet is gone”
+ **/
 
 import axios from "axios";
 import { toast } from "react-hot-toast";
