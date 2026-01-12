@@ -12,7 +12,7 @@ CREATE TABLE Users (
     isActive BOOLEAN DEFAULT TRUE,
     dateRegistered DATETIME DEFAULT CURRENT_TIMESTAMP,
     gender VARCHAR(20),
-    idNumber VARCHAR(20)
+    idNumber VARCHAR(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE UserRoles (
