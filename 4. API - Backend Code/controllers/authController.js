@@ -52,7 +52,7 @@ const registerStep1 = async (req, res) => {
     if (!newUserId) {
       return res
         .status(500)
-        .json({ code: "Unsuccessful", msg: "Failed to create user" });
+        .json({ msg: "Failed to create user" });
     }
     // Next Step is to generate the Student or Staff number of the user, depending on their userRole
     // Generate the appropriate number based on role
@@ -85,8 +85,14 @@ const registerStep1 = async (req, res) => {
       role: userRole,
     });
   } catch (error) {
-    console.error("Registration step 1: error:", error); // Testing purposes
-    res.status(500).json({ error: error.message });
+    
+    if (error.code === "ER_DUP_ENTRY") {
+    return res.status(409).json({
+      msg: "A user with this email or ID number already exists",
+    });
+  }
+
+  res.status(500).json({ error: "Internal server error" });
   }
 };
 
