@@ -1,9 +1,9 @@
-// RegisterPage.tsx
 import React, { useState } from 'react';
 import { User, Mail, Lock, Phone, IdCard, GraduationCap, Briefcase, ArrowRight, AlertCircle } from 'lucide-react';
 import { useRegisterStep1 } from '../auth.mutations';
 import { RegisterStep1Request } from '../auth.types';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 export default function RegisterPage() {
   // Type the state with RegisterStep1Request
@@ -39,7 +39,7 @@ export default function RegisterPage() {
     try {
       const result = await registerMutation.mutateAsync(formData);
       
-      console.log('Registration step 1 complete:', result);
+      console.log('Registration step 1 complete:', result); // Testing purposes 
       
       if (result.role === 'STUDENT') {
         navigate('/register2/student', { 
@@ -115,7 +115,10 @@ export default function RegisterPage() {
                 <div className="flex-1">
                   <h3 className="text-sm font-medium text-red-800">Registration Failed</h3>
                   <p className="text-sm text-red-700 mt-1">
-                    {'An error occurred. Please try again.'}
+                    {/* Use clear messages frome the backend that are sent as msg */}
+                    {error instanceof AxiosError && error.response?.data?.msg
+                      ? error.response.data.msg
+                      : 'An error occurred. Please try again.'}
                   </p>
                 </div>
               </div>

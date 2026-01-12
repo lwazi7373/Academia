@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { User, Lock, GraduationCap, Briefcase, AlertCircle } from 'lucide-react';
 import { useLogin } from '../auth.mutations';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 export default function LoginPage() {
     // State 
@@ -94,7 +95,10 @@ export default function LoginPage() {
                 <div className="flex-1">
                   <h3 className="text-sm font-medium text-red-800">Login Failed</h3>
                   <p className="text-sm text-red-700 mt-1">
-                    {'Invalid credentials. Please try again.'}
+                    {/* Use clear messages frome the backend that are sent as msg */}
+                    {error instanceof AxiosError && error.response?.data?.msg
+                      ? error.response.data.msg
+                      : 'An error occurred. Please try again.'}
                   </p>
                 </div>
               </div>
