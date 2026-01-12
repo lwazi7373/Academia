@@ -199,13 +199,16 @@ const registerStep2Staff = async (req, res) => {
     const {
       userId, // userId will match as staffId (received from the registerStep1), not sure how I will store it though
       staffNumber,
-      departmentName,
+      departmentId,
       userRole, // 'LECTURER', 'COORDINATOR', or 'HOD'
     } = req.body;
 
+    /*
     const departmentId = await departmentService.getDepartmentByName(
       departmentName
     );
+    */
+   
     // Reserve the staff number by creating the appropriate staff record
     const staffRecord = await staffNumberService.reserveStaffNumber(
       userId,
