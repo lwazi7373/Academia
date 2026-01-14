@@ -7,11 +7,8 @@ const getStudentsModules = async (req, res) => {
         const studentId = req.user.userId; // decoded from the auth Middleware
         const modules = await moduleService.getStudentModules(studentId);
         return res.status(200).json({
-            code: "Successful",
             msg: "Modules retrieved successfully",
-            data: {
-                modules: modules
-            }
+            modules: modules
         });
     } catch (error) {
         console.error('Error getting students modules:', error); // Testing purposes
@@ -23,9 +20,9 @@ const getUpcomingAssessments = async (req, res) => {
     try {
         const studentId = req.user.userId; // Get the studentId from the auth middleware
         const assessments = await assessmentService.getUpcomingAssessments(studentId);
-        res.status(200).json({ code: "Successful", assessments });
+        res.status(200).json({ msg: "Upcoming assessments retrieved", assessments: assessments });
     } catch (error) {
-        console.error('Fetching upcoming assessments error:', error);
+        console.error('Fetching upcoming assessments error:', error); //Testing purposes
         res.status(500).json({ error: error.message });
     }
 };
@@ -35,10 +32,8 @@ const getStudentModulePerformance = async (req, res) => {
         const studentId = req.user.userId; // Get the studentId from the auth middleware
         const modules = await moduleService.getStudentModulePerformance(studentId);
         res.status(200).json({ 
-            code: "Successful",
-            count: modules.length,
             msg : `Module Metrics for student :" ${studentId}`,
-            modules 
+            modulePerformances: modules 
         });
     } catch (error) {
         console.error('Fetching student module performance error:', error);
