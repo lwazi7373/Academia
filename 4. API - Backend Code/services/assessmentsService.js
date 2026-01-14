@@ -23,17 +23,23 @@ const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark,
         );
 
         if (assigned.length === 0) {
-            throw new Error('Lecturer not assigned to this module');
+            const error = new Error('Lecturer not assigned to this module');
+            error.statusCode = 403;
+            throw error;
         }
 
         // Validate weighting is within range
         if (weighting < 0 || weighting > 100) {
-            throw new Error('Weighting must be between 0 and 100');
+            const error = new Error('Weighting must be between 0 and 100');
+            error.statusCode = 400;
+            throw error;
         }
 
         // Validate totalMark is positive
         if (totalMark <= 0) {
-            throw new Error('Total mark must be greater than 0');
+            const error = new Error('Total mark must be greater than 0');
+            error.statusCode = 400;
+            throw error;
         }
 
         // Create the assessment
@@ -83,17 +89,23 @@ const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalM
         );
 
         if (assessment.length === 0) {
-            throw new Error('Assessment not found or you are not authorized to edit it');
+            const error = new Error('Assessment not found or you are not authorized to edit it');
+            error.statusCode = 404;
+            throw error;
         }
 
         // Validate weighting is within range
         if (weighting < 0 || weighting > 100) {
-            throw new Error('Weighting must be between 0 and 100');
+            const error = new Error('Weighting must be between 0 and 100');
+            error.statusCode = 400;
+            throw error;
         }
 
         // Validate totalMark is positive
         if (totalMark <= 0) {
-            throw new Error('Total mark must be greater than 0');
+            const error = new Error('Total mark must be greater than 0');
+            error.statusCode = 400;
+            throw error;
         }
 
         // Update the assessment
@@ -134,7 +146,9 @@ const deleteAssessment = async (assessmentId, lecturerId) => {
         );
 
         if (assessment.length === 0) {
-            throw new Error('Assessment not found or you are not authorized to delete it');
+            const error = new Error('Assessment not found or you are not authorized to delete it');
+            error.statusCode = 404;
+            throw error;
         }
 
         // Delete all mark entries for this assessment first
@@ -228,7 +242,9 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
         );
 
         if (assigned.length === 0) {
-            throw new Error('Lecturer not assigned to this module');
+            const error = new Error('Lecturer not assigned to this module');
+            error.statusCode = 404;
+            throw error;
         }
 
         // Query to get all assessments for the module by this lecturer
@@ -278,7 +294,9 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
         );
 
         if (assessment.length === 0) {
-            throw new Error('Assessment not found or you are not authorized to upload marks');
+            const error = new Error('Assessment not found or you are not authorized to upload marks');
+            error.statusCode = 400;
+            throw error;
         }
 
         // Get the module and the total mark of the assessment 
@@ -317,7 +335,9 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
         const unenrolledStudents = studentIds.filter(id => !enrolledStudentIds.includes(id));
 
         if (unenrolledStudents.length > 0) {
-            throw new Error(`Students with IDs [${unenrolledStudents.join(', ')}] are not enrolled in this module`);
+            const error = new Error(`Students with IDs [${unenrolledStudents.join(', ')}] are not enrolled in this module`);
+            error.statusCode = 404;
+            throw error;
         }
 
         // Process each mark entry
@@ -329,7 +349,9 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
 
             // Validate mark is within range
             if (mark !== null && (mark < 0 || mark > totalMark)) {
-                throw new Error(`Invalid mark ${mark} for student ${studentId}. Must be between 0 and ${totalMark}`);
+                const error = new Error(`Invalid mark ${mark} for student ${studentId}. Must be between 0 and ${totalMark}`);
+                error.statusCode = 400;
+                throw error;
             }
 
             // Check if mark entry already exists
@@ -378,7 +400,6 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
         await connection.commit();
 
         return {
-            message: 'Marks uploaded successfully',
             inserted: insertedCount,
             updated: updatedCount,
             total: insertedCount + updatedCount

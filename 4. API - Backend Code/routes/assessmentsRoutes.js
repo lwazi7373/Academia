@@ -65,6 +65,19 @@ router.get(
 /**
  * POST /assessments/:assessmentId/upload
  * upload or update students marks for a particular assessment 
+ * body {marksData[] array} -> 
+ * e.g) "marksData": [
+    {
+      "studentId": 13,
+      "mark": 79,
+      "submission": true
+    },
+    {
+      "studentId": 14,
+      "mark": 58,
+      "submission": true
+    }
+  ]
  */
 router.post(
   '/assessments/:assessmentId/upload-marks',
