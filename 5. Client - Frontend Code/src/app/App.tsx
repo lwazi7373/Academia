@@ -9,6 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Auth related routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/register2/student" element={<RegisterStudentStep2Page />} />
