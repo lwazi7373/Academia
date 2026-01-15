@@ -5,14 +5,12 @@ const getCoordinatorModules = async (req, res) => {
         const coordinatorId = req.user.userId; // decoded from the auth Middleware
         const modules = await riskService.getCoordinatorModules(coordinatorId);
         return res.status(200).json({
-            code: "SUCCESS",
             msg: "Modules retrieved successfully",
             data: modules
         });
     } catch (error) {
         console.error('Error getting coordinator modules:', error);
         return res.status(500).json({ 
-            code: "ERROR",
             error: error.message 
         });
     }
@@ -24,14 +22,12 @@ const getModuleRiskSummary = async (req, res) => {
         const { moduleId } = req.params;
         const riskSummary = await riskService.getModuleRiskSummary(coordinatorId, moduleId);
         return res.status(200).json({
-            code: "SUCCESS",
             msg: "Module risk summary retrieved successfully",
             data: riskSummary
         });
     } catch (error) {
         console.error('Error getting module risk summary:', error);
         return res.status(500).json({ 
-            code: "ERROR",
             error: error.message 
         });
     }
@@ -53,7 +49,6 @@ const getModuleStudents = async (req, res) => {
         
         const students = await riskService.getModuleStudents(coordinatorId, moduleId, filters);
         return res.status(200).json({
-            code: "SUCCESS",
             msg: "Module students retrieved successfully",
             data: students
         });
@@ -72,14 +67,12 @@ const getStudentRiskDetails = async (req, res) => {
         const { moduleId, studentId } = req.params;
         const studentRiskDetails = await riskService.getStudentRiskDetails(coordinatorId, moduleId, studentId);
         return res.status(200).json({
-            code: "SUCCESS",
             msg: "Student risk details retrieved successfully",
             data: studentRiskDetails
         });
     } catch (error) {
         console.error(`Error getting student's risk details:`, error);
         return res.status(500).json({ 
-            code: "ERROR",
             error: error.message 
         });
     }
@@ -93,15 +86,11 @@ const createIntervention = async (req, res) => {
         
         // Validate content
         if (!content || content.trim() === '') {
-            return res.status(400).json({
-                code: "ERROR",
-                error: "Intervention content is required"
-            });
+            return res.status(400).json({error: "Intervention content is required"});
         }
         
         const result = await riskService.createIntervention(coordinatorId, moduleId, studentId, content);
         return res.status(201).json({
-            code: "SUCCESS",
             msg: "Intervention created successfully",
             data: result
         });
@@ -111,13 +100,11 @@ const createIntervention = async (req, res) => {
         // Handle specific error cases
         if (error.message.includes('already has an active intervention')) {
             return res.status(409).json({
-                code: "ERROR",
                 error: error.message
             });
         }
         
         return res.status(500).json({ 
-            code: "ERROR",
             error: error.message 
         });
     }
@@ -132,20 +119,17 @@ const getActiveIntervention = async (req, res) => {
         // Return 404 if no active intervention found
         if (!intervention) {
             return res.status(404).json({
-                code: "NOT_FOUND",
                 msg: "No active intervention found for this student"
             });
         }
         
         return res.status(200).json({
-            code: "SUCCESS",
             msg: "Active intervention retrieved successfully",
             data: intervention
         });
     } catch (error) {
         console.error(`Error retrieving intervention:`, error);
         return res.status(500).json({ 
-            code: "ERROR",
             error: error.message 
         });
     }
@@ -160,21 +144,18 @@ const createFollowUp = async (req, res) => {
         // Validate input
         if (!content || content.trim() === '') {
             return res.status(400).json({
-                code: "ERROR",
                 error: "Follow-up content is required"
             });
         }
         
         if (!outcome) {
             return res.status(400).json({
-                code: "ERROR",
                 error: "Outcome is required (IMPROVED, NO_CHANGE, WORSENED)"
             });
         }
         
         const result = await riskService.createFollowUp(coordinatorId, interventionId, content, outcome);
         return res.status(201).json({
-            code: "SUCCESS",
             msg: "Follow-up created successfully",
             data: result
         });
@@ -184,13 +165,11 @@ const createFollowUp = async (req, res) => {
         // Handle invalid outcome error
         if (error.message.includes('Invalid outcome')) {
             return res.status(400).json({
-                code: "ERROR",
                 error: error.message
             });
         }
         
         return res.status(500).json({ 
-            code: "ERROR",
             error: error.message 
         });
     }
