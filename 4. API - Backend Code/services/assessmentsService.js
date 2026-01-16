@@ -1,6 +1,7 @@
 //Database connection
 const connectDB = require("../db/connect");
-
+// For error handling 
+const {badRequest,forbidden,notFound} = require("../errors/httpErrors");
 /**
  * Create a new assessment for a module
  * Verifies lecturer authorization and creates assessment record
@@ -14,7 +15,7 @@ const connectDB = require("../db/connect");
  * @throws {Error} If lecturer is not assigned to module or database error occurs
  */
 const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark, weighting, dueDate) => {
-    try {
+
         // Verify if the lecturer teaches this module
         const [assigned] = await connectDB.execute(
             `SELECT 1 FROM LecturerModule 
@@ -23,23 +24,15 @@ const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark,
         );
 
         if (assigned.length === 0) {
-            const error = new Error('Lecturer not assigned to this module');
-            error.statusCode = 403;
-            throw error;
+            throw forbidden('Lecturer not assigned to this module');
         }
 
-        // Validate weighting is within range
         if (weighting < 0 || weighting > 100) {
-            const error = new Error('Weighting must be between 0 and 100');
-            error.statusCode = 400;
-            throw error;
+            throw badRequest('Weighting must be between 0 and 100');
         }
 
-        // Validate totalMark is positive
         if (totalMark <= 0) {
-            const error = new Error('Total mark must be greater than 0');
-            error.statusCode = 400;
-            throw error;
+            throw badRequest('Total mark must be greater than 0');
         }
 
         // Create the assessment
@@ -60,11 +53,6 @@ const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark,
             lecturerId,
             moduleId
         };
-
-    } catch (error) {
-        console.error('Error creating assessment:', error);
-        throw error;
-    }
 };
 
 /**
@@ -80,7 +68,7 @@ const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark,
  * @throws {Error} If assessment doesn't exist, lecturer not authorized, or database error occurs
  */
 const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalMark, weighting, dueDate) => {
-    try {
+    
         // Verify the assessment exists and belongs to this lecturer
         const [assessment] = await connectDB.execute(
             `SELECT assessmentId FROM Assessment 
@@ -89,23 +77,15 @@ const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalM
         );
 
         if (assessment.length === 0) {
-            const error = new Error('Assessment not found or you are not authorized to edit it');
-            error.statusCode = 404;
-            throw error;
+            throw notFound('Assessment not found or not authorized');
         }
 
-        // Validate weighting is within range
         if (weighting < 0 || weighting > 100) {
-            const error = new Error('Weighting must be between 0 and 100');
-            error.statusCode = 400;
-            throw error;
+            throw badRequest('Weighting must be between 0 and 100');
         }
 
-        // Validate totalMark is positive
         if (totalMark <= 0) {
-            const error = new Error('Total mark must be greater than 0');
-            error.statusCode = 400;
-            throw error;
+            throw badRequest('Total mark must be greater than 0');
         }
 
         // Update the assessment
@@ -120,11 +100,6 @@ const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalM
         );
 
         return assessmentId;
-
-    } catch (error) {
-        console.error('Error updating assessment:', error);
-        throw error;
-    }
 };
 
 /**
@@ -137,7 +112,7 @@ const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalM
  * @throws {Error} If assessment doesn't exist, lecturer not authorized, or database error occurs
  */
 const deleteAssessment = async (assessmentId, lecturerId) => {
-    try {
+
         // Verify the assessment exists and belongs to this lecturer
         const [assessment] = await connectDB.execute(
             `SELECT assessmentId FROM Assessment 
@@ -145,10 +120,8 @@ const deleteAssessment = async (assessmentId, lecturerId) => {
             [assessmentId, lecturerId]
         );
 
-        if (assessment.length === 0) {
-            const error = new Error('Assessment not found or you are not authorized to delete it');
-            error.statusCode = 404;
-            throw error;
+          if (assessment.length === 0) {
+            throw notFound('Assessment not found or not authorized');
         }
 
         // Delete all mark entries for this assessment first
@@ -164,11 +137,6 @@ const deleteAssessment = async (assessmentId, lecturerId) => {
         );
 
         return assessmentId;
-        
-    } catch (error) {
-        console.error('Error deleting assessment:', error);
-        throw error;
-    }
 };
 
 
@@ -232,7 +200,7 @@ const getStudentModuleAssessments = async (moduleId, studentId) => {
  * @throws {Error} If lecturer is not assigned to module or database error occurs
  */
 const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
-    try {
+
         // Verify if the lecturer teaches this module
         const [assigned] = await connectDB.execute(
             // I just can't seem to get the assigned if I use SELECT 1, insted of SELECT *
@@ -241,10 +209,8 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
             [lecturerId, moduleId]
         );
 
-        if (assigned.length === 0) {
-            const error = new Error('Lecturer not assigned to this module');
-            error.statusCode = 404;
-            throw error;
+         if (assigned.length === 0) {
+            throw forbidden('Lecturer not assigned to this module');
         }
 
         // Query to get all assessments for the module by this lecturer
@@ -261,11 +227,6 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
         );
 
         return assessments;
-
-    } catch (error) {
-        console.error('Error getting lecturer module assessments:', error);
-        throw error;
-    }
 };
 
 /**
@@ -294,9 +255,7 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
         );
 
         if (assessment.length === 0) {
-            const error = new Error('Assessment not found or you are not authorized to upload marks');
-            error.statusCode = 400;
-            throw error;
+            throw forbidden('Assessment not found or not authorized');
         }
 
         // Get the module and the total mark of the assessment 

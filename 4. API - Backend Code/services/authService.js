@@ -1,5 +1,7 @@
 //Database connection
 const connectDB = require("../db/connect"); 
+// For error handling 
+const {badRequest,forbidden,notFound,unauthorized} = require("../errors/httpErrors");
 
 /**
  * Get current user with all their profile data based on roles
@@ -7,7 +9,7 @@ const connectDB = require("../db/connect");
  * @returns {Promise<Object>} Complete user profile with role-specific data
  */
 const getCurrentUser = async (userId) => {
-  try {
+
     // Get base user info
     const [userRows] = await connectDB.query(
       `SELECT 
@@ -26,7 +28,7 @@ const getCurrentUser = async (userId) => {
     );
     
     if (userRows.length === 0) {
-      return null;
+      throw notFound('User not found');
     }
     
     const user = userRows[0];
@@ -50,10 +52,7 @@ const getCurrentUser = async (userId) => {
       roles: roles,
       ...roleDetails // Spreads role-specific data
     };
-  } catch (error) {
-    console.error('Error getting current user:', error);
-    throw error;
-  }
+
 };
 
 /**
@@ -513,14 +512,14 @@ const assignModulesToCoordinator = async (coordinatorId, moduleIds) => {
 };
 
 const loginUser = async (identifierNumber) => {
-  try {
+
       // Find user by studentNumber or staffNumber
       // At this point, even if we get the user, we still do not know their role, it is located in the UserRoles junction table,
       // because, a user can have multiple roles
       const user = await findUserByIdentifier(identifierNumber);
 
       if (!user) {
-        return { code: "Unsuccessful", msg: 'Invalid student/staff number or password'};
+        throw unauthorized('Invalid student/staff number or password');
       }
 
       // Get the user's role(s), using the id retrieved from the user we identfied 
@@ -540,11 +539,6 @@ const loginUser = async (identifierNumber) => {
           roles: roles, // Will need this immediately after the login
         }
       };
-
-  } catch (error) {
-      console.error('Error login in user:', error);
-      throw error;
-  }
 }
 
 /**

@@ -4,7 +4,7 @@ const qualificationService = require("../services/qualificationService");
 const departmentService = require("../services/departmentService");
 const studentNumberService = require("../services/studentNumberService");
 const staffNumberService = require("../services/staffNumberService");
-
+const {notFound} = require("../errors/httpErrors");
 const bcrypt = require("bcrypt"); //encrypt passwords
 const jwt = require("jsonwebtoken"); //create tokens
 
@@ -16,7 +16,7 @@ const jwt = require("jsonwebtoken"); //create tokens
  * @returns userId and generated number (studentNumber or staffNumber)
  */
 const registerStep1 = async (req, res) => {
-  try {
+
     const {
       firstName,
       lastName,
@@ -48,12 +48,7 @@ const registerStep1 = async (req, res) => {
       title
     );
 
-    // If the initial registration step failed
-    if (!newUserId) {
-      return res
-        .status(500)
-        .json({ msg: "Failed to create user" });
-    }
+  
     // Next Step is to generate the Student or Staff number of the user, depending on their userRole
     // Generate the appropriate number based on role
     let generatedNumber;
@@ -84,16 +79,7 @@ const registerStep1 = async (req, res) => {
       [numberType]: generatedNumber, // Dynamic key: either "studentNumber" or "staffNumber"
       role: userRole,
     });
-  } catch (error) {
-
-    if (error.code === "ER_DUP_ENTRY") {
-    return res.status(409).json({
-      msg: "A user with this email or ID number already exists",
-    });
-  }
-
-  res.status(500).json({ error: "Internal server error" });
-  }
+  
 };
 
 /**
@@ -103,7 +89,7 @@ const registerStep1 = async (req, res) => {
  * @param {*} res
  */
 const registerStep2Student = async (req, res) => {
-  try {
+
     const {
       userId, // userId will match as studentId (received from the registerStep1), not sure how I will store it though
       studentNumber,
@@ -142,10 +128,7 @@ const registerStep2Student = async (req, res) => {
       modulesAssigned: assignedModules.length,
       modules: assignedModules,
     });
-  } catch (error) {
-    console.error("Student Registration step 2 : error:", error); // Testing purposes
-    res.status(500).json({ error: error.message });
-  }
+ 
 };
 
 /**
@@ -155,17 +138,14 @@ const registerStep2Student = async (req, res) => {
  * @returns qualifications (all) in the database
  */
 const getAllQualifications = async (req, res) => {
-  try {
+
     const qualifications = await qualificationService.getAllQualifications();
     return res.status(201).json({
       msg: "Retrieved qualifications",
 
       qualifications: qualifications,
     });
-  } catch (error) {
-    console.error("Error fetching qualifications:", error); // Testing purposes
-    res.status(500).json({ error: error.message });
-  }
+  
 };
 
 /**
@@ -175,17 +155,14 @@ const getAllQualifications = async (req, res) => {
  * @returns departments (all) in the database
  */
 const getAllDepartments = async (req, res) => {
-  try {
+
     const departments = await departmentService.getAllDepartments();
 
     return res.status(201).json({
       msg: "Retrieved departments",
       departments: departments,
     });
-  } catch (error) {
-    console.error("Error fetching departments:", error); // Testing purposes
-    res.status(500).json({ error: error.message });
-  }
+
 };
 
 /**
@@ -195,7 +172,7 @@ const getAllDepartments = async (req, res) => {
  * @param {*} res
  */
 const registerStep2Staff = async (req, res) => {
-  try {
+
     const {
       userId, // userId will match as staffId (received from the registerStep1), not sure how I will store it though
       staffNumber,
@@ -222,10 +199,7 @@ const registerStep2Staff = async (req, res) => {
 
       staff: staffRecord,
     });
-  } catch (error) {
-    console.error("Staff Registration step 2 : error:", error); // Testing purposes
-    res.status(500).json({ error: error.message });
-  }
+ 
 };
 
 /**
@@ -238,7 +212,7 @@ const registerStep2Staff = async (req, res) => {
  */
 
 const getDepartmentModules = async (req, res) => {
-  try {
+
     const { departmentId } = req.params; // or req.query, or req.body, we'll see in the frontend
 
     const modules = await moduleService.getModulesByDepartment(departmentId);
@@ -248,10 +222,7 @@ const getDepartmentModules = async (req, res) => {
 
       modules: modules, // important for module id's to be present, because there will be used for step 3 registration for staff
     });
-  } catch (error) {
-    console.error("Get department modules error:", error);
-    res.status(500).json({ error: error.message });
-  }
+  
 };
 
 /**
@@ -262,7 +233,7 @@ const getDepartmentModules = async (req, res) => {
  * @param {*} res
  */
 const registerStep3Staff = async (req, res) => {
-  try {
+  
     const {
       userId, // userId will match as staffId (received from the registerStep1 or registerStep2Staff), if it was stored properly
       userRole,
@@ -299,10 +270,7 @@ const registerStep3Staff = async (req, res) => {
       modulesAssigned: assignedModules.length,
       modules: assignedModules,
     });
-  } catch (error) {
-    console.error("Staff Register Step 3 Staff error:", error); //Testing purposes
-    res.status(500).json({ error: error.message });
-  }
+
 };
 
 /**
@@ -312,17 +280,12 @@ const registerStep3Staff = async (req, res) => {
  * @returns user's data
  */
 const getMe = async (req, res) => {
-  try {
+
     const userId = req.user.userId;
     const userData = await authService.getCurrentUser(userId);
-    if (!userData) {
-      return res.status(404).json({ msg: "User not found" });
-    }
+    if (!userData) throw notFound("User not found");
     res.status(200).json({ msg: "User found", user: userData });
-  } catch (error) {
-    console.error("Get me error:", error);
-    res.status(500).json({ error: error.message });
-  }
+
 };
 
 /**
@@ -333,7 +296,7 @@ const getMe = async (req, res) => {
  * @returns "Successful" code + authToken and user object, if failure then "InvalidUser" or "InvalidPassword" code
  */
 const login = async (req, res) => {
-  try {
+
     const { identifierNumber, userPassword } = req.body;
     const { user } = await authService.loginUser(identifierNumber); // Note password is returned here (don't send it)
 
@@ -372,10 +335,7 @@ const login = async (req, res) => {
         // userPassword is NOT included
       },
     });
-  } catch (error) {
-    console.error("Login error:", error); // Testing purposes
-    res.status(500).json({ code: "SERVER_ERROR", msg: "Server error" });
-  }
+
 };
 
 /**
@@ -386,7 +346,7 @@ const login = async (req, res) => {
  * @param {*} res
  */
 const updateUserPassword = async (req, res) => {
-  try {
+
     const { identifierNumber, newPassword } = req.body;
 
     if (!identifierNumber || !newPassword) {
@@ -413,10 +373,7 @@ const updateUserPassword = async (req, res) => {
     return res
       .status(200)
       .json({ msg: "Password updated successfully (DEV ONLY)" });
-  } catch (error) {
-    console.error("Update password error:", error);
-    res.status(500).json({ error: error.message });
-  }
+
 };
 
 module.exports = {

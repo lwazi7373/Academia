@@ -7,7 +7,6 @@ const connectDB = require("../db/connect");
  * @returns {Promise<Array>} Array of modules
  */
 const getStudentModules = async (studentId) => {
-  try {
     const [modules] = await connectDB.query(
       `SELECT m.moduleId, m.moduleName, m.moduleCode, m.credits, sm.studentModuleId
        FROM StudentModule sm
@@ -17,9 +16,7 @@ const getStudentModules = async (studentId) => {
     );
     
     return modules;
-  } catch (error) {
-    throw new Error(`Failed to get student modules: ${error.message}`);
-  }
+
 };
 
 /**
@@ -28,7 +25,7 @@ const getStudentModules = async (studentId) => {
  * @returns {Promise<Array>} Array of modules
  */
 const getLecturerModules = async (lecturerId) => {
-  try {
+
     const [modules] = await connectDB.query(
       `SELECT m.moduleId, m.moduleName, m.moduleCode
         FROM LecturerModule lm
@@ -38,9 +35,7 @@ const getLecturerModules = async (lecturerId) => {
     );
     
     return modules;
-  } catch (error) {
-    throw new Error(`Failed to get lecturer modules: ${error.message}`);
-  }
+
 };
 
 /**
@@ -52,7 +47,7 @@ const getLecturerModules = async (lecturerId) => {
  * @returns {Promise<Array>} Array of modules
  */
 const getModulesByQualification = async (qualificationId, academicYear, semesterNo) => {
-  try {
+  
     const [modules] = await connectDB.query(
       `SELECT m.moduleId, m.moduleName, m.moduleCode, m.credits, qm.isCompulsory
        FROM QualificationModule qm
@@ -64,9 +59,7 @@ const getModulesByQualification = async (qualificationId, academicYear, semester
     );
     
     return modules;
-  } catch (error) {
-    throw new Error(`Failed to get modules by qualification: ${error.message}`);
-  }
+
 };
 
 /**
@@ -76,7 +69,7 @@ const getModulesByQualification = async (qualificationId, academicYear, semester
  * @returns {Promise<Array>} Array of modules
  */
 const getModulesByDepartment = async (departmentId) => {
-  try {
+
     const [modules] = await connectDB.query(
       `SELECT moduleId, moduleName, moduleCode, credits
        FROM Module
@@ -86,9 +79,7 @@ const getModulesByDepartment = async (departmentId) => {
     );
     
     return modules;
-  } catch (error) {
-    throw new Error(`Failed to get modules by department: ${error.message}`);
-  }
+
 };
 
 /**
@@ -103,7 +94,7 @@ const getModulesByDepartment = async (departmentId) => {
  * - Includes student number for identification
  */
 const getModuleStudents = async (moduleId) => {
-    try {
+
         // Query to get all students enrolled in the module
         const [students] = await connectDB.execute(
             `SELECT 
@@ -129,10 +120,7 @@ const getModuleStudents = async (moduleId) => {
             fullName: `${student.firstName} ${student.lastName}`
         }));
 
-    } catch (error) {
-        console.error('Error getting module students:', error);
-        throw error;
-    }
+ 
 };
 
 /**
@@ -149,7 +137,7 @@ const getModuleStudents = async (moduleId) => {
  * - Ordered by module code
  */
 const getStudentModulePerformance = async (studentId) => {
-    try {
+ 
         // Query to get all modules with latest risk report data
         const [modules] = await connectDB.execute(
             `SELECT 
@@ -192,10 +180,6 @@ const getStudentModulePerformance = async (studentId) => {
             lastCalculated: module.calculatedAt || null
         }));
 
-    } catch (error) {
-        console.error('Error getting student module performance:', error);
-        throw error;
-    }
 };
 
 module.exports = {

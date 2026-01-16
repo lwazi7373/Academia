@@ -24,7 +24,7 @@ const generateRandomCode = () => {
  * @returns {Object} JSON response with created session details or error message
  */
 const createClassSession = async (req, res) => {
-  try {
+
         const { classType } = req.body;
         const moduleId = req.params.moduleId; 
         const lecturerId = req.user.userId;  // get the lecturer's id from the auth middleware
@@ -36,18 +36,7 @@ const createClassSession = async (req, res) => {
             attendanceCode,
             classType  
         );
-
         res.status(201).json({msg: "Class Session Created - now active", createdSession: session});
-  } catch (error) {
-        console.error('Class Session Creation error:', error); // Testing purposes
-
-        const status = error.statusCode || 500;
-        res.status(status).json({
-        error: status === 500
-            ? 'Failed to create class session'
-            : error.message, // else its 404, lecturer is not authorized to create session for this module
-        });
-  }
 };
 
 /**
@@ -59,7 +48,7 @@ const createClassSession = async (req, res) => {
  */
 
 const getActiveSession = async (req, res) => {
-  try {
+
     const { moduleId } = req.params;
     const lecturerId = req.user.userId;
 
@@ -69,16 +58,7 @@ const getActiveSession = async (req, res) => {
     );
 
     res.status(201).json({msg: "Active class session retrieved", activeSession: session});
-  } catch (error) {
-    console.error('Get active session error:', error); // Testing purposes
-
-    const status = error.statusCode || 500;
-    res.status(status).json({
-    error: status === 500
-        ? 'Failed to retrieve active session'
-        : error.message, // else its 404, there was no specified active session to be found
-    }); 
-  }
+  
 };
 
 /**
@@ -89,22 +69,13 @@ const getActiveSession = async (req, res) => {
  * @returns {Object} JSON response with success message or error
  */
 const markStudentAttendance = async (req, res) => {
-  try {
     const { attendanceCode } = req.body;
     const studentId = req.user.userId;
 
     await attendanceService.markStudentAttendance(attendanceCode, studentId);
 
     res.json({ msg: 'Attendance marked successfully' });
-  } catch (error) {
-    console.error('Mark attendance error:', error); //Testing purposes
-    const status = error.statusCode || 500;
-    res.status(status).json({
-    error: status === 500
-      ? 'Failed to mark attendance. Please try again.'
-      : error.message, //else its 400, the client sent an invalid code
-  });
-  }
+ 
 };
 
 module.exports = {createClassSession, getActiveSession, markStudentAttendance};

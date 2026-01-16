@@ -1,6 +1,7 @@
-//Database connection
+// Database connection
 const connectDB = require("../db/connect"); 
-
+// For Error handling
+const {badRequest,forbidden,notFound} = require("../errors/httpErrors");
 /**
  * Create a new class session in the database
  * Verifies lecturer authorization for the module and inserts a new session with expiration time
@@ -12,14 +13,12 @@ const connectDB = require("../db/connect");
  * @throws {Error} If lecturer is not assigned to the module or database error occurs
  */
 const createClassSession = async (moduleId, lecturerId, attendanceCode, classType) => {
-    try {
+
     // Verify if the lecturer teaches this module
     const [assigned] = await connectDB.execute(`SELECT 1 FROM LecturerModule WHERE lecturerId = ? AND moduleId = ?`,[lecturerId, moduleId]);
 
     if (assigned.length === 0) {
-        const error = new Error('Lecturer not assigned to this module');
-        error.statusCode = 404;
-        throw error;
+        throw forbidden('Lecturer not assigned to this module');
     }
 
     // Create the class session
@@ -37,10 +36,6 @@ const createClassSession = async (moduleId, lecturerId, attendanceCode, classTyp
         expiresInMinutes: 5
     };
 
-    } catch (error) {
-        console.error('Error creating class:', error);
-        throw error;
-    }
 }
 
 /**
@@ -52,7 +47,7 @@ const createClassSession = async (moduleId, lecturerId, attendanceCode, classTyp
  * @throws {Error} If no active session is found or database error occurs
  */
 const getActiveSession = async (moduleId, lecturerId) => {
-  try {
+
     const [rows] = await connectDB.execute(
     `SELECT attendanceCode, expiresAt
      FROM ClassSession
@@ -65,17 +60,11 @@ const getActiveSession = async (moduleId, lecturerId) => {
   );
 
   if (rows.length === 0) {
-    const error = new Error('No active attendance session');
-    error.statusCode = 404;
-    throw error;
- }
+    throw notFound('No active attendance session');
+  }
 
   return rows[0];
 
-  } catch (error) {
-      console.error('Error getting active session:', error);
-      throw error;
-  }
 };
 
 
@@ -88,7 +77,7 @@ const getActiveSession = async (moduleId, lecturerId) => {
  */
 
 const markStudentAttendance = async (attendanceCode,studentId) => {
-    try {
+
          //Find valid session
         const [sessions] = await connectDB.execute(
             `SELECT sessionId
@@ -100,9 +89,7 @@ const markStudentAttendance = async (attendanceCode,studentId) => {
 
     // Need a way to classify errors (client or server) for controller
     if (sessions.length === 0) {
-        const error = new Error('Invalid or expired attendance code');
-        error.statusCode = 400; // the client sent an invalid code
-        throw error;
+        throw badRequest('Invalid or expired attendance code');
     }
 
     const sessionId = sessions[0].sessionId;
@@ -113,10 +100,6 @@ const markStudentAttendance = async (attendanceCode,studentId) => {
         [studentId, sessionId]
     );
 
-    } catch (error) {
-        console.error('Error marking attendance:', error);
-        throw error;
-    }
 }
 
 module.exports = {createClassSession, getActiveSession, markStudentAttendance};

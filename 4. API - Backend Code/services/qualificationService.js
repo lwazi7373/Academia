@@ -1,7 +1,8 @@
 const connectDB = require("../db/connect"); 
+// For error handliing
+const {notFound} = require("../errors/httpErrors");
 
 const getQualificationByName = async (qualificationName) => {
-    try {
         const [rows] = await connectDB.execute(
             'SELECT qualificationId FROM Qualification WHERE qualificationName = ?',
             [qualificationName]
@@ -9,26 +10,17 @@ const getQualificationByName = async (qualificationName) => {
         
         // Check if qualification was found
         if (rows.length === 0) {
-            throw new Error(`Qualification '${qualificationName}' not found`);
+           throw notFound(`Qualification '${qualificationName}' not found`)
         }
         
         // Return the qualificationId from the first row
         return rows[0].qualificationId;
-        
-    } catch (error) {
-        console.error("Failed to fetch qualification:", error);
-        throw error;
-    }
+   
 }
 
 const getAllQualifications = async () => {
-    try {
         const [qualifications] = await connectDB.execute('SELECT * FROM Qualification');
         return qualifications;
-    } catch (error) {
-        console.error("Failed to fetch qualifications:", error);
-        throw error;
-    }
 }
 
 module.exports = {getQualificationByName, getAllQualifications};

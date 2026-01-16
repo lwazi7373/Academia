@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const body_parser = require('body-parser');
+const errorHandler = require('./middleware/errorHandler');
 require('dotenv').config();
 
 require('./jobs/riskCalculationJob'); // make sure the node-cron runs
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(body_parser.json());
 app.use(cors({ origin: true }));
+app.use(errorHandler);
 
 const connectDB = require("./db/connect");
 

@@ -1,5 +1,7 @@
 //Database connection
 const connectDB = require("../db/connect");
+// For Error handling
+const {badRequest,forbidden,notFound} = require("../errors/httpErrors");
 
 /**
  * Gets all modules assigned to a coordinator
@@ -7,7 +9,7 @@ const connectDB = require("../db/connect");
  * @returns {Promise<Array>} Array of modules with basic info
  */
 const getCoordinatorModules = async (coordinatorId) => {
-  try {
+
     const [modules] = await connectDB.query(
       `SELECT m.moduleId, m.moduleName, m.moduleCode, m.credits, cm.coordinatorModuleId
        FROM CoordinatorModule cm
@@ -17,9 +19,7 @@ const getCoordinatorModules = async (coordinatorId) => {
     );
     
     return modules;
-  } catch (error) {
-    throw new Error(`Failed to get coordinator modules: ${error.message}`);
-  }
+
 };
 
 /**
@@ -29,7 +29,7 @@ const getCoordinatorModules = async (coordinatorId) => {
  * @returns {Promise<Object>} Risk summary with counts and percentages
  */
 const getModuleRiskSummary = async (coordinatorId, moduleId) => {
-  try {
+
     // First verify coordinator has access to this module
     const [access] = await connectDB.query(
       `SELECT coordinatorModuleId FROM CoordinatorModule 
@@ -38,7 +38,7 @@ const getModuleRiskSummary = async (coordinatorId, moduleId) => {
     );
     
     if (access.length === 0) {
-      throw new Error('Coordinator does not have access to this module');
+      throw forbidden('Coordinator does not have access to this module');
     }
 
     // Get the active academic period
@@ -47,7 +47,7 @@ const getModuleRiskSummary = async (coordinatorId, moduleId) => {
     );
     
     if (activePeriod.length === 0) {
-      throw new Error('No active academic period found');
+      throw notFound('No active academic period found');
     }
 
     const periodId = activePeriod[0].periodId;
@@ -77,9 +77,7 @@ const getModuleRiskSummary = async (coordinatorId, moduleId) => {
       moderateRiskPercentage: total > 0 ? ((parseInt(data.moderateRiskCount) || 0) / total * 100).toFixed(2) : 0,
       lowRiskPercentage: total > 0 ? ((parseInt(data.lowRiskCount) || 0) / total * 100).toFixed(2) : 0
     };
-  } catch (error) {
-    throw new Error(`Failed to get module risk summary: ${error.message}`);
-  }
+
 };
 
 /**
@@ -90,7 +88,7 @@ const getModuleRiskSummary = async (coordinatorId, moduleId) => {
  * @returns {Promise<Array>} Array of students with risk and performance data
  */
 const getModuleStudents = async (coordinatorId, moduleId, filters = {}) => {
-  try {
+  
     // Verify coordinator access
     const [access] = await connectDB.query(
       `SELECT coordinatorModuleId FROM CoordinatorModule 
@@ -99,7 +97,7 @@ const getModuleStudents = async (coordinatorId, moduleId, filters = {}) => {
     );
     
     if (access.length === 0) {
-      throw new Error('Coordinator does not have access to this module');
+      throw forbidden('Coordinator does not have access to this module');
     }
 
     // Get active academic period
@@ -108,7 +106,7 @@ const getModuleStudents = async (coordinatorId, moduleId, filters = {}) => {
     );
     
     if (activePeriod.length === 0) {
-      throw new Error('No active academic period found');
+      throw notFound('No active academic period found');
     }
 
     const periodId = activePeriod[0].periodId;
@@ -174,9 +172,7 @@ const getModuleStudents = async (coordinatorId, moduleId, filters = {}) => {
       hasActiveIntervention: student.interventionId !== null,
       interventionStatus: student.interventionStatus || null
     }));
-  } catch (error) {
-    throw new Error(`Failed to get module students: ${error.message}`);
-  }
+ 
 };
 
 /**
@@ -187,7 +183,6 @@ const getModuleStudents = async (coordinatorId, moduleId, filters = {}) => {
  * @returns {Promise<Object>} Detailed student risk data
  */
 const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
-  try {
     // Verify coordinator access
     const [access] = await connectDB.query(
       `SELECT coordinatorModuleId FROM CoordinatorModule 
@@ -196,7 +191,7 @@ const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
     );
     
     if (access.length === 0) {
-      throw new Error('Coordinator does not have access to this module');
+      throw forbidden('Coordinator does not have access to this module');
     }
 
     // Get active academic period
@@ -205,7 +200,7 @@ const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
     );
     
     if (activePeriod.length === 0) {
-      throw new Error('No active academic period found');
+      throw notFound('No active academic period found');
     }
 
     const periodId = activePeriod[0].periodId;
@@ -237,7 +232,7 @@ const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
     );
 
     if (studentData.length === 0) {
-      throw new Error('Student not found in this module');
+      throw notFound('Student not found in this module');
     }
 
     return {
@@ -260,9 +255,7 @@ const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
       },
       lastCalculated: studentData[0].calculatedAt
     };
-  } catch (error) {
-    throw new Error(`Failed to get student risk details: ${error.message}`);
-  }
+
 };
 
 /**
@@ -274,7 +267,7 @@ const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
  * @returns {Promise<Object>} Created intervention data
  */
 const createIntervention = async (coordinatorId, moduleId, studentId, content) => {
-  try {
+  
     // Verify coordinator access
     const [access] = await connectDB.query(
       `SELECT coordinatorModuleId FROM CoordinatorModule 
@@ -283,7 +276,7 @@ const createIntervention = async (coordinatorId, moduleId, studentId, content) =
     );
     
     if (access.length === 0) {
-      throw new Error('Coordinator does not have access to this module');
+      throw forbidden('Coordinator does not have access to this module');
     }
 
     // Get studentModuleId
@@ -294,7 +287,7 @@ const createIntervention = async (coordinatorId, moduleId, studentId, content) =
     );
 
     if (studentModule.length === 0) {
-      throw new Error('Student not found in this module');
+      throw notFound('Student not found in this module');
     }
 
     const studentModuleId = studentModule[0].studentModuleId;
@@ -307,7 +300,7 @@ const createIntervention = async (coordinatorId, moduleId, studentId, content) =
     );
 
     if (activeIntervention.length > 0) {
-      throw new Error('Student already has an active intervention');
+      throw badRequest('Student already has an active intervention');
     }
 
     // Create the intervention
@@ -325,9 +318,7 @@ const createIntervention = async (coordinatorId, moduleId, studentId, content) =
       status: 'ACTIVE',
       createdAt: new Date()
     };
-  } catch (error) {
-    throw new Error(`Failed to create intervention: ${error.message}`);
-  }
+  
 };
 
 /**
@@ -338,7 +329,7 @@ const createIntervention = async (coordinatorId, moduleId, studentId, content) =
  * @returns {Promise<Object|null>} Active intervention or null
  */
 const getActiveIntervention = async (coordinatorId, moduleId, studentId) => {
-  try {
+
     // Verify coordinator access
     const [access] = await connectDB.query(
       `SELECT coordinatorModuleId FROM CoordinatorModule 
@@ -347,7 +338,7 @@ const getActiveIntervention = async (coordinatorId, moduleId, studentId) => {
     );
     
     if (access.length === 0) {
-      throw new Error('Coordinator does not have access to this module');
+      throw forbidden('Coordinator does not have access to this module');
     }
 
     const [intervention] = await connectDB.query(
@@ -378,9 +369,7 @@ const getActiveIntervention = async (coordinatorId, moduleId, studentId) => {
       status: intervention[0].status,
       followUpCount: intervention[0].followUpCount
     };
-  } catch (error) {
-    throw new Error(`Failed to get active intervention: ${error.message}`);
-  }
+
 };
 
 /**
@@ -392,7 +381,7 @@ const getActiveIntervention = async (coordinatorId, moduleId, studentId) => {
  * @returns {Promise<Object>} Created follow-up data
  */
 const createFollowUp = async (coordinatorId, interventionId, content, outcome) => {
-  try {
+
     // Verify coordinator owns this intervention
     const [intervention] = await connectDB.query(
       `SELECT interventionId, status FROM Intervention 
@@ -401,13 +390,13 @@ const createFollowUp = async (coordinatorId, interventionId, content, outcome) =
     );
 
     if (intervention.length === 0) {
-      throw new Error('Intervention not found or coordinator does not have access');
+      throw forbidden('Intervention not found or coordinator does not have access');
     }
 
     // Validate outcome
     const validOutcomes = ['IMPROVED', 'NO_CHANGE', 'WORSENED'];
     if (!validOutcomes.includes(outcome)) {
-      throw new Error('Invalid outcome value');
+      throw badRequest('Invalid outcome value');
     }
 
     // Create the follow-up
@@ -438,9 +427,7 @@ const createFollowUp = async (coordinatorId, interventionId, content, outcome) =
       outcome,
       createdAt: new Date()
     };
-  } catch (error) {
-    throw new Error(`Failed to create follow-up: ${error.message}`);
-  }
+
 };
 
 module.exports = {
