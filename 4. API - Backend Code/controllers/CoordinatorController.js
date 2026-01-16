@@ -7,7 +7,7 @@ const getCoordinatorModules = async (req, res) => {
         const modules = await riskService.getCoordinatorModules(coordinatorId);
         return res.status(200).json({
             msg: "Modules retrieved successfully",
-            data: modules
+            modules: modules
         });
 };
 
@@ -18,7 +18,7 @@ const getModuleRiskSummary = async (req, res) => {
         const riskSummary = await riskService.getModuleRiskSummary(coordinatorId, moduleId);
         return res.status(200).json({
             msg: "Module risk summary retrieved successfully",
-            data: riskSummary
+            riskSummary: riskSummary
         });
 };
 
@@ -39,7 +39,7 @@ const getModuleStudents = async (req, res) => {
         const students = await riskService.getModuleStudents(coordinatorId, moduleId, filters);
         return res.status(200).json({
             msg: "Module students retrieved successfully",
-            data: students
+            students: students
         });
     
 };
@@ -51,7 +51,7 @@ const getStudentRiskDetails = async (req, res) => {
         const studentRiskDetails = await riskService.getStudentRiskDetails(coordinatorId, moduleId, studentId);
         return res.status(200).json({
             msg: "Student risk details retrieved successfully",
-            data: studentRiskDetails
+            studentRiskDetails: studentRiskDetails
         });
   
 };
@@ -70,7 +70,7 @@ const createIntervention = async (req, res) => {
         const result = await riskService.createIntervention(coordinatorId, moduleId, studentId, content);
         return res.status(201).json({
             msg: "Intervention created successfully",
-            data: result
+            result: result
         });
 
 };
@@ -90,7 +90,7 @@ const getActiveIntervention = async (req, res) => {
         
         return res.status(200).json({
             msg: "Active intervention retrieved successfully",
-            data: intervention
+            intervention: intervention
         });
    
 };
@@ -104,7 +104,7 @@ const createFollowUp = async (req, res) => {
         const result = await riskService.createFollowUp(coordinatorId, interventionId, content, outcome);
         return res.status(201).json({
             msg: "Follow-up created successfully",
-            data: result
+            result: result
         });
 };
 
