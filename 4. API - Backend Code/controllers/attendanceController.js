@@ -2,10 +2,11 @@ const attendanceService = require("../services/attendanceService");
 
 /**
  * A function to simply generate a random six character code
- * @returns six character code 
+ * @returns six character code
  */
 const generateRandomCode = () => {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let code = "";
 
   for (let i = 0; i < 6; i++) {
@@ -24,19 +25,23 @@ const generateRandomCode = () => {
  * @returns {Object} JSON response with created session details or error message
  */
 const createClassSession = async (req, res) => {
+  const { classType } = req.body;
+  const moduleId = req.params.moduleId;
+  const lecturerId = req.user.userId; // get the lecturer's id from the auth middleware
+  const attendanceCode = generateRandomCode(); //Generate the attendance code for the class session
 
-        const { classType } = req.body;
-        const moduleId = req.params.moduleId; 
-        const lecturerId = req.user.userId;  // get the lecturer's id from the auth middleware
-        const attendanceCode = generateRandomCode(); //Generate the attendance code for the class session 
-
-        const session = await attendanceService.createClassSession(
-            moduleId,
-            lecturerId,
-            attendanceCode,
-            classType  
-        );
-        res.status(201).json({msg: "Class Session Created - now active", createdSession: session});
+  const session = await attendanceService.createClassSession(
+    moduleId,
+    lecturerId,
+    attendanceCode,
+    classType,
+  );
+  res
+    .status(201)
+    .json({
+      msg: "Class Session Created - now active",
+      createdSession: session,
+    });
 };
 
 /**
@@ -48,17 +53,17 @@ const createClassSession = async (req, res) => {
  */
 
 const getActiveSession = async (req, res) => {
+  const { moduleId } = req.params;
+  const lecturerId = req.user.userId;
 
-    const { moduleId } = req.params;
-    const lecturerId = req.user.userId;
+  const session = await attendanceService.getActiveSession(
+    moduleId,
+    lecturerId,
+  );
 
-    const session = await attendanceService.getActiveSession(
-      moduleId,
-      lecturerId
-    );
-
-    res.status(201).json({msg: "Active class session retrieved", activeSession: session});
-  
+  res
+    .status(201)
+    .json({ msg: "Active class session retrieved", activeSession: session });
 };
 
 /**
@@ -69,13 +74,16 @@ const getActiveSession = async (req, res) => {
  * @returns {Object} JSON response with success message or error
  */
 const markStudentAttendance = async (req, res) => {
-    const { attendanceCode } = req.body;
-    const studentId = req.user.userId;
+  const { attendanceCode } = req.body;
+  const studentId = req.user.userId;
 
-    await attendanceService.markStudentAttendance(attendanceCode, studentId);
+  await attendanceService.markStudentAttendance(attendanceCode, studentId);
 
-    res.json({ msg: 'Attendance marked successfully' });
- 
+  res.json({ msg: "Attendance marked successfully" });
 };
 
-module.exports = {createClassSession, getActiveSession, markStudentAttendance};
+module.exports = {
+  createClassSession,
+  getActiveSession,
+  markStudentAttendance,
+};
