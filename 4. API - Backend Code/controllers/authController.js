@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken"); //create tokens
  * Creates the base User record and generates student/staff number
  * @param {*} req
  * @param {*} res
- * @returns userId and generated number (studentNumber or staffNumber)
+ * @returns userId, generated number (studentNumber or staffNumber) and userRole 
  */
 const registerStep1 = async (req, res) => {
 
@@ -47,7 +47,6 @@ const registerStep1 = async (req, res) => {
       isActive,
       title
     );
-
   
     // Next Step is to generate the Student or Staff number of the user, depending on their userRole
     // Generate the appropriate number based on role
@@ -65,7 +64,6 @@ const registerStep1 = async (req, res) => {
       // (I will never really register an Admin, no need to stress on responseTypes in the frontend)
       return res.status(200).json({
         msg: "Admin user created successfully",
-
         userId: newUserId,
         role: userRole,
       });
@@ -74,7 +72,6 @@ const registerStep1 = async (req, res) => {
     // Return the userId and generated number for step 2 of registration
     return res.status(200).json({
       msg: "Step 1 completed - User created and number generated",
-
       userId: newUserId,
       [numberType]: generatedNumber, // Dynamic key: either "studentNumber" or "staffNumber"
       role: userRole,
@@ -87,6 +84,7 @@ const registerStep1 = async (req, res) => {
  * Assigns qualification and automatically assigns modules based on year/semester
  * @param {*} req
  * @param {*} res
+ * @returns the student recors, number of modules assigned and the actual modules assigned to student
  */
 const registerStep2Student = async (req, res) => {
 
@@ -120,15 +118,13 @@ const registerStep2Student = async (req, res) => {
       yearOfStudy,
       semesterNo
     );
-
+    // return the student record, assigned modules and the number of assigned modules
     return res.status(201).json({
       msg: "Student registration completed successfully",
-
       student: studentRecord,
       modulesAssigned: assignedModules.length,
       modules: assignedModules,
     });
- 
 };
 
 /**
@@ -138,11 +134,9 @@ const registerStep2Student = async (req, res) => {
  * @returns qualifications (all) in the database
  */
 const getAllQualifications = async (req, res) => {
-
     const qualifications = await qualificationService.getAllQualifications();
     return res.status(201).json({
       msg: "Retrieved qualifications",
-
       qualifications: qualifications,
     });
   
@@ -155,9 +149,7 @@ const getAllQualifications = async (req, res) => {
  * @returns departments (all) in the database
  */
 const getAllDepartments = async (req, res) => {
-
     const departments = await departmentService.getAllDepartments();
-
     return res.status(201).json({
       msg: "Retrieved departments",
       departments: departments,
@@ -170,6 +162,7 @@ const getAllDepartments = async (req, res) => {
  * Creates the appropriate staff record (Lecturer/Coordinator/HOD)
  * @param {*} req
  * @param {*} res
+ * @returns the staff record
  */
 const registerStep2Staff = async (req, res) => {
 
@@ -179,12 +172,6 @@ const registerStep2Staff = async (req, res) => {
       departmentId,
       userRole, // 'LECTURER', 'COORDINATOR', or 'HOD'
     } = req.body;
-
-    /*
-    const departmentId = await departmentService.getDepartmentByName(
-      departmentName
-    );
-    */
    
     // Reserve the staff number by creating the appropriate staff record
     const staffRecord = await staffNumberService.reserveStaffNumber(
@@ -196,7 +183,6 @@ const registerStep2Staff = async (req, res) => {
 
     return res.status(201).json({
       msg: `Step 2 completed - ${userRole} assigned to department`,
-
       staff: staffRecord,
     });
  
@@ -208,18 +194,14 @@ const registerStep2Staff = async (req, res) => {
  * to select from, to assigning to the lecturer being registered
  * @param {*} req
  * @param {*} res
- * @returns all module objects under the department
+ * @returns all modules under the department
  */
 
 const getDepartmentModules = async (req, res) => {
-
     const { departmentId } = req.params; // or req.query, or req.body, we'll see in the frontend
-
     const modules = await moduleService.getModulesByDepartment(departmentId);
-
     return res.status(200).json({
       msg: "Modules retrieved successfully",
-
       modules: modules, // important for module id's to be present, because there will be used for step 3 registration for staff
     });
   
@@ -231,6 +213,7 @@ const getDepartmentModules = async (req, res) => {
  * Note: Only the moduleId's are going to be sent, not the entire module objects
  * @param {*} req
  * @param {*} res
+ * @returns the modules assigned to the staff and the number of modules assigned
  */
 const registerStep3Staff = async (req, res) => {
   
@@ -266,11 +249,9 @@ const registerStep3Staff = async (req, res) => {
 
     return res.status(201).json({
       msg: `${userRole} registration completed successfully`,
-
       modulesAssigned: assignedModules.length,
       modules: assignedModules,
     });
-
 };
 
 /**
@@ -280,12 +261,10 @@ const registerStep3Staff = async (req, res) => {
  * @returns user's data
  */
 const getMe = async (req, res) => {
-
     const userId = req.user.userId;
     const userData = await authService.getCurrentUser(userId);
     if (!userData) throw notFound("User not found");
     res.status(200).json({ msg: "User found", user: userData });
-
 };
 
 /**
@@ -293,7 +272,7 @@ const getMe = async (req, res) => {
  * authToken expires after 1 day, that is 24 hours
  * @param {*} req
  * @param {*} res
- * @returns "Successful" code + authToken and user object, if failure then "InvalidUser" or "InvalidPassword" code
+ * @returns the authToken and a user object 
  */
 const login = async (req, res) => {
 
@@ -335,7 +314,6 @@ const login = async (req, res) => {
         // userPassword is NOT included
       },
     });
-
 };
 
 /**

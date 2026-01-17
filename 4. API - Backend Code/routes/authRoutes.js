@@ -5,6 +5,10 @@ const authController = require('../controllers/authController');
 const authenticateToken = require('../middleware/authMiddleware');
 //const authorizeRoles = require("../middleware/authRolesMiddleware");
 
+/**
+ * GET /api/me
+ * Get the current user 
+ */
 router.get('/me', authenticateToken, authController.getMe);
 
 /**
@@ -63,8 +67,6 @@ router.get('/modules/department/:departmentId', authController.getDepartmentModu
  * Returns: { modulesAssigned, modules }
  */
 router.post('/register/staff/step3', authController.registerStep3Staff);
-
-
 
 /**
  * DEV ONLY - could not find a shorter/easier way to do this

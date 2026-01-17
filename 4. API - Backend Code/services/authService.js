@@ -1,7 +1,7 @@
 //Database connection
 const connectDB = require("../db/connect"); 
 // For error handling 
-const {badRequest,forbidden,notFound,unauthorized} = require("../errors/httpErrors");
+const {notFound,unauthorized} = require("../errors/httpErrors");
 
 /**
  * Get current user with all their profile data based on roles
@@ -89,6 +89,8 @@ const getRoleSpecificData = async (userId, roles) => {
 
 /**
  * Get student-specific profile data
+ * @param {number} studentId
+ * @returns Student profile
  */
 const getStudentProfile = async (studentId) => {
   try {
@@ -124,6 +126,8 @@ const getStudentProfile = async (studentId) => {
 
 /**
  * Get lecturer-specific profile data
+ * @param {number} lecturerId
+ * @returns Lecturer profile
  */
 const getLecturerProfile = async (lecturerId) => {
   try {
@@ -151,6 +155,8 @@ const getLecturerProfile = async (lecturerId) => {
 
 /**
  * Get coordinator-specific profile data
+ * @param {number} coordinator
+ * @returns coordinator profile
  */
 const getCoordinatorProfile = async (coordinatorId) => {
   try {
@@ -178,6 +184,8 @@ const getCoordinatorProfile = async (coordinatorId) => {
 
 /**
  * Get HOD-specific profile data
+ * @param hodId
+ * @returns HOD profile
  */
 const getHODProfile = async (hodId) => {
   try {
@@ -287,6 +295,11 @@ const registerUser = async (
   }
 };
 
+/**
+ * Identifies the type of user, as a helper for the login process
+ * @param {nummber} identifierNumber 
+ * @returns the user
+ */
 const findUserByIdentifier = async (identifierNumber) => {
     try {
       // Try to find as student first
@@ -325,6 +338,11 @@ const findUserByIdentifier = async (identifierNumber) => {
     }
   }
 
+  /**
+   * Gets the roles of the users as a helper for the registration process
+   * @param {number} userId 
+   * @returns the role of the user
+   */
 const getUserRoles = async (userId) => {
     try {
       const [roles] = await connectDB.query(
@@ -333,7 +351,7 @@ const getUserRoles = async (userId) => {
       );
       
       return roles.map(r => r.userRole);
-      
+    
     } catch (error) {
       console.error('Error getting user roles:', error);
       throw error;
@@ -511,6 +529,11 @@ const assignModulesToCoordinator = async (coordinatorId, moduleIds) => {
   }
 };
 
+/**
+ * Identify the type os user, get their role and then logged them in
+ * @param {number} identifierNumber 
+ * @returns {Promise<Object>} user object 
+ */
 const loginUser = async (identifierNumber) => {
 
       // Find user by studentNumber or staffNumber
