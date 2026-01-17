@@ -3,21 +3,21 @@
 export interface CreateAssessmentRequest {
   assessmentName: string;
   totalMark: number;
-  weighting: number;
+  weighting: number; // actually a decimal e.g) 15.00
   dueDate: string; // YYYY-MM-DD format
 }
 
 export interface UpdateAssessmentRequest {
   assessmentName: string;
   totalMark: number;
-  weighting: number;
+  weighting: number; // actually a decimal e.g) 15.00
   dueDate: string; // YYYY-MM-DD format
 }
 
 export interface MarkEntry {
   studentId: number;
   mark: number | null;
-  submission: boolean;
+  submission: boolean; // Mysql uses TINY INT, any consequences ?
 }
 
 export interface UploadMarksRequest {
