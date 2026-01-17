@@ -1,4 +1,3 @@
-// auth.api.ts
 import { apiClient } from '../../api/client'; // no idea why 
 import type {
   LoginRequest,
@@ -23,7 +22,11 @@ import type {
 } from './auth.types';
 
 export const authApi = {
-  // Login (now also has msg for consistency)
+  /**
+   * Note: Login (now also has msg for consistency)
+   * @param data (the login request data)
+   * @returns data in LoginResponse
+   */
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     const response = await apiClient.post<LoginResponse>('/login', data);
     return response.data;
