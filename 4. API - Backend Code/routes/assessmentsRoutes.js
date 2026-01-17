@@ -1,43 +1,43 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const assessmentsController = require("../controllers/assessmentsController");
-const authenticateToken = require('../middleware/authMiddleware');
+const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authRolesMiddleware");
 
 /**
  * POST /assessments/:moduleId/create
- * Create an assessment for a particular module 
+ * Create an assessment for a particular module
  * Body: { assessmentName, totalMark, weighting, dueDate }
  */
 router.post(
-  '/assessments/:moduleId/create',
+  "/assessments/:moduleId/create",
   authenticateToken,
-  authorizeRoles('LECTURER'),
-  assessmentsController.createAnAssessment
+  authorizeRoles("LECTURER"),
+  assessmentsController.createAnAssessment,
 );
 
 /**
  * POST /assessments/:assessmentId/update
- * Update an assessment 
+ * Update an assessment
  * Body: { assessmentName, totalMark, weighting, dueDate }
  */
 router.patch(
-  '/assessments/:assessmentId/update',
+  "/assessments/:assessmentId/update",
   authenticateToken,
-  authorizeRoles('LECTURER'),
-  assessmentsController.updateAnAssessment
+  authorizeRoles("LECTURER"),
+  assessmentsController.updateAnAssessment,
 );
 
 /**
  * POST /assessments/:assessmentId/delete
- * Update an assessment 
+ * Update an assessment
  */
 router.delete(
-  '/assessments/:assessmentId/delete',
+  "/assessments/:assessmentId/delete",
   authenticateToken,
-  authorizeRoles('LECTURER'),
-  assessmentsController.deleteAnAssessment
+  authorizeRoles("LECTURER"),
+  assessmentsController.deleteAnAssessment,
 );
 
 /**
@@ -45,21 +45,21 @@ router.delete(
  * Get the list of assessments available for lecturer
  */
 router.get(
-  '/assessments/:moduleId/semester-assessments',
+  "/assessments/:moduleId/semester-assessments",
   authenticateToken,
-  authorizeRoles('LECTURER'),
-  assessmentsController.getLecturerModuleAssessments
+  authorizeRoles("LECTURER"),
+  assessmentsController.getLecturerModuleAssessments,
 );
 
 /**
  * GET /assessments/:moduleId/semester-assessments
- * Get the list of assessments and corresponding marks available for student 
+ * Get the list of assessments and corresponding marks available for student
  */
 router.get(
-  '/assessments/:moduleId/assessments-marks',
+  "/assessments/:moduleId/assessments-marks",
   authenticateToken,
-  authorizeRoles('STUDENT'),
-  assessmentsController.getStudentModuleAssessments
+  authorizeRoles("STUDENT"),
+  assessmentsController.getStudentModuleAssessments,
 );
 
 /**
@@ -80,11 +80,10 @@ router.get(
   ]
  */
 router.post(
-  '/assessments/:assessmentId/upload-marks',
+  "/assessments/:assessmentId/upload-marks",
   authenticateToken,
-  authorizeRoles('LECTURER'),
-  assessmentsController.uploadOrUpdateStudentMarks
+  authorizeRoles("LECTURER"),
+  assessmentsController.uploadOrUpdateStudentMarks,
 );
-
 
 module.exports = router;

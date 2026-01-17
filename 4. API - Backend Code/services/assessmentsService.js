@@ -1,7 +1,7 @@
 //Database connection
 const connectDB = require("../db/connect");
-// For error handling 
-const {badRequest,forbidden,notFound} = require("../errors/httpErrors");
+// For error handling
+const { badRequest, forbidden, notFound } = require("../errors/httpErrors");
 /**
  * Create a new assessment for a module
  * Verifies lecturer authorization and creates assessment record
@@ -14,45 +14,51 @@ const {badRequest,forbidden,notFound} = require("../errors/httpErrors");
  * @returns {Object} Object containing the created assessment details
  * @throws {Error} If lecturer is not assigned to module or database error occurs
  */
-const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark, weighting, dueDate) => {
-
-        // Verify if the lecturer teaches this module
-        const [assigned] = await connectDB.execute(
-            `SELECT 1 FROM LecturerModule 
+const createAssessment = async (
+  moduleId,
+  lecturerId,
+  assessmentName,
+  totalMark,
+  weighting,
+  dueDate,
+) => {
+  // Verify if the lecturer teaches this module
+  const [assigned] = await connectDB.execute(
+    `SELECT 1 FROM LecturerModule 
              WHERE lecturerId = ? AND moduleId = ?`,
-            [lecturerId, moduleId]
-        );
+    [lecturerId, moduleId],
+  );
 
-        if (assigned.length === 0) {
-            throw forbidden('Lecturer not assigned to this module');
-        }
+  if (assigned.length === 0) {
+    throw forbidden("Lecturer not assigned to this module");
+  }
 
-        if (weighting < 0 || weighting > 100) {
-            throw badRequest('Weighting must be between 0 and 100');
-        }
+  if (weighting < 0 || weighting > 100) {
+    throw badRequest("Weighting must be between 0 and 100");
+  }
 
-        if (totalMark <= 0) {
-            throw badRequest('Total mark must be greater than 0');
-        }
+  if (totalMark <= 0) {
+    throw badRequest("Total mark must be greater than 0");
+  }
 
-        // Create the assessment
-        const [result] = await connectDB.execute(
-            `INSERT INTO Assessment 
+  // Create the assessment
+  const [result] = await connectDB.execute(
+    `INSERT INTO Assessment 
              (assessmentName, totalMark, weighting, dueDate, createdAt, lecturerId, moduleId)
              VALUES (?, ?, ?, ?, NOW(), ?, ?)`,
-            [assessmentName, totalMark, weighting, dueDate, lecturerId, moduleId]
-        );
+    [assessmentName, totalMark, weighting, dueDate, lecturerId, moduleId],
+  );
 
-        // Return the created assessment details
-        return {
-            assessmentId: result.insertId,
-            assessmentName,
-            totalMark,
-            weighting,
-            dueDate,
-            lecturerId,
-            moduleId
-        };
+  // Return the created assessment details
+  return {
+    assessmentId: result.insertId,
+    assessmentName,
+    totalMark,
+    weighting,
+    dueDate,
+    lecturerId,
+    moduleId,
+  };
 };
 
 /**
@@ -67,39 +73,45 @@ const createAssessment = async (moduleId, lecturerId, assessmentName, totalMark,
  * @returns {Object} Object containing success message and updated assessment ID
  * @throws {Error} If assessment doesn't exist, lecturer not authorized, or database error occurs
  */
-const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalMark, weighting, dueDate) => {
-    
-        // Verify the assessment exists and belongs to this lecturer
-        const [assessment] = await connectDB.execute(
-            `SELECT assessmentId FROM Assessment 
+const updateAssessment = async (
+  assessmentId,
+  lecturerId,
+  assessmentName,
+  totalMark,
+  weighting,
+  dueDate,
+) => {
+  // Verify the assessment exists and belongs to this lecturer
+  const [assessment] = await connectDB.execute(
+    `SELECT assessmentId FROM Assessment 
              WHERE assessmentId = ? AND lecturerId = ?`,
-            [assessmentId, lecturerId]
-        );
+    [assessmentId, lecturerId],
+  );
 
-        if (assessment.length === 0) {
-            throw notFound('Assessment not found or not authorized');
-        }
+  if (assessment.length === 0) {
+    throw notFound("Assessment not found or not authorized");
+  }
 
-        if (weighting < 0 || weighting > 100) {
-            throw badRequest('Weighting must be between 0 and 100');
-        }
+  if (weighting < 0 || weighting > 100) {
+    throw badRequest("Weighting must be between 0 and 100");
+  }
 
-        if (totalMark <= 0) {
-            throw badRequest('Total mark must be greater than 0');
-        }
+  if (totalMark <= 0) {
+    throw badRequest("Total mark must be greater than 0");
+  }
 
-        // Update the assessment
-        await connectDB.execute(
-            `UPDATE Assessment 
+  // Update the assessment
+  await connectDB.execute(
+    `UPDATE Assessment 
              SET assessmentName = ?, 
                  totalMark = ?, 
                  weighting = ?, 
                  dueDate = ?
              WHERE assessmentId = ? AND lecturerId = ?`,
-            [assessmentName, totalMark, weighting, dueDate, assessmentId, lecturerId]
-        );
+    [assessmentName, totalMark, weighting, dueDate, assessmentId, lecturerId],
+  );
 
-        return assessmentId;
+  return assessmentId;
 };
 
 /**
@@ -112,33 +124,30 @@ const updateAssessment = async (assessmentId, lecturerId, assessmentName, totalM
  * @throws {Error} If assessment doesn't exist, lecturer not authorized, or database error occurs
  */
 const deleteAssessment = async (assessmentId, lecturerId) => {
-
-        // Verify the assessment exists and belongs to this lecturer
-        const [assessment] = await connectDB.execute(
-            `SELECT assessmentId FROM Assessment 
+  // Verify the assessment exists and belongs to this lecturer
+  const [assessment] = await connectDB.execute(
+    `SELECT assessmentId FROM Assessment 
              WHERE assessmentId = ? AND lecturerId = ?`,
-            [assessmentId, lecturerId]
-        );
+    [assessmentId, lecturerId],
+  );
 
-          if (assessment.length === 0) {
-            throw notFound('Assessment not found or not authorized');
-        }
+  if (assessment.length === 0) {
+    throw notFound("Assessment not found or not authorized");
+  }
 
-        // Delete all mark entries for this assessment first
-        await connectDB.execute(
-            `DELETE FROM MarkEntry WHERE assessmentId = ?`,
-            [assessmentId]
-        );
+  // Delete all mark entries for this assessment first
+  await connectDB.execute(`DELETE FROM MarkEntry WHERE assessmentId = ?`, [
+    assessmentId,
+  ]);
 
-        // Delete the assessment
-        await connectDB.execute(
-            `DELETE FROM Assessment WHERE assessmentId = ? AND lecturerId = ?`,
-            [assessmentId, lecturerId]
-        );
+  // Delete the assessment
+  await connectDB.execute(
+    `DELETE FROM Assessment WHERE assessmentId = ? AND lecturerId = ?`,
+    [assessmentId, lecturerId],
+  );
 
-        return assessmentId;
+  return assessmentId;
 };
-
 
 /**
  * Get all assessments for a specific module and student
@@ -153,10 +162,10 @@ const deleteAssessment = async (assessmentId, lecturerId) => {
  * Orders by due date (earliest first)
  */
 const getStudentModuleAssessments = async (moduleId, studentId) => {
-    try {
-        // Query to get all assessments for the module with the student's marks
-        const [assessments] = await connectDB.execute(
-            `SELECT 
+  try {
+    // Query to get all assessments for the module with the student's marks
+    const [assessments] = await connectDB.execute(
+      `SELECT 
                 a.assessmentId,
                 a.assessmentName,
                 a.totalMark,
@@ -170,25 +179,24 @@ const getStudentModuleAssessments = async (moduleId, studentId) => {
                 AND me.studentId = ?
              WHERE a.moduleId = ?
              ORDER BY a.dueDate ASC`,
-            [studentId, moduleId]
-        );
+      [studentId, moduleId],
+    );
 
-        // Format the response into an array of assessment objects 
-        return assessments.map(assessment => ({
-            assessmentId: assessment.assessmentId,
-            assessmentName: assessment.assessmentName,
-            totalMark: assessment.totalMark,
-            weighting: assessment.weighting, 
-            dueDate: assessment.dueDate,
-            studentMark: assessment.studentMark || null, 
-            submission: assessment.submission || false,
-            dateSubmitted: assessment.dateSubmitted || null
-        }));
-
-    } catch (error) {
-        console.error('Error getting student module assessments:', error);
-        throw error;
-    }
+    // Format the response into an array of assessment objects
+    return assessments.map((assessment) => ({
+      assessmentId: assessment.assessmentId,
+      assessmentName: assessment.assessmentName,
+      totalMark: assessment.totalMark,
+      weighting: assessment.weighting,
+      dueDate: assessment.dueDate,
+      studentMark: assessment.studentMark || null,
+      submission: assessment.submission || false,
+      dateSubmitted: assessment.dateSubmitted || null,
+    }));
+  } catch (error) {
+    console.error("Error getting student module assessments:", error);
+    throw error;
+  }
 };
 
 /**
@@ -200,22 +208,21 @@ const getStudentModuleAssessments = async (moduleId, studentId) => {
  * @throws {Error} If lecturer is not assigned to module or database error occurs
  */
 const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
-
-        // Verify if the lecturer teaches this module
-        const [assigned] = await connectDB.execute(
-            // I just can't seem to get the assigned if I use SELECT 1, insted of SELECT *
-            `SELECT * FROM LecturerModule  
+  // Verify if the lecturer teaches this module
+  const [assigned] = await connectDB.execute(
+    // I just can't seem to get the assigned if I use SELECT 1, insted of SELECT *
+    `SELECT * FROM LecturerModule  
              WHERE lecturerId = ? AND moduleId = ?`,
-            [lecturerId, moduleId]
-        );
+    [lecturerId, moduleId],
+  );
 
-         if (assigned.length === 0) {
-            throw forbidden('Lecturer not assigned to this module');
-        }
+  if (assigned.length === 0) {
+    throw forbidden("Lecturer not assigned to this module");
+  }
 
-        // Query to get all assessments for the module by this lecturer
-        const [assessments] = await connectDB.execute(
-            `SELECT 
+  // Query to get all assessments for the module by this lecturer
+  const [assessments] = await connectDB.execute(
+    `SELECT 
                 assessmentId,
                 assessmentName,
                 weighting,
@@ -223,10 +230,10 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
              FROM Assessment
              WHERE moduleId = ? AND lecturerId = ?
              ORDER BY dueDate ASC`,
-            [moduleId, lecturerId]
-        );
+    [moduleId, lecturerId],
+  );
 
-        return assessments;
+  return assessments;
 };
 
 /**
@@ -240,47 +247,47 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
  * @throws {Error} If assessment not found, lecturer not authorized, validation fails, or database error occurs
  */
 const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
-    // Start a database transaction
-    const connection = await connectDB.getConnection();
-    
-    try {
-        await connection.beginTransaction();
+  // Start a database transaction
+  const connection = await connectDB.getConnection();
 
-        // Verify the assessment exists and belongs to this lecturer
-        const [assessment] = await connection.execute(
-            `SELECT a.assessmentId, a.moduleId, a.totalMark 
+  try {
+    await connection.beginTransaction();
+
+    // Verify the assessment exists and belongs to this lecturer
+    const [assessment] = await connection.execute(
+      `SELECT a.assessmentId, a.moduleId, a.totalMark 
              FROM Assessment a
              WHERE a.assessmentId = ? AND a.lecturerId = ?`,
-            [assessmentId, lecturerId]
-        );
+      [assessmentId, lecturerId],
+    );
 
-        if (assessment.length === 0) {
-            throw forbidden('Assessment not found or not authorized');
-        }
+    if (assessment.length === 0) {
+      throw forbidden("Assessment not found or not authorized");
+    }
 
-        // Get the module and the total mark of the assessment 
-        const moduleId = assessment[0].moduleId;
-        const totalMark = assessment[0].totalMark;
+    // Get the module and the total mark of the assessment
+    const moduleId = assessment[0].moduleId;
+    const totalMark = assessment[0].totalMark;
 
-        // Verify all students are enrolled in this module
-        const studentIds = marksData.map(entry => entry.studentId);
-        
-        // Expand placeholders
-        const placeholders = studentIds.map(() => '?').join(',');
+    // Verify all students are enrolled in this module
+    const studentIds = marksData.map((entry) => entry.studentId);
 
-        const [enrolledStudents] = await connection.execute(
-            `SELECT s.studentId 
+    // Expand placeholders
+    const placeholders = studentIds.map(() => "?").join(",");
+
+    const [enrolledStudents] = await connection.execute(
+      `SELECT s.studentId 
              FROM StudentModule sm
              JOIN Student s ON sm.studentId = s.studentId
-             WHERE sm.moduleId = ? AND s.studentId IN (${placeholders})`, 
-            [moduleId, ...studentIds]
-        );
+             WHERE sm.moduleId = ? AND s.studentId IN (${placeholders})`,
+      [moduleId, ...studentIds],
+    );
 
-        // I had tried this, but ran into, what was called a classic node + mysql trap
-        // The bug was placeholder expansion.
-        // Never rely on array expansion with IN (?) in prepared statements
-        // Always expand placeholders yourself
-        /*
+    // I had tried this, but ran into, what was called a classic node + mysql trap
+    // The bug was placeholder expansion.
+    // Never rely on array expansion with IN (?) in prepared statements
+    // Always expand placeholders yourself
+    /*
         const [enrolledStudents] = await connection.execute(
             `SELECT s.studentId 
              FROM StudentModule sm
@@ -290,89 +297,94 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
         );
         */
 
-        const enrolledStudentIds = enrolledStudents.map(s => s.studentId);
-        const unenrolledStudents = studentIds.filter(id => !enrolledStudentIds.includes(id));
+    const enrolledStudentIds = enrolledStudents.map((s) => s.studentId);
+    const unenrolledStudents = studentIds.filter(
+      (id) => !enrolledStudentIds.includes(id),
+    );
 
-        if (unenrolledStudents.length > 0) {
-            const error = new Error(`Students with IDs [${unenrolledStudents.join(', ')}] are not enrolled in this module`);
-            error.statusCode = 404;
-            throw error;
-        }
+    if (unenrolledStudents.length > 0) {
+      const error = new Error(
+        `Students with IDs [${unenrolledStudents.join(", ")}] are not enrolled in this module`,
+      );
+      error.statusCode = 404;
+      throw error;
+    }
 
-        // Process each mark entry
-        let insertedCount = 0;
-        let updatedCount = 0;
+    // Process each mark entry
+    let insertedCount = 0;
+    let updatedCount = 0;
 
-        for (const entry of marksData) {
-            const { studentId, mark, submission } = entry;
+    for (const entry of marksData) {
+      const { studentId, mark, submission } = entry;
 
-            // Validate mark is within range
-            if (mark !== null && (mark < 0 || mark > totalMark)) {
-                const error = new Error(`Invalid mark ${mark} for student ${studentId}. Must be between 0 and ${totalMark}`);
-                error.statusCode = 400;
-                throw error;
-            }
+      // Validate mark is within range
+      if (mark !== null && (mark < 0 || mark > totalMark)) {
+        const error = new Error(
+          `Invalid mark ${mark} for student ${studentId}. Must be between 0 and ${totalMark}`,
+        );
+        error.statusCode = 400;
+        throw error;
+      }
 
-            // Check if mark entry already exists
-            const [existing] = await connection.execute(
-                `SELECT markEntryId FROM MarkEntry 
+      // Check if mark entry already exists
+      const [existing] = await connection.execute(
+        `SELECT markEntryId FROM MarkEntry 
                  WHERE studentId = ? AND assessmentId = ?`,
-                [studentId, assessmentId]
-            );
+        [studentId, assessmentId],
+      );
 
-            if (existing.length > 0) {
-                // Update existing mark entry
-                await connection.execute(
-                    `UPDATE MarkEntry 
+      if (existing.length > 0) {
+        // Update existing mark entry
+        await connection.execute(
+          `UPDATE MarkEntry 
                      SET mark = ?, 
                          submission = ?, 
                          dateSubmitted = ?
                      WHERE studentId = ? AND assessmentId = ?`,
-                    [
-                        mark,
-                        submission,
-                        submission ? new Date() : null,
-                        studentId,
-                        assessmentId
-                    ]
-                );
-                updatedCount++;
-            } else {
-                // Insert new mark entry
-                await connection.execute(
-                    `INSERT INTO MarkEntry 
+          [
+            mark,
+            submission,
+            submission ? new Date() : null,
+            studentId,
+            assessmentId,
+          ],
+        );
+        updatedCount++;
+      } else {
+        // Insert new mark entry
+        await connection.execute(
+          `INSERT INTO MarkEntry 
                      (mark, submission, dateSubmitted, studentId, assessmentId)
                      VALUES (?, ?, ?, ?, ?)`,
-                    [
-                        mark,
-                        submission,
-                        submission ? new Date() : null,
-                        studentId,
-                        assessmentId
-                    ]
-                );
-                insertedCount++;
-            }
-        }
-
-        // Commit the transaction
-        await connection.commit();
-
-        return {
-            inserted: insertedCount,
-            updated: updatedCount,
-            total: insertedCount + updatedCount
-        };
-
-    } catch (error) {
-        // Rollback transaction on error
-        await connection.rollback();
-        console.error('Error uploading student marks:', error);
-        throw error;
-    } finally {
-        // Release the connection back to the pool
-        connection.release();
+          [
+            mark,
+            submission,
+            submission ? new Date() : null,
+            studentId,
+            assessmentId,
+          ],
+        );
+        insertedCount++;
+      }
     }
+
+    // Commit the transaction
+    await connection.commit();
+
+    return {
+      inserted: insertedCount,
+      updated: updatedCount,
+      total: insertedCount + updatedCount,
+    };
+  } catch (error) {
+    // Rollback transaction on error
+    await connection.rollback();
+    console.error("Error uploading student marks:", error);
+    throw error;
+  } finally {
+    // Release the connection back to the pool
+    connection.release();
+  }
 };
 
 /**
@@ -388,10 +400,10 @@ const uploadStudentMarks = async (assessmentId, lecturerId, marksData) => {
  * - Limited to 3 most urgent assessments
  */
 const getUpcomingAssessments = async (studentId) => {
-    try {
-        // Query to get the 3 nearest upcoming assessments across all student's modules
-        const [assessments] = await connectDB.execute(
-            `SELECT 
+  try {
+    // Query to get the 3 nearest upcoming assessments across all student's modules
+    const [assessments] = await connectDB.execute(
+      `SELECT 
                 a.assessmentId,
                 a.assessmentName,
                 a.totalMark,
@@ -413,39 +425,38 @@ const getUpcomingAssessments = async (studentId) => {
                 AND a.dueDate >= CURDATE()
              ORDER BY a.dueDate ASC
              LIMIT 3`,
-            [studentId, studentId]
-        );
+      [studentId, studentId],
+    );
 
-        // Format the response into an array of assessment objects
-        return assessments.map(assessment => ({
-            assessmentId: assessment.assessmentId,
-            assessmentName: assessment.assessmentName,
-            totalMark: assessment.totalMark,
-            weighting: assessment.weighting,
-            dueDate: assessment.dueDate,
-            daysUntilDue: assessment.daysUntilDue,
-            module: {
-                moduleId: assessment.moduleId,
-                moduleName: assessment.moduleName,
-                moduleCode: assessment.moduleCode
-            },
-            studentMark: assessment.studentMark || null,
-            submission: assessment.submission || false,
-            dateSubmitted: assessment.dateSubmitted || null
-        }));
-
-    } catch (error) {
-        console.error('Error getting upcoming assessments:', error);
-        throw error;
-    }
+    // Format the response into an array of assessment objects
+    return assessments.map((assessment) => ({
+      assessmentId: assessment.assessmentId,
+      assessmentName: assessment.assessmentName,
+      totalMark: assessment.totalMark,
+      weighting: assessment.weighting,
+      dueDate: assessment.dueDate,
+      daysUntilDue: assessment.daysUntilDue,
+      module: {
+        moduleId: assessment.moduleId,
+        moduleName: assessment.moduleName,
+        moduleCode: assessment.moduleCode,
+      },
+      studentMark: assessment.studentMark || null,
+      submission: assessment.submission || false,
+      dateSubmitted: assessment.dateSubmitted || null,
+    }));
+  } catch (error) {
+    console.error("Error getting upcoming assessments:", error);
+    throw error;
+  }
 };
 
 module.exports = {
-    getStudentModuleAssessments,
-    getLecturerModuleAssessments,
-    getUpcomingAssessments,
-    createAssessment,
-    updateAssessment,
-    deleteAssessment,
-    uploadStudentMarks
+  getStudentModuleAssessments,
+  getLecturerModuleAssessments,
+  getUpcomingAssessments,
+  createAssessment,
+  updateAssessment,
+  deleteAssessment,
+  uploadStudentMarks,
 };
