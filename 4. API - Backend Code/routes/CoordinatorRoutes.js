@@ -15,7 +15,7 @@ router.get(
   "/coordinator/modules",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.getCoordinatorModules
+  coordinatorController.getCoordinatorModules,
 );
 
 /**
@@ -29,7 +29,7 @@ router.get(
   "/coordinator/modules/:moduleId/risk-summary",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.getModuleRiskSummary
+  coordinatorController.getModuleRiskSummary,
 );
 
 /**
@@ -53,7 +53,7 @@ router.get(
   "/coordinator/modules/:moduleId/students",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.getModuleStudents
+  coordinatorController.getModuleStudents,
 );
 
 /**
@@ -68,7 +68,7 @@ router.get(
   "/coordinator/modules/:moduleId/students/:studentId/risk",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.getStudentRiskDetails
+  coordinatorController.getStudentRiskDetails,
 );
 
 /**
@@ -84,7 +84,7 @@ router.post(
   "/coordinator/modules/:moduleId/students/:studentId/interventions",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.createIntervention
+  coordinatorController.createIntervention,
 );
 
 /**
@@ -98,7 +98,7 @@ router.get(
   "/coordinator/modules/:moduleId/students/:studentId/interventions/active",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.getActiveIntervention
+  coordinatorController.getActiveIntervention,
 );
 
 /**
@@ -118,7 +118,7 @@ router.post(
   "/coordinator/interventions/:interventionId/follow-ups",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
-  coordinatorController.createFollowUp
+  coordinatorController.createFollowUp,
 );
 
 module.exports = router;
