@@ -1,17 +1,20 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const studentController = require("../controllers/studentController");
-const authenticateToken = require('../middleware/authMiddleware');
+const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authRolesMiddleware");
-
 
 /**
  * GET /api/me/modules
- * Get all the modules under the specific student currently logged in 
+ * Get all the modules under the specific student currently logged in
  * Note : we need the student's id from the middleware, to use as an identifier to query modules
  */
-router.get('/me/student/modules', authenticateToken, studentController.getStudentsModules);
+router.get(
+  "/me/student/modules",
+  authenticateToken,
+  studentController.getStudentsModules,
+);
 
 /**
  * GET /assessments/upcoming
@@ -19,10 +22,10 @@ router.get('/me/student/modules', authenticateToken, studentController.getStuden
  * Ordered by due date (nearest first)
  */
 router.get(
-    '/assessments/upcoming',
-    authenticateToken,
-    authorizeRoles('STUDENT'),
-    studentController.getUpcomingAssessments
+  "/assessments/upcoming",
+  authenticateToken,
+  authorizeRoles("STUDENT"),
+  studentController.getUpcomingAssessments,
 );
 
 /**
@@ -31,10 +34,10 @@ router.get(
  * Includes module codes, average marks, and risk levels
  */
 router.get(
-    '/student/module-performance',
-    authenticateToken,
-    authorizeRoles('STUDENT'),
-    studentController.getStudentModulePerformance
+  "/student/module-performance",
+  authenticateToken,
+  authorizeRoles("STUDENT"),
+  studentController.getStudentModulePerformance,
 );
 
 module.exports = router;
