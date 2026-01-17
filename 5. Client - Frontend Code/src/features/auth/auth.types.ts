@@ -15,7 +15,7 @@ export interface RegisterStep1Request {
   gender: string;
   userRole: 'STUDENT' | 'LECTURER' | 'COORDINATOR';
   title?: string; // Can be null 
-  isActive: boolean;
+  isActive: boolean; // mysql uses TINYINT, any consequences ?
 }
 
 export interface RegisterStudentStep2Request {
@@ -95,6 +95,15 @@ interface LecturerProfile {
   facultyId: number;
   facultyName: string;
 }
+// If HOD
+interface HodProfile {
+  hodId: number;
+  staffNumber: string;
+  departmentId: number;
+  departmentName: string;
+  facultyId: number;
+  facultyName: string;
+}
 
 // ============= USER VARIANTS (discriminated union) =============
 
@@ -113,12 +122,17 @@ export type LecturerUser = BaseUser & {
   lecturerProfile: LecturerProfile;
 };
 
+export type HodUser = BaseUser & {
+  roles: readonly ['HOD'];
+  HodProfile: HodProfile;
+}
+
 export type AdminUser = BaseUser & {
   roles: readonly ['ADMIN'];
 };
 
 // ============= UNION TYPE =============
-export type User = StudentUser | CoordinatorUser | LecturerUser | AdminUser;
+export type User = StudentUser | CoordinatorUser | LecturerUser | HodUser | AdminUser;
 
 // ============= TYPE GUARDS (helper functions) =============
 export function isStudent(user: User): user is StudentUser {
@@ -131,6 +145,10 @@ export function isCoordinator(user: User): user is CoordinatorUser {
 
 export function isLecturer(user: User): user is LecturerUser {
   return (user.roles as readonly string[]).includes('LECTURER');
+}
+
+export function isHod(user: User): user is HodUser {
+  return (user.roles as readonly String[]).includes('HOD');
 }
 
 export function isAdmin(user: User): user is AdminUser {
