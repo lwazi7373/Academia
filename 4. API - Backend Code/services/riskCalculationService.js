@@ -1,10 +1,17 @@
 const connectDB = require("../db/connect");
 
+/**
+ * Calculates the risk levels of all the students in the module and inserts the results to RiskReport
+ * @param {number} studentId
+ * @param {number} moduleId
+ * @param {number} studentModuleId
+ * @param {number} period
+ */
 const calculateRiskForStudentModule = async (
   studentId,
   moduleId,
   studentModuleId,
-  period
+  period,
 ) => {
   const { periodId, startDate, endDate } = period;
 
@@ -21,7 +28,7 @@ const calculateRiskForStudentModule = async (
     WHERE cs.moduleId = ?
       AND cs.createdAt BETWEEN ? AND ?
     `,
-    [studentId, moduleId, startDate, endDate]
+    [studentId, moduleId, startDate, endDate],
   );
 
   // Submission
@@ -36,7 +43,7 @@ const calculateRiskForStudentModule = async (
       AND a.moduleId = ?
       AND a.createdAt BETWEEN ? AND ?
     `,
-    [studentId, moduleId, startDate, endDate]
+    [studentId, moduleId, startDate, endDate],
   );
 
   // Marks
@@ -50,7 +57,7 @@ const calculateRiskForStudentModule = async (
       AND a.moduleId = ?
       AND a.createdAt BETWEEN ? AND ?
     `,
-    [studentId, moduleId, startDate, endDate]
+    [studentId, moduleId, startDate, endDate],
   );
 
   const attendanceRate = attendance.attendanceRate || 0;
@@ -59,14 +66,12 @@ const calculateRiskForStudentModule = async (
 
   // Attendance and submission are worth 30% and mark is worth 40%
   const riskScore =
-    attendanceRate * 0.3 +
-    submissionRate * 0.3 +
-    averageMark * 0.4;
+    attendanceRate * 0.3 + submissionRate * 0.3 + averageMark * 0.4;
 
-  // Risk level mapping (need to re visit this)  
-  let riskLevel = 'LOW';
-  if (riskScore < 40) riskLevel = 'HIGH';
-  else if (riskScore < 60) riskLevel = 'MODERATE';
+  // Risk level mapping (need to re visit this)
+  let riskLevel = "LOW";
+  if (riskScore < 40) riskLevel = "HIGH";
+  else if (riskScore < 60) riskLevel = "MODERATE";
 
   await connectDB.execute(
     `
@@ -80,9 +85,15 @@ const calculateRiskForStudentModule = async (
       averageMark = VALUES(averageMark),
       calculatedAt = NOW()
     `,
-    [studentModuleId, periodId, riskLevel, attendanceRate, submissionRate, averageMark]
+    [
+      studentModuleId,
+      periodId,
+      riskLevel,
+      attendanceRate,
+      submissionRate,
+      averageMark,
+    ],
   );
 };
-
 
 module.exports = { calculateRiskForStudentModule };

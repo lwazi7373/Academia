@@ -1,18 +1,18 @@
-const cron = require('node-cron');
-const connectDB = require('../db/connect');
+const cron = require("node-cron");
+const connectDB = require("../db/connect");
 const CalcService = require("../services/riskCalculationService");
 
 // Run this callback every day at 02:00 AM server time
-cron.schedule('0 2 * * *', async () => {
+cron.schedule("0 2 * * *", async () => {
   // Get active academic period (which semester we are calculating for)
   const [[period]] = await connectDB.execute(
     `SELECT periodId, startDate, endDate
      FROM academicPeriod
-     WHERE isActive = TRUE`
+     WHERE isActive = TRUE`,
   );
 
   if (!period) {
-    console.error('No active academic period found.');
+    console.error("No active academic period found.");
     return;
   }
 
@@ -21,7 +21,7 @@ cron.schedule('0 2 * * *', async () => {
     SELECT studentModuleId, studentId, moduleId
     FROM StudentModule
   `);
-   
+
   // Calculate risk within the period
   for (const row of rows) {
     try {
@@ -29,10 +29,13 @@ cron.schedule('0 2 * * *', async () => {
         row.studentId,
         row.moduleId,
         row.studentModuleId,
-        period
+        period,
       );
     } catch (err) {
-      console.error(`Risk calculation failed for studentModuleId ${row.studentModuleId}`, err);
+      console.error(
+        `Risk calculation failed for studentModuleId ${row.studentModuleId}`,
+        err,
+      );
     }
   }
 });
