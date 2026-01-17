@@ -1,7 +1,7 @@
 //Database connection
-const connectDB = require("../db/connect"); 
-// For error handling 
-const {notFound,unauthorized} = require("../errors/httpErrors");
+const connectDB = require("../db/connect");
+// For error handling
+const { notFound, unauthorized } = require("../errors/httpErrors");
 
 /**
  * Get current user with all their profile data based on roles
@@ -9,10 +9,9 @@ const {notFound,unauthorized} = require("../errors/httpErrors");
  * @returns {Promise<Object>} Complete user profile with role-specific data
  */
 const getCurrentUser = async (userId) => {
-
-    // Get base user info
-    const [userRows] = await connectDB.query(
-      `SELECT 
+  // Get base user info
+  const [userRows] = await connectDB.query(
+    `SELECT 
         userId, 
         firstName, 
         lastName, 
@@ -24,66 +23,65 @@ const getCurrentUser = async (userId) => {
         dateRegistered
       FROM Users 
       WHERE userId = ? AND isActive = TRUE`,
-      [userId]
-    );
-    
-    if (userRows.length === 0) {
-      throw notFound('User not found');
-    }
-    
-    const user = userRows[0];
-    
-    // Get user roles (using existing function)
-    const roles = await getUserRoles(userId);
-    
-    // Get role-specific data
-    const roleDetails = await getRoleSpecificData(userId, roles);
-    
-    return {
-      userId: user.userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      title: user.title,
-      emailAddress: user.emailAddress,
-      contactNo: user.contactNo,
-      gender: user.gender,
-      isActive: user.isActive,
-      dateRegistered: user.dateRegistered,
-      roles: roles,
-      ...roleDetails // Spreads role-specific data
-    };
+    [userId],
+  );
 
+  if (userRows.length === 0) {
+    throw notFound("User not found");
+  }
+
+  const user = userRows[0];
+
+  // Get user roles (using existing function)
+  const roles = await getUserRoles(userId);
+
+  // Get role-specific data
+  const roleDetails = await getRoleSpecificData(userId, roles);
+
+  return {
+    userId: user.userId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    title: user.title,
+    emailAddress: user.emailAddress,
+    contactNo: user.contactNo,
+    gender: user.gender,
+    isActive: user.isActive,
+    dateRegistered: user.dateRegistered,
+    roles: roles,
+    ...roleDetails, // Spreads role-specific data
+  };
 };
 
 /**
  * Get role-specific data for each role the user has
- * @param {number} userId 
+ * @param {number} userId
  * @param {Array<string>} roles - Array of role strings
  * @returns {Promise<Object>} Object with role-specific profile data
  */
 const getRoleSpecificData = async (userId, roles) => {
   const roleData = {};
-  
+
   for (const role of roles) {
     switch (role) {
-      case 'STUDENT':
+      case "STUDENT":
         roleData.studentProfile = await getStudentProfile(userId);
         break;
-      case 'LECTURER':
+      case "LECTURER":
         roleData.lecturerProfile = await getLecturerProfile(userId);
         break;
-      case 'COORDINATOR':
+      case "COORDINATOR":
         roleData.coordinatorProfile = await getCoordinatorProfile(userId);
         break;
-      case 'HOD':
+      case "HOD":
         roleData.hodProfile = await getHODProfile(userId);
         break;
-      case 'ADMIN':
-        roleData.adminProfile = { role: 'ADMIN' };
+      case "ADMIN":
+        roleData.adminProfile = { role: "ADMIN" };
         break;
     }
   }
-  
+
   return roleData;
 };
 
@@ -114,12 +112,12 @@ const getStudentProfile = async (studentId) => {
       JOIN Department d ON q.departmentId = d.departmentId
       JOIN Faculty f ON d.facultyId = f.facultyId
       WHERE s.studentId = ?`,
-      [studentId]
+      [studentId],
     );
-    
+
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error('Error getting student profile:', error);
+    console.error("Error getting student profile:", error);
     throw error;
   }
 };
@@ -143,12 +141,12 @@ const getLecturerProfile = async (lecturerId) => {
       JOIN Department d ON l.departmentId = d.departmentId
       JOIN Faculty f ON d.facultyId = f.facultyId
       WHERE l.lecturerId = ?`,
-      [lecturerId]
+      [lecturerId],
     );
-    
+
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error('Error getting lecturer profile:', error);
+    console.error("Error getting lecturer profile:", error);
     throw error;
   }
 };
@@ -172,12 +170,12 @@ const getCoordinatorProfile = async (coordinatorId) => {
       JOIN Department d ON c.departmentId = d.departmentId
       JOIN Faculty f ON d.facultyId = f.facultyId
       WHERE c.coordinatorId = ?`,
-      [coordinatorId]
+      [coordinatorId],
     );
-    
+
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error('Error getting coordinator profile:', error);
+    console.error("Error getting coordinator profile:", error);
     throw error;
   }
 };
@@ -201,12 +199,12 @@ const getHODProfile = async (hodId) => {
       JOIN Department d ON h.departmentId = d.departmentId
       JOIN Faculty f ON d.facultyId = f.facultyId
       WHERE h.hodId = ?`,
-      [hodId]
+      [hodId],
     );
-    
+
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
-    console.error('Error getting HOD profile:', error);
+    console.error("Error getting HOD profile:", error);
     throw error;
   }
 };
@@ -214,7 +212,7 @@ const getHODProfile = async (hodId) => {
 /**
  * Service to register a user to the database
  * Creates user record and assigns role in UserRoles junction table
- * Note record will have dateCreated, that is auto generated by the datahbase when created 
+ * Note record will have dateCreated, that is auto generated by the datahbase when created
  * @param {*} firstName
  * @param {*} lastName
  * @param {*} idNumber
@@ -235,7 +233,7 @@ const registerUser = async (
   gender,
   userRole,
   isActive,
-  title
+  title,
 ) => {
   let connection;
   try {
@@ -259,8 +257,8 @@ const registerUser = async (
         contactNo,
         gender,
         isActive,
-        title
-      ]
+        title,
+      ],
     );
 
     const userId = userResult.insertId;
@@ -272,14 +270,13 @@ const registerUser = async (
       (userId, userRole)
       VALUES (?, ?)
       `,
-      [userId, userRole]
+      [userId, userRole],
     );
 
     // Commit the transaction
     await connection.commit();
 
     return userId;
-    
   } catch (error) {
     // Rollback on error
     if (connection) {
@@ -297,27 +294,27 @@ const registerUser = async (
 
 /**
  * Identifies the type of user, as a helper for the login process
- * @param {nummber} identifierNumber 
+ * @param {nummber} identifierNumber
  * @returns the user
  */
 const findUserByIdentifier = async (identifierNumber) => {
-    try {
-      // Try to find as student first
-      const [students] = await connectDB.query(
-        `SELECT u.* 
+  try {
+    // Try to find as student first
+    const [students] = await connectDB.query(
+      `SELECT u.* 
          FROM Users u 
          INNER JOIN Student s ON u.userId = s.studentId 
          WHERE s.studentNumber = ? AND u.isActive = TRUE`,
-        [identifierNumber] // Where the identifierNumber represents the studentNumber
-      );
-      
-      if (students.length > 0) {
-        return students[0];
-      }
-      
-      // If not student, try as staff (Lecturer, Coordinator, or HOD)
-      const [staff] = await connectDB.query(
-        `SELECT u.* 
+      [identifierNumber], // Where the identifierNumber represents the studentNumber
+    );
+
+    if (students.length > 0) {
+      return students[0];
+    }
+
+    // If not student, try as staff (Lecturer, Coordinator, or HOD)
+    const [staff] = await connectDB.query(
+      `SELECT u.* 
          FROM Users u 
          WHERE u.userId IN (
            SELECT lecturerId FROM Lecturer WHERE staffNumber = ?
@@ -327,37 +324,34 @@ const findUserByIdentifier = async (identifierNumber) => {
            SELECT hodId FROM HOD WHERE staffNumber = ?
          ) AND u.isActive = TRUE
          LIMIT 1`,
-        [identifierNumber, identifierNumber, identifierNumber]
-      );
-      
-      return staff.length > 0 ? staff[0] : null; //If there is something to return, return the first, if not return null
-      
-    } catch (error) {
-      console.error('Error finding user:', error);
-      throw error;
-    }
-  }
+      [identifierNumber, identifierNumber, identifierNumber],
+    );
 
-  /**
-   * Gets the roles of the users as a helper for the registration process
-   * @param {number} userId 
-   * @returns the role of the user
-   */
+    return staff.length > 0 ? staff[0] : null; //If there is something to return, return the first, if not return null
+  } catch (error) {
+    console.error("Error finding user:", error);
+    throw error;
+  }
+};
+
+/**
+ * Gets the roles of the users as a helper for the registration process
+ * @param {number} userId
+ * @returns the role of the user
+ */
 const getUserRoles = async (userId) => {
-    try {
-      const [roles] = await connectDB.query(
-        'SELECT userRole FROM UserRoles WHERE userId = ?',
-        [userId]
-      );
-      
-      return roles.map(r => r.userRole);
-    
-    } catch (error) {
-      console.error('Error getting user roles:', error);
-      throw error;
-    }
-  }
+  try {
+    const [roles] = await connectDB.query(
+      "SELECT userRole FROM UserRoles WHERE userId = ?",
+      [userId],
+    );
 
+    return roles.map((r) => r.userRole);
+  } catch (error) {
+    console.error("Error getting user roles:", error);
+    throw error;
+  }
+};
 
 /**
  * Automatically assigns modules to a student based on their qualification, year, and semester
@@ -368,12 +362,17 @@ const getUserRoles = async (userId) => {
  * @param {number} semesterNo - The semester number (1 or 2)
  * @returns {Promise<Array>} Array of assigned modules
  */
-const assignModulesToStudent = async (studentId, qualificationId, yearOfStudy, semesterNo) => {
+const assignModulesToStudent = async (
+  studentId,
+  qualificationId,
+  yearOfStudy,
+  semesterNo,
+) => {
   const connection = await connectDB.getConnection();
-  
+
   try {
     await connection.beginTransaction();
-    
+
     // Get all modules for this qualification, year, and semester
     const [modules] = await connection.query(
       `SELECT qm.moduleId, m.moduleName, m.moduleCode, m.credits, qm.isCompulsory
@@ -382,43 +381,42 @@ const assignModulesToStudent = async (studentId, qualificationId, yearOfStudy, s
        WHERE qm.qualificationId = ? 
        AND qm.academicYear = ? 
        AND qm.semesterNo = ?`,
-      [qualificationId, yearOfStudy, semesterNo]
+      [qualificationId, yearOfStudy, semesterNo],
     );
-    
+
     if (modules.length === 0) {
       await connection.commit();
       return [];
     }
-    
+
     const assignedModules = [];
-    
+
     // Insert each module into StudentModule
     for (const module of modules) {
       // Check if already assigned (prevent duplicates)
       const [existing] = await connection.query(
-        'SELECT studentModuleId FROM StudentModule WHERE studentId = ? AND moduleId = ?',
-        [studentId, module.moduleId]
+        "SELECT studentModuleId FROM StudentModule WHERE studentId = ? AND moduleId = ?",
+        [studentId, module.moduleId],
       );
-      
+
       if (existing.length === 0) {
         await connection.query(
-          'INSERT INTO StudentModule (studentId, moduleId) VALUES (?, ?)',
-          [studentId, module.moduleId]
+          "INSERT INTO StudentModule (studentId, moduleId) VALUES (?, ?)",
+          [studentId, module.moduleId],
         );
-        
+
         assignedModules.push({
           moduleId: module.moduleId,
           moduleName: module.moduleName,
           moduleCode: module.moduleCode,
           credits: module.credits,
-          isCompulsory: module.isCompulsory
+          isCompulsory: module.isCompulsory,
         });
       }
     }
-    
+
     await connection.commit();
     return assignedModules;
-    
   } catch (error) {
     await connection.rollback();
     throw new Error(`Failed to assign modules to student: ${error.message}`);
@@ -426,7 +424,6 @@ const assignModulesToStudent = async (studentId, qualificationId, yearOfStudy, s
     connection.release();
   }
 };
-
 
 /**
  * Assigns specific modules to a lecturer
@@ -436,40 +433,39 @@ const assignModulesToStudent = async (studentId, qualificationId, yearOfStudy, s
  */
 const assignModulesToLecturer = async (lecturerId, moduleIds) => {
   const connection = await connectDB.getConnection();
-  
+
   try {
     await connection.beginTransaction();
-    
+
     const assignedModules = [];
-    
+
     for (const moduleId of moduleIds) {
       // Check if already assigned
       const [existing] = await connection.query(
-        'SELECT lecturerModuleId FROM LecturerModule WHERE lecturerId = ? AND moduleId = ?',
-        [lecturerId, moduleId]
+        "SELECT lecturerModuleId FROM LecturerModule WHERE lecturerId = ? AND moduleId = ?",
+        [lecturerId, moduleId],
       );
-      
+
       if (existing.length === 0) {
         await connection.query(
-          'INSERT INTO LecturerModule (lecturerId, moduleId) VALUES (?, ?)',
-          [lecturerId, moduleId]
+          "INSERT INTO LecturerModule (lecturerId, moduleId) VALUES (?, ?)",
+          [lecturerId, moduleId],
         );
-        
+
         // Get module details
         const [moduleDetails] = await connection.query(
-          'SELECT moduleId, moduleName, moduleCode, credits FROM Module WHERE moduleId = ?',
-          [moduleId]
+          "SELECT moduleId, moduleName, moduleCode, credits FROM Module WHERE moduleId = ?",
+          [moduleId],
         );
-        
+
         if (moduleDetails.length > 0) {
           assignedModules.push(moduleDetails[0]);
         }
       }
     }
-    
+
     await connection.commit();
     return assignedModules;
-    
   } catch (error) {
     await connection.rollback();
     throw new Error(`Failed to assign modules to lecturer: ${error.message}`);
@@ -477,7 +473,6 @@ const assignModulesToLecturer = async (lecturerId, moduleIds) => {
     connection.release();
   }
 };
-
 
 /**
  * Assigns specific modules to a coordinator
@@ -487,43 +482,44 @@ const assignModulesToLecturer = async (lecturerId, moduleIds) => {
  */
 const assignModulesToCoordinator = async (coordinatorId, moduleIds) => {
   const connection = await connectDB.getConnection();
-  
+
   try {
     await connection.beginTransaction();
-    
+
     const assignedModules = [];
-    
+
     for (const moduleId of moduleIds) {
       // Check if already assigned
       const [existing] = await connection.query(
-        'SELECT coordinatorModuleId FROM CoordinatorModule WHERE coordinatorId = ? AND moduleId = ?',
-        [coordinatorId, moduleId]
+        "SELECT coordinatorModuleId FROM CoordinatorModule WHERE coordinatorId = ? AND moduleId = ?",
+        [coordinatorId, moduleId],
       );
-      
+
       if (existing.length === 0) {
         await connection.query(
-          'INSERT INTO CoordinatorModule (coordinatorId, moduleId) VALUES (?, ?)',
-          [coordinatorId, moduleId]
+          "INSERT INTO CoordinatorModule (coordinatorId, moduleId) VALUES (?, ?)",
+          [coordinatorId, moduleId],
         );
-        
+
         // Get module details
         const [moduleDetails] = await connection.query(
-          'SELECT moduleId, moduleName, moduleCode, credits FROM Module WHERE moduleId = ?',
-          [moduleId]
+          "SELECT moduleId, moduleName, moduleCode, credits FROM Module WHERE moduleId = ?",
+          [moduleId],
         );
-        
+
         if (moduleDetails.length > 0) {
           assignedModules.push(moduleDetails[0]);
         }
       }
     }
-    
+
     await connection.commit();
     return assignedModules;
-    
   } catch (error) {
     await connection.rollback();
-    throw new Error(`Failed to assign modules to coordinator: ${error.message}`);
+    throw new Error(
+      `Failed to assign modules to coordinator: ${error.message}`,
+    );
   } finally {
     connection.release();
   }
@@ -531,38 +527,37 @@ const assignModulesToCoordinator = async (coordinatorId, moduleIds) => {
 
 /**
  * Identify the type os user, get their role and then logged them in
- * @param {number} identifierNumber 
- * @returns {Promise<Object>} user object 
+ * @param {number} identifierNumber
+ * @returns {Promise<Object>} user object
  */
 const loginUser = async (identifierNumber) => {
+  // Find user by studentNumber or staffNumber
+  // At this point, even if we get the user, we still do not know their role, it is located in the UserRoles junction table,
+  // because, a user can have multiple roles
+  const user = await findUserByIdentifier(identifierNumber);
 
-      // Find user by studentNumber or staffNumber
-      // At this point, even if we get the user, we still do not know their role, it is located in the UserRoles junction table,
-      // because, a user can have multiple roles
-      const user = await findUserByIdentifier(identifierNumber);
+  if (!user) {
+    throw unauthorized("Invalid student/staff number or password");
+  }
 
-      if (!user) {
-        throw unauthorized('Invalid student/staff number or password');
-      }
+  // Get the user's role(s), using the id retrieved from the user we identfied
+  const roles = await getUserRoles(user.userId);
 
-      // Get the user's role(s), using the id retrieved from the user we identfied 
-      const roles = await getUserRoles(user.userId);
-
-      // return only the information, I see as necessary for now 
-      return {
-        user: {
-          userId: user.userId,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          userPassword: user.userPassword, // I always prefer to do the bcrypt validation on the controller
-          title: user.title,
-          emailAddress: user.emailAddress,
-          contactNo: user.contactNo,
-          gender: user.gender,
-          roles: roles, // Will need this immediately after the login
-        }
-      };
-}
+  // return only the information, I see as necessary for now
+  return {
+    user: {
+      userId: user.userId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userPassword: user.userPassword, // I always prefer to do the bcrypt validation on the controller
+      title: user.title,
+      emailAddress: user.emailAddress,
+      contactNo: user.contactNo,
+      gender: user.gender,
+      roles: roles, // Will need this immediately after the login
+    },
+  };
+};
 
 /**
  * DEV ONLY - the pain of writing this ;;;;;
@@ -593,13 +588,12 @@ const updatePasswordByIdentifier = async (identifierNumber, hashedPassword) => {
       SET userPassword = ?
       WHERE userId = ?
       `,
-      [hashedPassword, user.userId]
+      [hashedPassword, user.userId],
     );
 
     await connection.commit();
 
     return result.affectedRows > 0;
-
   } catch (error) {
     if (connection) await connection.rollback();
     console.error("Failed to update password:", error);
@@ -616,5 +610,5 @@ module.exports = {
   assignModulesToStudent,
   assignModulesToLecturer,
   assignModulesToCoordinator,
-  getCurrentUser
+  getCurrentUser,
 };

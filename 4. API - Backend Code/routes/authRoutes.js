@@ -1,50 +1,49 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authController = require('../controllers/authController');
-const authenticateToken = require('../middleware/authMiddleware');
-//const authorizeRoles = require("../middleware/authRolesMiddleware");
+const authController = require("../controllers/authController");
+const authenticateToken = require("../middleware/authMiddleware");
 
 /**
  * GET /api/me
- * Get the current user 
+ * Get the current user
  */
-router.get('/me', authenticateToken, authController.getMe);
+router.get("/me", authenticateToken, authController.getMe);
 
 /**
  * POST /api/auth/login
  * Authenticate user and receive JWT token
  * Body: { identifierNumber, userPassword }
  */
-router.post('/login', authController.login);
+router.post("/login", authController.login);
 
 /**
  * POST /api/auth/register/step1
  * Step 1: Create base user account and generate student/staff number
- * Body: { firstName, lastName, idNumber, emailAddress, userPassword, 
+ * Body: { firstName, lastName, idNumber, emailAddress, userPassword,
  *         contactNo, gender, userRole, title, isActive }
  * Returns: { userId, studentNumber/staffNumber, role(s) }
  */
-router.post('/register/step1', authController.registerStep1);
+router.post("/register/step1", authController.registerStep1);
 
 /**
  * POST /api/auth/register/student/step2
  * Step 2 (Students): Complete student registration with qualification
- * Body: { userId, studentNumber, qualificationName, yearOfStudy, 
+ * Body: { userId, studentNumber, qualificationName, yearOfStudy,
  *         semesterNo, levelOfEducation }
  * Returns: { student, modulesAssigned, modules }
  */
-router.post('/register/student/step2', authController.registerStep2Student);
+router.post("/register/student/step2", authController.registerStep2Student);
 
 /**
- * Get all the departments in the database (available for assignment to lecturer when registering them) 
+ * Get all the departments in the database (available for assignment to lecturer when registering them)
  */
-router.get('/departments', authController.getAllDepartments);
+router.get("/departments", authController.getAllDepartments);
 
 /**
  * Get all qual;ifications in the database (available for assignment to student when registering them )
  */
-router.get('/qualifications', authController.getAllQualifications);
+router.get("/qualifications", authController.getAllQualifications);
 
 /**
  * POST /api/auth/register/staff/step2
@@ -52,13 +51,16 @@ router.get('/qualifications', authController.getAllQualifications);
  * Body: { userId, staffNumber, departmentId, userRole }
  * Returns: { staff }
  */
-router.post('/register/staff/step2', authController.registerStep2Staff);
+router.post("/register/staff/step2", authController.registerStep2Staff);
 
 /**
  * Still Step 2 of staff registration
  * Returns: { modules }
  */
-router.get('/modules/department/:departmentId', authController.getDepartmentModules);
+router.get(
+  "/modules/department/:departmentId",
+  authController.getDepartmentModules,
+);
 
 /**
  * POST /api/auth/register/staff/step3
@@ -66,7 +68,7 @@ router.get('/modules/department/:departmentId', authController.getDepartmentModu
  * Body: { userId, userRole, moduleIds }
  * Returns: { modulesAssigned, modules }
  */
-router.post('/register/staff/step3', authController.registerStep3Staff);
+router.post("/register/staff/step3", authController.registerStep3Staff);
 
 /**
  * DEV ONLY - could not find a shorter/easier way to do this
@@ -74,8 +76,6 @@ router.post('/register/staff/step3', authController.registerStep3Staff);
  * Update a user's password using student/staff number
  * Body: { identifierNumber, newPassword }
  */
-router.put('/update-password', authController.updateUserPassword);
-
-
+router.put("/update-password", authController.updateUserPassword);
 
 module.exports = router;
