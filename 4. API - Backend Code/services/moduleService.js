@@ -1,6 +1,40 @@
  //Database connection
 const connectDB = require("../db/connect"); 
 
+const { badRequest, notFound } = require("../errors/httpErrors");
+
+/**
+ * Fetch module details by moduleId
+ * @param {number} moduleId
+ * @returns {Promise<Object>} module details
+ */
+const getModuleById = async (moduleId) => {
+  if (!moduleId || isNaN(moduleId)) {
+    throw badRequest("Valid moduleId is required");
+  }
+
+  const [rows] = await connectDB.execute(
+    `SELECT 
+        m.moduleId,
+        m.moduleName,
+        m.moduleCode,
+        m.credits,
+        d.departmentId,
+        d.departmentName
+     FROM Module m
+     INNER JOIN Department d ON m.departmentId = d.departmentId
+     WHERE m.moduleId = ?`,
+    [moduleId]
+  );
+
+  if (rows.length === 0) {
+    throw notFound("Module not found");
+  }
+
+  return rows[0];
+};
+
+
 /**
  * Gets all modules assigned to a student
  * @param {number} studentId - The student's user ID
@@ -183,6 +217,7 @@ const getStudentModulePerformance = async (studentId) => {
 };
 
 module.exports = {
+  getModuleById,  
   getModuleStudents,
   getStudentModules,
   getLecturerModules,
