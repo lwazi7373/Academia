@@ -20,6 +20,8 @@ const studentRoutes = require("./routes/studentRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const assessmentRoutes = require("./routes/assessmentsRoutes");
 const coordinatorRoutes = require('./routes/CoordinatorRoutes');
+// Added solely for unique issue in the frontend
+const moduleRoute = require("./routes/moduleRoute");
 
 // Routes
 app.use('/api/', authRoutes);
@@ -28,6 +30,8 @@ app.use('/api/', attendanceRoutes);
 app.use('/api/', assessmentRoutes);
 app.use('/api/', studentRoutes);
 app.use('/api/', coordinatorRoutes);
+// Single route, to solve a particular issue
+app.use('/api/', moduleRoute);
 
 // Server Port
 const PORT = process.env.PORT || 3000;
