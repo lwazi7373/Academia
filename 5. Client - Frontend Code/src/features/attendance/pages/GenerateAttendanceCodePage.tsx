@@ -1,4 +1,3 @@
-// LecturerCreateSessionPage.tsx
 import React, { useState } from 'react';
 import { Clock, BookOpen, Users, Play, AlertCircle } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
