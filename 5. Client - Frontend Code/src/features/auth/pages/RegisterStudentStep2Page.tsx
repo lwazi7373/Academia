@@ -8,11 +8,13 @@ import { RegisterStudentStep2Request } from '../auth.types';
 
 export default function StudentRegistrationStep2() {
   // Get data from Step 1 via navigation state
+  // useLocation allows me to get the data sent from the previous page that lead to this one 
+  // note this is the student page, meaning if student we sent userId and studentNumber
   const location = useLocation();
   const navigate = useNavigate();
-  const { userId, studentNumber } = location.state || {};
+  const { userId, studentNumber } = location.state || {}; // This is how we actually get the data
 
-  // Redirect if no data from step 1
+  // Redirect to previous page if no data from step 1
   useEffect(() => {
     if (!userId || !studentNumber) {
       navigate('/register');
@@ -26,7 +28,7 @@ export default function StudentRegistrationStep2() {
   const [formData, setFormData] = useState<RegisterStudentStep2Request>({
     userId: userId || 0,
     studentNumber: studentNumber || '',
-    qualificationName: '',  // ← Backend expects qualification NAME, not ID
+    qualificationName: '',  // Backend expects qualification NAME, not ID
     yearOfStudy: 1,
     semesterNo: 1,
     levelOfEducation: '',
@@ -54,8 +56,9 @@ export default function StudentRegistrationStep2() {
       // Success! Result contains { student, modulesAssigned, modules }
       console.log('Student registration complete:', result);
       
-      // Navigate to success page or dashboard
+      // Navigate to the registration complete page (Not yet created, but I will)
       navigate('/registration-complete', { 
+        // Send this to data to the page, to assure admin of what has been registered for the student (no need, but useful)
         state: { 
           message: `Successfully registered! ${result.modulesAssigned} modules assigned.`,
           student: result.student,

@@ -10,7 +10,7 @@ export default function StaffRegistrationStep3() {
   // Get data from Step 2
   const location = useLocation();
   const navigate = useNavigate();
-  const { userId, departmentId, role } = location.state || {};
+  const { userId, departmentId, role } = location.state || {}; // Data from previous page
 
   // Redirect if no data from previous steps
   useEffect(() => {

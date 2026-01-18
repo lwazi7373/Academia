@@ -42,14 +42,17 @@ export default function RegisterPage() {
       console.log('Registration step 1 complete:', result); // Testing purposes 
       
       if (result.role === 'STUDENT') {
-        navigate('/register2/student', { 
+        // Navigate can actually carry extra data along to the next page 
+        // So if student, carry the userId and StudentNumber to the next page 
+        navigate('/register2/student', { // Page -> "/register2/student"
           state: { 
             userId: result.userId, 
             studentNumber: result.studentNumber 
           } 
         });
       } else {
-        navigate('/register2/staff', { 
+        // if staff, carry the userId, staffNumber and user role to the next page
+        navigate('/register2/staff', {  // Page -> "/register2/staff"
           state: { 
             userId: result.userId, 
             staffNumber: result.staffNumber,

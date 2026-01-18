@@ -19,21 +19,19 @@ export default function LoginPage() {
     
     try {
       // Call the mutation with proper field names matching backend
-      await loginMutation.mutateAsync({
+      const result = await loginMutation.mutateAsync({
         identifierNumber, 
         userPassword,  
       });
       
-      // Login successful! Mutation already:
+      // Login successful... Mutation already:
       // Stored token in localStorage
       // Invalidated cache to trigger useGetMe
       // Showed success toast
       
-      // Navigate to dashboard (this currently a place holder)
       // We will navigate to the relevant users next page (studentHomePage, lecturerModulesPage or CoordinatorHomePage)
-      // How I will decide which page, I have no idea yet
-      navigate('/dashboard');
-      
+      // I am expecting result to have the role (since useGetMe was triggered)
+      navigate("/dashboard"); // place holder 
     } catch (error) {
       // Error is automatically handled by mutation
       console.error('Login failed:', error);

@@ -8,9 +8,10 @@ import { RegisterStaffStep2Request } from '../auth.types';
 
 export default function StaffRegistrationStep2() {
   // Get data from Step 1
+  // This page for staff is loaded next since we are registering a staff memeber
   const location = useLocation();
   const navigate = useNavigate();
-  const { userId, staffNumber, role } = location.state || {};
+  const { userId, staffNumber, role } = location.state || {}; // The data we sent from the previous page
 
   // Redirect if no data from step 1
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function StaffRegistrationStep2() {
         // Lecturer/Coordinator need step 3 for module assignment
         navigate('/register3/staff', { 
           state: { 
+            // Send this information to the next page
             userId: result.staff.userId,
             departmentId: result.staff.departmentId,
             role: result.staff.userRole
