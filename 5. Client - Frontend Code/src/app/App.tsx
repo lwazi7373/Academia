@@ -1,23 +1,13 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "../features/auth/pages/LoginPage";
-import RegisterPage from "../features/auth/pages/RegisterStep1Page";
-import RegisterStudentStep2Page from "../features/auth/pages/RegisterStudentStep2Page";
-import RegisterStaffStep2Page from "../features/auth/pages/RegisterStaffStep2Page";
-import RegisterStaffStep3Page from "../features/auth/pages/RegisterStaffStep3Page";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthProvider } from "../features/auth/context/AuthContext";
+import AppRoutes from "../routes/appRoutes";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* Auth related routes */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/register2/student" element={<RegisterStudentStep2Page />} />
-        <Route path="/register2/staff" element={<RegisterStaffStep2Page />} />
-        <Route path="/register3/staff" element={<RegisterStaffStep3Page />} />
-        <Route path="/dashboard" element={<div>Dashboard placeholder - Fallback really...</div>} />
-        <Route path="/registration-complete" element={<div>Registration completed...</div>} />
-      </Routes>
+      <AuthProvider> {/* Auth re-renders when user logs in and out , hence putting on App*/}
+        <AppRoutes /> {/* all routes reside in routes -> AppRoutes file */}
+      </AuthProvider>
     </Router>
   );
 }
