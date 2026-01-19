@@ -134,10 +134,7 @@ export default function LecturerModulesPage() {
                 <div
                   key={module.moduleId}
                   className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow duration-200 cursor-pointer hover:border-blue-300"
-                  onClick={() => {
-                    // TODO: Navigate to module detail page
-                    console.log('Navigate to module:', module.moduleId);
-                  }}
+                  onClick={() => navigate(`/module/${module.moduleId}`)} // go to sections page, didn't want to add a /sections on url 
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
