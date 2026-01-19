@@ -12,7 +12,7 @@ import { ModuleProvider } from "../features/module/context/ModuleContext";
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* Auth Routes */}
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
