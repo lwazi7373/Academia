@@ -6,7 +6,7 @@ import { isStudent } from '../../auth/auth.types';
 import { useGetStudentModules, useGetModulePerformance, useGetUpcomingAssessments } from '../../student/student.queries';
 
 export default function StudentHomePage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
 
@@ -15,7 +15,19 @@ export default function StudentHomePage() {
   const { data: performance, isLoading: performanceLoading } = useGetModulePerformance();
   const { data: upcomingAssessments, isLoading: assessmentsLoading } = useGetUpcomingAssessments();
 
-  // Redirect if not a student
+  // Show loading state while auth is being checked
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Only redirect after we know for sure user is not authenticated
   if (!user || !isStudent(user)) {
     navigate('/login');
     return null;

@@ -6,12 +6,24 @@ import { isLecturer } from '../../auth/auth.types';
 import { useGetMyModules } from '../lecturer.queries';
 
 export default function LecturerHomePage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
   
   // Fetch lecturer's modules
   const { data: modules, isLoading: modulesLoading } = useGetMyModules();
+
+  // Show loading state while auth is being checked
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Redirect if not a lecturer
   if (!user || !isLecturer(user)) {
