@@ -164,7 +164,7 @@ export default function StudentHomePage() {
                     return (
                       <div
                         key={module.moduleId}
-                        onClick={() => navigate(`/module/${module.moduleId}`)}
+                        onClick={() => navigate(`/module/${module.moduleId}`)} // navigate to sectionsPage (for the particular module clicked)
                         className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-blue-300 group"
                       >
                         <div className="flex items-start justify-between mb-3">
