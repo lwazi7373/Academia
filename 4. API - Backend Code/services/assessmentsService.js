@@ -433,7 +433,7 @@ const getUpcomingAssessments = async (studentId) => {
       assessmentId: assessment.assessmentId,
       assessmentName: assessment.assessmentName,
       totalMark: assessment.totalMark,
-      weighting: assessment.weighting,
+      weighting: Number(assessment.weighting),
       dueDate: assessment.dueDate,
       daysUntilDue: assessment.daysUntilDue,
       module: {
@@ -441,9 +441,12 @@ const getUpcomingAssessments = async (studentId) => {
         moduleName: assessment.moduleName,
         moduleCode: assessment.moduleCode,
       },
-      studentMark: assessment.studentMark || null,
-      submission: assessment.submission || false,
-      dateSubmitted: assessment.dateSubmitted || null,
+      studentMark: assessment.studentMark === null ? null : Number(assessment.studentMark), // Keep 0 meaningful
+      // Note this takes away our ability to know whether there was no record found in the first place
+      // Because whether the record was not found or the student did not submit, false is returned 
+      submission: Boolean(assessment.submission), 
+      // alt -> submission: assessment.submission === null ? false : assessment.submission === 1,
+      dateSubmitted: assessment.dateSubmitted ?? null,
     }));
   } catch (error) {
     console.error("Error getting upcoming assessments:", error);
