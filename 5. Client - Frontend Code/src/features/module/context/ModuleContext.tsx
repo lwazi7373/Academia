@@ -27,7 +27,7 @@ export function ModuleProvider({ children }: ModuleProviderProps) {
   
   // Redirect if invalid moduleId
   if (!moduleId || parsedModuleId <= 0) {
-    navigate('/dashboard');
+    navigate('/dashboard'); // Should naviagate back to the logged in users homepage
     return null;
   }
 
