@@ -52,12 +52,11 @@ export default function LoginPage() {
     } else if (hasLecturer) {
       navigate('/lecturer/homePage');
     } else if (roles.includes('HOD')) {
-      navigate('/hod/homePage');
+      navigate('/hod/homePage'); // Not really there yet
     } else if (roles.includes('ADMIN')) {
-      navigate('/admin/homePage');
+      navigate('/register');
     } else {
-      // Fallback
-      navigate('/dashboard');
+      navigate('/dashboard'); // Fallback
     }
   };
 
@@ -220,7 +219,7 @@ export default function LoginPage() {
                     className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
                     onClick={(e) => {
                       e.preventDefault();
-                      console.log('Navigate to forgot password');
+                      console.log('Navigate to forgot password'); // Institutional system 
                     }}
                   >
                     Forgot password?
@@ -291,7 +290,7 @@ export default function LoginPage() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-800">Coordinator</h3>
-                        <p className="text-sm text-gray-600">Access coordinator dashboard</p>
+                        <p className="text-sm text-gray-600">Access coordinator Home Page</p>
                       </div>
                     </div>
                   </button>
@@ -308,7 +307,7 @@ export default function LoginPage() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-800">Lecturer</h3>
-                        <p className="text-sm text-gray-600">Access lecturer dashboard</p>
+                        <p className="text-sm text-gray-600">Access lecturer Home Page</p>
                       </div>
                     </div>
                   </button>
