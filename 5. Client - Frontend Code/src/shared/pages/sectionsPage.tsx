@@ -1,5 +1,3 @@
-// shared/pages/SectionsPage.tsx
-
 import { useNavigate } from 'react-router-dom';
 import { ClipboardCheck, UserCheck, ArrowRight, Home } from 'lucide-react';
 import { useModule } from '../../features/module/context/ModuleContext';
@@ -12,35 +10,59 @@ export default function SectionsPage() {
   const { moduleId } = useModule();
   const { user } = useAuth();
 
+  // Determine attendance route based on user role
+  const getAttendanceRoute = () => {
+    if (user && isLecturer(user)) {
+      return `/module/${moduleId}/attendance/generate`;
+    } else if (user && isStudent(user)) {
+      return `/module/${moduleId}/attendance/submit`;
+    }
+    return `/module/${moduleId}/attendance`; // Fallback 
+  };
+
+  // Determine assessments route based on user role
+  const getAssessmentsRoute = () => {
+    if (user && isLecturer(user)) {
+      return `/module/${moduleId}/assessments/manage`;
+    } else if (user && isStudent(user)) {
+      return `/module/${moduleId}/assessments/view`;
+    }
+    return `/module/${moduleId}/assessments`; // Fallback
+  };
+
   const sections = [
     {
       id: 'attendance',
       title: 'Attendance',
-      description: 'Mark or generate attendance for classes',
+      description: user && isLecturer(user) 
+        ? 'Generate attendance codes and manage class sessions'
+        : 'Submit attendance codes for your classes',
       icon: UserCheck,
       color: 'from-green-500 to-emerald-600',
       hoverColor: 'hover:from-green-600 hover:to-emerald-700',
-      route: `/module/${moduleId}/attendance`, // The page you navigate to depends on the type of user you are
+      route: getAttendanceRoute(),
     },
     {
       id: 'assessments',
       title: 'Assessments',
-      description: 'View and manage module assessments',
+      description: user && isLecturer(user)
+        ? 'Create and manage module assessments'
+        : 'View your assessments and submissions',
       icon: ClipboardCheck,
       color: 'from-purple-500 to-indigo-600',
       hoverColor: 'hover:from-purple-600 hover:to-indigo-700',
-      route: `/module/${moduleId}/assessments`, // The page you navigate to depends on the type of user you are
+      route: getAssessmentsRoute(),
     },
   ];
 
   const handleNavigateHome = () => {
     // Navigate back based on user role
     if (user && isStudent(user)) {
-        navigate('/student/homePage'); // Need to remember these, I am honestly just writing to test my logic right now
+      navigate('/student/homePage');
     } else if (user && isLecturer(user)) {
-        navigate('/lecturer/homePage'); // Hence the reminder
+      navigate('/lecturer/homePage');
     } else {
-        navigate('/dashboard');
+      navigate('/dashboard'); // Fallback
     }
   };
 
@@ -83,7 +105,7 @@ export default function SectionsPage() {
                 <button
                   key={section.id}
                   onClick={() => navigate(section.route)}
-                  className={`relative group overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105`}
+                  className="relative group overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105"
                 >
                   {/* Background Gradient */}
                   <div className={`bg-gradient-to-br ${section.color} ${section.hoverColor} p-8 transition-all duration-300`}>
