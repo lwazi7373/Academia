@@ -86,7 +86,7 @@ export default function SubmitAttendanceCodePage() {
 
       // Success - could navigate to success page or dashboard
       setTimeout(() => {
-        navigate('/student/dashboard');
+        navigate('/student/homePage');
       }, 2000);
     } catch (error) {
       // Clear code on error
@@ -132,10 +132,10 @@ export default function SubmitAttendanceCodePage() {
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Attendance Marked!</h2>
             <p className="text-gray-600 mb-6">Your attendance has been successfully recorded.</p>
             <button
-              onClick={() => navigate('/student/dashboard')}
+              onClick={() => navigate('/student/homePage')}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
             >
-              Return to Dashboard
+              Return to Home Page
             </button>
           </div>
         )}
@@ -224,10 +224,10 @@ export default function SubmitAttendanceCodePage() {
           <div className="bg-gray-50 px-8 py-4 text-center border-t border-gray-200">
             <button
               type="button"
-              onClick={() => navigate('/student/dashboard')}
+              onClick={() => navigate('/student/homePage')}
               className="text-sm text-gray-600 hover:text-gray-800 font-medium"
             >
-              ← Back to Dashboard
+              ← Back to Home Page
             </button>
           </div>
         )}

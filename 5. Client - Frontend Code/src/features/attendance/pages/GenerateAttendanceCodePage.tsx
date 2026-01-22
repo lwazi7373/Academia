@@ -20,7 +20,7 @@ export default function GenerateAttendanceCodePage() {
       });
 
       // Navigate to view code page
-      navigate(`/lecturer/modules/${moduleId}/attendance/view`, {
+      navigate(`/module/${moduleId}/attendance/view`, {
         state: { session: result.createdSession },
       });
     } catch (error) {

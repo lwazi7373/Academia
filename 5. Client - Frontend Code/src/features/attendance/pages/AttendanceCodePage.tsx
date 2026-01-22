@@ -87,7 +87,7 @@ export default function AttendanceCodePage() {
           <h2 className="text-2xl font-bold text-gray-800 mb-2">No Active Session</h2>
           <p className="text-gray-600 mb-6">There is no active attendance session for this module.</p>
           <button
-            onClick={() => navigate(`/lecturer/modules/${moduleId}/attendance/create`)}
+            onClick={() => navigate(`/module/${moduleId}/attendance/generate`)}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
           >
             Create New Session
@@ -222,7 +222,7 @@ export default function AttendanceCodePage() {
           <div className="mt-6 space-y-3">
             {isExpired ? (
               <button
-                onClick={() => navigate(`/lecturer/modules/${moduleId}/attendance/create`)}
+                onClick={() => navigate(`/module/${moduleId}/attendance/generate`)}
                 className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-800 font-medium flex items-center justify-center gap-2"
               >
                 <RefreshCw size={20} />
@@ -239,10 +239,10 @@ export default function AttendanceCodePage() {
             )}
             
             <button
-              onClick={() => navigate(`/lecturer/modules/${moduleId}`)}
+              onClick={() => navigate(`/module/${moduleId}`)}
               className="w-full px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
             >
-              Back to Module
+              Back to Sections For module
             </button>
           </div>
         </div>
