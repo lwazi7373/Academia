@@ -10,6 +10,8 @@ import SectionsPage from "../shared/pages/sectionsPage";
 import AttendanceCodePage from "../features/attendance/pages/AttendanceCodePage";
 import GenerateAttendanceCodePage from "../features/attendance/pages/GenerateAttendanceCodePage";
 import SubmitAttendanceCodePage from "../features/attendance/pages/SubmitAttendanceCodePage";
+import StudentAssessmentsListPage from "../features/student/pages/StudentAssessementListPage";
+import LecturerAssessmentsListPage from "../features/lecturer/pages/LecturerAssessementListPage";
 import { ModuleProvider } from "../features/module/context/ModuleContext";
 
 function AppRoutes() {
@@ -58,11 +60,11 @@ function AppRoutes() {
               {/* Assessment Routes (placeholders for now) */}
               <Route 
                 path="assessments/manage" 
-                element={<div>Manage Assessments (Lecturer)</div>} 
+                element={<LecturerAssessmentsListPage/>} 
               />
               <Route 
                 path="assessments/view" 
-                element={<div>View Assessments (Student)</div>} 
+                element={<StudentAssessmentsListPage/>} 
               />
             </Routes>
           </ModuleProvider>
