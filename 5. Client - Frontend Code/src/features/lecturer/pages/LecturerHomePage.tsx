@@ -5,7 +5,7 @@ import { useLogout } from '../../auth/auth.mutations';
 import { isLecturer } from '../../auth/auth.types';
 import { useGetMyModules } from '../lecturer.queries';
 
-export default function LecturerModulesPage() {
+export default function LecturerHomePage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
@@ -134,7 +134,7 @@ export default function LecturerModulesPage() {
                 <div
                   key={module.moduleId}
                   className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow duration-200 cursor-pointer hover:border-blue-300"
-                  onClick={() => navigate(`/module/${module.moduleId}`)} // go to sections page, didn't want to add a /sections on url 
+                  onClick={() => navigate(`/module/${module.moduleId}`)} // navigate to sections Page for the module
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
