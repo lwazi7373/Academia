@@ -181,17 +181,16 @@ const getStudentModuleAssessments = async (moduleId, studentId) => {
              ORDER BY a.dueDate ASC`,
       [studentId, moduleId],
     );
-
     // Format the response into an array of assessment objects
     return assessments.map((assessment) => ({
       assessmentId: assessment.assessmentId,
       assessmentName: assessment.assessmentName,
       totalMark: assessment.totalMark,
-      weighting: assessment.weighting,
+      weighting: Number(assessment.weighting),
       dueDate: assessment.dueDate,
-      studentMark: assessment.studentMark || null,
-      submission: assessment.submission || false,
-      dateSubmitted: assessment.dateSubmitted || null,
+      studentMark: assessment.studentMark === null ? null : Number(assessment.studentMark),
+      submission: Boolean(assessment.submission), 
+      dateSubmitted: assessment.dateSubmitted ?? null,
     }));
   } catch (error) {
     console.error("Error getting student module assessments:", error);
@@ -232,8 +231,12 @@ const getLecturerModuleAssessments = async (moduleId, lecturerId) => {
              ORDER BY dueDate ASC`,
     [moduleId, lecturerId],
   );
-
-  return assessments;
+  return assessments.map((assessment) => ({
+    assessmentId: assessment.assessmentId,
+    assessmentName: assessment.assessmentName,
+    weighting: Number(assessment.weighting),
+    dueDate: assessment.dueDate,
+  }));
 };
 
 /**
