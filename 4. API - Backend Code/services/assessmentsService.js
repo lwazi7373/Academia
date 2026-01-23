@@ -62,20 +62,28 @@ const getStudentsMarksForAssessment = async (assessmentId, lecturerId) => {
       s.studentId,
       s.studentNumber,
       CONCAT(u.firstName, ' ', u.lastName) as studentName,
-      am.mark as currentMark,
-      am.submission as isSubmitted,
-      am.dateSubmitted
+      me.mark as currentMark,
+      me.submission as isSubmitted,
+      me.dateSubmitted
     FROM Student s
-    INNER JOIN User u ON s.userId = u.userId
+    INNER JOIN Users u ON s.studentId = u.userId
     INNER JOIN StudentModule sm ON s.studentId = sm.studentId
-    LEFT JOIN AssessmentMark am ON s.studentId = am.studentId 
-      AND am.assessmentId = ?
+    LEFT JOIN MarkEntry me ON s.studentId = me.studentId 
+      AND me.assessmentId = ?
     WHERE sm.moduleId = ?
     ORDER BY u.lastName, u.firstName`,
     [assessmentId, moduleId]
   );
-
-  return studentsMarks;
+  
+    return studentsMarks.map((student) => ({
+    studentId: student.studentId,
+    studentNumber: student.studentNumber,
+    studentName: student.studentName,
+    currentMark:
+    student.currentMark === null ? null : Number(student.currentMark),
+    isSubmitted: Boolean(student.isSubmitted),
+    dateSubmitted: student.dateSubmitted ?? null,
+  }));
 };
 
 /**
