@@ -12,6 +12,8 @@ import GenerateAttendanceCodePage from "../features/attendance/pages/GenerateAtt
 import SubmitAttendanceCodePage from "../features/attendance/pages/SubmitAttendanceCodePage";
 import StudentAssessmentsListPage from "../features/student/pages/StudentAssessementListPage";
 import LecturerAssessmentsListPage from "../features/lecturer/pages/LecturerAssessementListPage";
+import AddAssessmentPage from "../features/assessments/pages/AddAssessmentPage";
+import EditAssessmentPage from "../features/assessments/pages/EditAssessmentPage";
 import { ModuleProvider } from "../features/module/context/ModuleContext";
 
 function AppRoutes() {
@@ -42,30 +44,17 @@ function AppRoutes() {
               <Route index element={<SectionsPage />} />
               
               {/* Lecturer Attendance Routes */}
-              <Route 
-                path="attendance/generate" 
-                element={<GenerateAttendanceCodePage />} 
-              />
-              <Route 
-                path="attendance/view" 
-                element={<AttendanceCodePage/>} 
-              />
+              <Route path="attendance/generate" element={<GenerateAttendanceCodePage />} />
+              <Route path="attendance/view" element={<AttendanceCodePage/>} />
               
               {/* Student Attendance Route */}
-              <Route 
-                path="attendance/submit" 
-                element={<SubmitAttendanceCodePage />} 
-              />
+              <Route path="attendance/submit" element={<SubmitAttendanceCodePage />} />
 
-              {/* Assessment Routes (placeholders for now) */}
-              <Route 
-                path="assessments/manage" 
-                element={<LecturerAssessmentsListPage/>} 
-              />
-              <Route 
-                path="assessments/view" 
-                element={<StudentAssessmentsListPage/>} 
-              />
+              {/* Assessment Routes */}
+              <Route path="assessments/manage" element={<LecturerAssessmentsListPage/>} />
+              <Route path="assessments/view" element={<StudentAssessmentsListPage/>} />
+              <Route path="assessments/create" element={<AddAssessmentPage/>} />
+              <Route path="assessments/update" element={<EditAssessmentPage/>} />
             </Routes>
           </ModuleProvider>
         } 
