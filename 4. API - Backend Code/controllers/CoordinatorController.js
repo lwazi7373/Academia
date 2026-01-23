@@ -45,7 +45,7 @@ const getModuleStudents = async (req, res) => {
   const coordinatorId = req.user.userId; // decoded from the auth Middleware
   const { moduleId } = req.params;
 
-  // Extract query params for filtering (optional)
+  // Extract query params for filtering 
   const filters = {};
   if (req.query.riskLevel) {
     filters.riskLevel = req.query.riskLevel.toUpperCase(); // Ensure uppercase (HIGH, MODERATE, LOW)

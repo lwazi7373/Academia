@@ -38,7 +38,7 @@ router.get(
  * Where performance is the attendanceRate + submissionRate + averageMark
  * Extracts: {coordinatorId} from JWT token
  * Params: {moduleId}
- * Query Params (OPTIONAL):
+ * Query Params :
  *   - ?riskLevel=HIGH (or MODERATE or LOW) - Filter by risk level
  *   - ?interventionStatus=ACTIVE - Filter students with active interventions
  *   - Can combine: ?riskLevel=HIGH&interventionStatus=ACTIVE
