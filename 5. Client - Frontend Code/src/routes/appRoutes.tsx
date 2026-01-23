@@ -14,6 +14,7 @@ import StudentAssessmentsListPage from "../features/student/pages/StudentAssesse
 import LecturerAssessmentsListPage from "../features/lecturer/pages/LecturerAssessementListPage";
 import AddAssessmentPage from "../features/assessments/pages/AddAssessmentPage";
 import EditAssessmentPage from "../features/assessments/pages/EditAssessmentPage";
+import UploadAssessmentMarksPage from "../features/assessments/pages/UploadAssessmentMarksPage";
 import { ModuleProvider } from "../features/module/context/ModuleContext";
 
 function AppRoutes() {
@@ -55,7 +56,7 @@ function AppRoutes() {
               <Route path="assessments/view" element={<StudentAssessmentsListPage/>} />
               <Route path="assessments/create" element={<AddAssessmentPage/>} />
               <Route path="assessments/:assessmentId/edit" element={<EditAssessmentPage/>} />
-              <Route path="assessments/:assessmentId/upload-marks" element={<div>Upload Marks Page (TODO)</div>} />
+              <Route path="assessments/:assessmentId/upload-marks" element={<UploadAssessmentMarksPage/>} />
             </Routes>
           </ModuleProvider>
         } 
