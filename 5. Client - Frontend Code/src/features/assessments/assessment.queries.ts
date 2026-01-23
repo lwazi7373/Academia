@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { assessmentsApi } from './assessment.api';
-import type { LecturerAssessment, StudentAssessment } from './assessment.types';
+import type { LecturerAssessmentDetail, LecturerAssessment, StudentAssessment } from './assessment.types';
 
 // Query keys factory for better organization and type safety
 export const assessmentsKeys = {
@@ -9,6 +9,20 @@ export const assessmentsKeys = {
     [...assessmentsKeys.all, 'lecturer', moduleId] as const,
   studentModule: (moduleId: number) => 
     [...assessmentsKeys.all, 'student', moduleId] as const,
+  detail: (assessmentId: number) => 
+    [...assessmentsKeys.all, 'detail', assessmentId] as const,
+};
+
+/**
+ * Hook to fetch an assessment for the lecturer to update
+ * returns the Assessment's details
+ */
+export const useGetAssessmentById = (assessmentId: number) => {
+  return useQuery<LecturerAssessmentDetail, Error>({
+    queryKey: assessmentsKeys.detail(assessmentId),
+    queryFn: () => assessmentsApi.getAssessmentById(assessmentId),
+    enabled: !!assessmentId,
+  });
 };
 
 /**

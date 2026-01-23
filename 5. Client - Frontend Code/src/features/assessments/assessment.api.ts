@@ -11,10 +11,20 @@ import type {
   UploadMarksResponse,
   LecturerAssessment,
   StudentAssessment,
+  LecturerAssessmentDetail,
   Assessment,
 } from './assessment.types';
 
 export const assessmentsApi = {
+
+    // Get an assessment (for the lecturer to update)
+    getAssessmentById: async (assessmentId: number): Promise<LecturerAssessmentDetail> => {
+    const response = await apiClient.get<{ msg: string; assessment: LecturerAssessmentDetail }>(
+      `/assessments/${assessmentId}`
+    );
+    return response.data.assessment;
+  },
+
   // Create a new assessment for a module (Lecturer only)
   createAssessment: async (
     moduleId: number,

@@ -36,6 +36,21 @@ export interface Assessment {
   moduleId: number;
 }
 
+export interface LecturerAssessmentDetail {
+  assessmentId: number;
+  assessmentName: string;
+  totalMark: number;
+  weighting: number;
+  dueDate: string;
+  moduleId: number;
+}
+
+export interface LecturerAssessmentDetailResponse {
+  msg: string;
+  assessment: LecturerAssessmentDetail;
+}
+
+
 export interface CreateAssessmentResponse {
   msg: string;
   assessment: Assessment;
