@@ -5,11 +5,23 @@ const assessmentsController = require("../controllers/assessmentsController");
 const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authRolesMiddleware");
 
+/**
+ * Get an assessment using the assessments Id
+ */
+router.get(
+  "/assessments/:assessmentId",
+  authenticateToken,
+  assessmentsController.getAssessmentById,
+);
 
 /**
- * Get an assessment using the assessments Id  
+ * GET /assessments/:assessmentId/students-marks
  */
-router.get('/assessments/:assessmentId', authenticateToken, assessmentsController.getAssessmentById);
+router.get(
+  "/assessments/:assessmentId/students-marks",
+  authenticateToken,
+  assessmentsController.getStudentsMarksForAssessment,
+);
 
 /**
  * POST /assessments/:moduleId/create

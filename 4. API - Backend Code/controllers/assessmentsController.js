@@ -14,6 +14,28 @@ const getAssessmentById = async (req, res) => {
 };
 
 /**
+ * Get all students enrolled in the module with their marks for a specific assessment
+ * Returns student details and their current mark/submission status
+ * @param {*} req
+ * @param {*} res
+ * @returns list of students with their marks
+ */
+const getStudentsMarksForAssessment = async (req, res) => {
+  const lecturerId = req.user.userId;
+  const assessmentId = req.params.assessmentId;
+
+  const studentsMarks = await assessmentService.getStudentsMarksForAssessment(
+    assessmentId,
+    lecturerId
+  );
+  
+  res.status(200).json({ 
+    msg: "Students marks retrieved successfully", 
+    studentsMarks 
+  });
+};
+
+/**
  * Creates a new assessment for a particular module
  * @param {*} req
  * @param {*} res
@@ -149,4 +171,5 @@ module.exports = {
   uploadOrUpdateStudentMarks,
   getStudentModuleAssessments,
   getLecturerModuleAssessments,
+  getStudentsMarksForAssessment
 };
