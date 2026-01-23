@@ -54,7 +54,8 @@ function AppRoutes() {
               <Route path="assessments/manage" element={<LecturerAssessmentsListPage/>} />
               <Route path="assessments/view" element={<StudentAssessmentsListPage/>} />
               <Route path="assessments/create" element={<AddAssessmentPage/>} />
-              <Route path="assessments/update" element={<EditAssessmentPage/>} />
+              <Route path="assessments/:assessmentId/edit" element={<EditAssessmentPage/>} />
+              <Route path="assessments/:assessmentId/upload-marks" element={<div>Upload Marks Page (TODO)</div>} />
             </Routes>
           </ModuleProvider>
         } 
