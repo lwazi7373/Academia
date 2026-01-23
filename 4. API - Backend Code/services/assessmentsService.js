@@ -34,6 +34,51 @@ const getAssessmentById = async (assessmentId, lecturerId) => {
 };
 
 /**
+ * Get all students enrolled in a module with their marks for a specific assessment
+ * Verifies the lecturer owns the assessment
+ * @param {number} assessmentId - The ID of the assessment
+ * @param {number} lecturerId - The ID of the lecturer
+ * @returns {Array} Array of student objects with their marks
+ * @throws {Error} If assessment doesn't exist or lecturer not authorized
+ */
+const getStudentsMarksForAssessment = async (assessmentId, lecturerId) => {
+  // First, verify the assessment exists and belongs to this lecturer
+  // Also get the moduleId for the assessment
+  const [assessment] = await connectDB.execute(
+    `SELECT moduleId FROM Assessment 
+     WHERE assessmentId = ? AND lecturerId = ?`,
+    [assessmentId, lecturerId]
+  );
+
+  if (assessment.length === 0) {
+    throw notFound("Assessment not found or not authorized");
+  }
+
+  const moduleId = assessment[0].moduleId;
+
+  // Get all students enrolled in this module along with their marks for this assessment
+  const [studentsMarks] = await connectDB.execute(
+    `SELECT 
+      s.studentId,
+      s.studentNumber,
+      CONCAT(u.firstName, ' ', u.lastName) as studentName,
+      am.mark as currentMark,
+      am.submission as isSubmitted,
+      am.dateSubmitted
+    FROM Student s
+    INNER JOIN User u ON s.userId = u.userId
+    INNER JOIN StudentModule sm ON s.studentId = sm.studentId
+    LEFT JOIN AssessmentMark am ON s.studentId = am.studentId 
+      AND am.assessmentId = ?
+    WHERE sm.moduleId = ?
+    ORDER BY u.lastName, u.firstName`,
+    [assessmentId, moduleId]
+  );
+
+  return studentsMarks;
+};
+
+/**
  * Create a new assessment for a module
  * Verifies lecturer authorization and creates assessment record
  * @param {number} moduleId - The ID of the module
@@ -491,6 +536,7 @@ const getUpcomingAssessments = async (studentId) => {
 module.exports = {
   getStudentModuleAssessments,
   getLecturerModuleAssessments,
+  getStudentsMarksForAssessment,
   getUpcomingAssessments,
   getAssessmentById,
   createAssessment,
