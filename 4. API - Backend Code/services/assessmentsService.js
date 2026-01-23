@@ -2,6 +2,37 @@
 const connectDB = require("../db/connect");
 // For error handling
 const { badRequest, forbidden, notFound } = require("../errors/httpErrors");
+
+/**
+ * Get an assessment
+ * @param {number} assessmentId 
+ * @param {number} lecturerId 
+ * @returns the assessment
+ */
+const getAssessmentById = async (assessmentId, lecturerId) => {
+  const [rows] = await connectDB.execute(
+    `SELECT assessmentId, assessmentName, totalMark, weighting, dueDate, moduleId
+     FROM Assessment 
+     WHERE assessmentId = ? AND lecturerId = ?`,
+    [assessmentId, lecturerId]
+  );
+
+  if (rows.length === 0) {
+    throw notFound("Assessment not found or not authorized");
+  }
+
+  const assessment = rows[0];
+
+  return {
+    assessmentId: assessment.assessmentId,
+    assessmentName: assessment.assessmentName,
+    totalMark: assessment.totalMark,
+    weighting: Number(assessment.weighting),
+    dueDate: assessment.dueDate,
+    moduleId: assessment.moduleId,
+  };
+};
+
 /**
  * Create a new assessment for a module
  * Verifies lecturer authorization and creates assessment record
@@ -461,6 +492,7 @@ module.exports = {
   getStudentModuleAssessments,
   getLecturerModuleAssessments,
   getUpcomingAssessments,
+  getAssessmentById,
   createAssessment,
   updateAssessment,
   deleteAssessment,

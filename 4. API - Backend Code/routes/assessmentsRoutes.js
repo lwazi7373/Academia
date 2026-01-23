@@ -5,6 +5,12 @@ const assessmentsController = require("../controllers/assessmentsController");
 const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/authRolesMiddleware");
 
+
+/**
+ * Get an assessment using the assessments Id  
+ */
+router.get('/assessments/:assessmentId', authenticateToken, assessmentsController.getAssessmentById);
+
 /**
  * POST /assessments/:moduleId/create
  * Create an assessment for a particular module

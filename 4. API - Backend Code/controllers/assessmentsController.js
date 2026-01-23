@@ -1,4 +1,17 @@
 const assessmentService = require("../services/assessmentsService");
+/**
+ * Gets an assessment using the assessment Id
+ * @param {*} req 
+ * @param {*} res 
+ * @returns the assessment object
+ */
+const getAssessmentById = async (req, res) => {
+  const lecturerId = req.user.userId;
+  const assessmentId = req.params.assessmentId;
+
+  const assessment = await assessmentService.getAssessmentById(assessmentId, lecturerId);
+  res.status(200).json({ msg: "Assessment retrieved", assessment });
+};
 
 /**
  * Creates a new assessment for a particular module
@@ -129,6 +142,7 @@ const uploadOrUpdateStudentMarks = async (req, res) => {
 };
 
 module.exports = {
+  getAssessmentById,
   createAnAssessment,
   updateAnAssessment,
   deleteAnAssessment,
