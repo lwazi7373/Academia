@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { assessmentsApi } from './assessment.api';
-import type { LecturerAssessmentDetail, LecturerAssessment, StudentAssessment } from './assessment.types';
+import type { LecturerAssessmentDetail, LecturerAssessment, StudentAssessment, StudentMarkEntry } from './assessment.types';
 
 // Query keys factory for better organization and type safety
 export const assessmentsKeys = {
@@ -11,6 +11,8 @@ export const assessmentsKeys = {
     [...assessmentsKeys.all, 'student', moduleId] as const,
   detail: (assessmentId: number) => 
     [...assessmentsKeys.all, 'detail', assessmentId] as const,
+  studentsMarks: (assessmentId: number) =>
+  [...assessmentsKeys.all, 'studentsMarks', assessmentId] as const,
 };
 
 /**
@@ -46,5 +48,17 @@ export const useGetStudentModuleAssessments = (moduleId: number) => {
     queryKey: assessmentsKeys.studentModule(moduleId),
     queryFn: () => assessmentsApi.getStudentModuleAssessments(moduleId),
     enabled: !!moduleId,
+  });
+};
+
+/**
+ * Hook to fetch all students enrolled in a module with their marks for a specific assessment
+ * Returns student details and current marks/submission status
+ */
+export const useGetStudentsMarksForAssessment = (assessmentId: number) => {
+  return useQuery<StudentMarkEntry[], Error>({
+    queryKey: [...assessmentsKeys.all, 'studentsMarks', assessmentId] as const,
+    queryFn: () => assessmentsApi.getStudentsMarksForAssessment(assessmentId),
+    enabled: !!assessmentId,
   });
 };

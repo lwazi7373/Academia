@@ -13,6 +13,8 @@ import type {
   StudentAssessment,
   LecturerAssessmentDetail,
   Assessment,
+  GetStudentsMarksResponse,
+  StudentMarkEntry,
 } from './assessment.types';
 
 export const assessmentsApi = {
@@ -71,6 +73,14 @@ export const assessmentsApi = {
       `/assessments/${moduleId}/assessments-marks`
     );
     return response.data.assessments;
+  },
+
+  // Get all students with their marks for an assessment (Lecturer only)
+  getStudentsMarksForAssessment: async (assessmentId: number): Promise<StudentMarkEntry[]> => {
+    const response = await apiClient.get<GetStudentsMarksResponse>(
+      `/assessments/${assessmentId}/students-marks`
+    );
+    return response.data.studentsMarks;
   },
 
   // Upload or update marks for multiple students (Lecturer only)

@@ -1,5 +1,3 @@
-// ============= REQUEST TYPES =============
-
 export interface CreateAssessmentRequest {
   assessmentName: string;
   totalMark: number;
@@ -43,6 +41,20 @@ export interface LecturerAssessmentDetail {
   weighting: number;
   dueDate: string;
   moduleId: number;
+}
+
+export interface StudentMarkEntry {
+  studentId: number;
+  studentNumber: string;
+  studentName: string;
+  currentMark: number | null;
+  isSubmitted: boolean;
+  dateSubmitted: string | null;
+}
+
+export interface GetStudentsMarksResponse {
+  msg: string;
+  studentsMarks: StudentMarkEntry[];
 }
 
 export interface LecturerAssessmentDetailResponse {
@@ -104,6 +116,7 @@ export interface UploadMarksResponse {
   msg: string;
   result: UploadMarksResult;
 }
+
 
 // ============= ERROR RESPONSE TYPE =============
 
