@@ -17,6 +17,9 @@ import EditAssessmentPage from "../features/assessments/pages/EditAssessmentPage
 import UploadAssessmentMarksPage from "../features/assessments/pages/UploadAssessmentMarksPage";
 import CoordinatorHomePage from "../features/coordinator/pages/CoordinatorHomePage";
 import CoordinatorModuleRiskPage from "../features/coordinator/pages/CoordinatorModuleRiskPage";
+import StudentRiskDetailsPage from "../features/coordinator/pages/StudentRiskDetailsPage";
+import CreateInterventionPage from "../features/interventions/pages/createInterventionPage";
+import ViewInterventionPage from "../features/interventions/pages/ViewInterventionPage";
 import { ModuleProvider } from "../features/module/context/ModuleContext";
 
 function AppRoutes() {
@@ -39,7 +42,9 @@ function AppRoutes() {
       {/* Coordinator Routes - MOVED OUT OF MODULE WRAPPER */}
       <Route path="/coordinator/homePage" element={<CoordinatorHomePage />} />
       <Route path="/coordinator/modules/:moduleId/risk" element={<CoordinatorModuleRiskPage />} />
-      <Route path="/coordinator/modules/:moduleId/students/:studentId" element={<div>Student Specific Risk page</div>} />
+      <Route path="/coordinator/modules/:moduleId/students/:studentId" element={<StudentRiskDetailsPage />} />
+      <Route path="/coordinator/modules/:moduleId/students/:studentId/intervention/create" element={<CreateInterventionPage />} />
+      <Route path="/coordinator/modules/:moduleId/students/:studentId/intervention/view" element={<ViewInterventionPage />} />
 
       {/* Module Routes - All wrapped with ModuleProvider */}
       <Route 
