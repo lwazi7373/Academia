@@ -97,23 +97,23 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-info-50 to-accent-50 flex items-center justify-center p-4">
+        <div className="card w-full max-w-md animate-scale-in">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center">
-            <h1 className="text-3xl font-bold text-white mb-2">Academic Portal</h1>
-            <p className="text-blue-100">Sign in to access your account</p>
+          <div className="bg-gradient-primary p-8 text-center">
+            <h1 className="text-3xl font-display font-bold text-white mb-2">Academic Portal</h1>
+            <p className="text-primary-100">Sign in to access your account</p>
           </div>
           
           {/* User type toggle */}
-          <div className="flex border-b border-gray-200">
+          <div className="flex border-b border-neutral-200">
             <button
               type="button"
               onClick={() => setUserType('student')}
               className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                 userType === 'student'
-                  ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-primary-50 text-primary-700 border-b-2 border-primary-600'
+                  : 'text-neutral-600 hover:text-neutral-800'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
@@ -126,8 +126,8 @@ export default function LoginPage() {
               onClick={() => setUserType('staff')}
               className={`flex-1 py-4 px-6 text-center font-medium transition-colors duration-200 ${
                 userType === 'staff'
-                  ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-secondary-50 text-secondary-700 border-b-2 border-secondary-600'
+                  : 'text-neutral-600 hover:text-neutral-800'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
@@ -142,11 +142,11 @@ export default function LoginPage() {
             <div className="space-y-6">
               {/* Error message display */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <div className="alert-danger">
+                  <AlertCircle className="h-5 w-5 flex-shrink-0" />
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium text-red-800">Login Failed</h3>
-                    <p className="text-sm text-red-700 mt-1">
+                    <h3 className="text-sm font-semibold">Login Failed</h3>
+                    <p className="text-sm mt-1">
                       {error instanceof AxiosError && error.response?.data?.msg
                         ? error.response.data.msg
                         : 'An error occurred. Please try again.'}
@@ -157,19 +157,19 @@ export default function LoginPage() {
 
               {/* Identifier input */}
               <div>
-                <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="identifier" className="block text-sm font-medium text-neutral-700 mb-2">
                   {userType === 'student' ? 'Student Number' : 'Staff Number'}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-neutral-400" />
                   </div>
                   <input
                     id="identifier"
                     type="text"
                     value={identifierNumber}
                     onChange={(e) => setIdentifierNumber(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className="input pl-10"
                     placeholder={userType === 'student' ? 'e.g., STU2024001' : 'e.g., STF2022001'}
                     required
                     disabled={isLoading}
@@ -179,19 +179,19 @@ export default function LoginPage() {
 
               {/* Password input */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-2">
                   Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-neutral-400" />
                   </div>
                   <input
                     id="password"
                     type="password"
                     value={userPassword}
                     onChange={(e) => setUserPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className="input pl-10"
                     placeholder="Enter your password"
                     required
                     disabled={isLoading}
@@ -206,17 +206,17 @@ export default function LoginPage() {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded"
                     disabled={isLoading}
                   />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-neutral-700">
                     Remember me
                   </label>
                 </div>
                 <div className="text-sm">
                   <a 
                     href="#" 
-                    className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+                    className="font-medium text-primary-600 hover:text-primary-700 transition-colors duration-200"
                     onClick={(e) => {
                       e.preventDefault();
                       console.log('Navigate to forgot password'); // Institutional system 
@@ -231,13 +231,13 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full text-base py-3"
               >
                 {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     Signing in...
-                  </div>
+                  </>
                 ) : (
                   'Sign In'
                 )}
@@ -246,10 +246,10 @@ export default function LoginPage() {
           </form>
 
           {/* Footer */}
-          <div className="bg-gray-50 px-8 py-6 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="bg-neutral-50 px-8 py-6 text-center border-t border-neutral-200">
+            <p className="text-sm text-neutral-600">
               Need help? Contact{' '}
-              <a href="mailto:support@university.edu" className="text-blue-600 hover:text-blue-500 font-medium">
+              <a href="mailto:support@university.edu" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
                 IT Support
               </a>
             </p>
@@ -259,14 +259,14 @@ export default function LoginPage() {
 
       {/* Role Selection Modal */}
       {showRoleModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="card w-full max-w-md animate-scale-in">
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-white">Select Your Role</h2>
+            <div className="bg-gradient-primary p-6 flex justify-between items-center">
+              <h2 className="text-xl font-display font-bold text-white">Select Your Role</h2>
               <button
                 onClick={() => setShowRoleModal(false)}
-                className="text-white hover:text-gray-200 transition-colors"
+                className="text-white hover:text-primary-100 transition-colors"
               >
                 <X size={24} />
               </button>
@@ -274,7 +274,7 @@ export default function LoginPage() {
 
             {/* Modal Body */}
             <div className="p-6">
-              <p className="text-gray-600 mb-6">
+              <p className="text-neutral-600 mb-6">
                 You have multiple roles. Please select which role you'd like to access:
               </p>
 
@@ -282,15 +282,15 @@ export default function LoginPage() {
                 {availableRoles.includes('COORDINATOR') && (
                   <button
                     onClick={() => handleRoleSelection('COORDINATOR')}
-                    className="w-full bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-lg p-4 text-left transition-all duration-200 group"
+                    className="w-full bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-lg p-4 text-left transition-all duration-200 group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-600 text-white p-3 rounded-lg group-hover:scale-110 transition-transform">
+                      <div className="bg-purple-600 text-white p-3 rounded-lg group-hover:scale-110 transition-transform">
                         <Briefcase size={24} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-800">Coordinator</h3>
-                        <p className="text-sm text-gray-600">Access coordinator Home Page</p>
+                        <h3 className="font-semibold text-neutral-800">Coordinator</h3>
+                        <p className="text-sm text-neutral-600">Access coordinator Home Page</p>
                       </div>
                     </div>
                   </button>
@@ -299,15 +299,15 @@ export default function LoginPage() {
                 {availableRoles.includes('LECTURER') && (
                   <button
                     onClick={() => handleRoleSelection('LECTURER')}
-                    className="w-full bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-200 rounded-lg p-4 text-left transition-all duration-200 group"
+                    className="w-full bg-secondary-50 hover:bg-secondary-100 border-2 border-secondary-200 rounded-lg p-4 text-left transition-all duration-200 group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="bg-indigo-600 text-white p-3 rounded-lg group-hover:scale-110 transition-transform">
+                      <div className="bg-secondary-600 text-white p-3 rounded-lg group-hover:scale-110 transition-transform">
                         <GraduationCap size={24} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-800">Lecturer</h3>
-                        <p className="text-sm text-gray-600">Access lecturer Home Page</p>
+                        <h3 className="font-semibold text-neutral-800">Lecturer</h3>
+                        <p className="text-sm text-neutral-600">Access lecturer Home Page</p>
                       </div>
                     </div>
                   </button>
