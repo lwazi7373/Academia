@@ -1,5 +1,3 @@
-// intervention.api.ts
-
 import { apiClient } from "../../api/client";
 import {
   CreateInterventionRequest,
@@ -16,7 +14,7 @@ export const interventionApi = {
     data: CreateInterventionRequest
   ): Promise<CreateInterventionResponse> => {
     const response = await apiClient.post(
-      `/coordinator/modules/${moduleId}/students/${studentId}/interventions`,
+      `/coordinator/modules/${moduleId}/students/${studentId}/create-intervention`,
       data
     );
     return response.data;

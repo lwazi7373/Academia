@@ -1,18 +1,17 @@
-// coordinator.api.ts
-
 import { apiClient } from "../../api/client";
 import {
   GetCoordinatorModulesResponse,
   GetModuleRiskSummaryResponse,
+  GetModuleStudentsParams,
   GetModuleStudentsResponse,
   GetStudentRiskDetailsResponse,
-  GetModuleStudentsFilters
+
 } from './coordinator.types';
 
 export const coordinatorApi = {
   getCoordinatorModules: async (): Promise<GetCoordinatorModulesResponse> => {
     const response = await apiClient.get('/coordinator/modules');
-    return response.data;
+    return response.data.modules;
   },
 
   getModuleRiskSummary: async (moduleId: number): Promise<GetModuleRiskSummaryResponse> => {
@@ -22,7 +21,7 @@ export const coordinatorApi = {
 
   getModuleStudents: async (
     moduleId: number,
-    filters?: GetModuleStudentsFilters
+    filters?: GetModuleStudentsParams
   ): Promise<GetModuleStudentsResponse> => {
     const params = new URLSearchParams();
     

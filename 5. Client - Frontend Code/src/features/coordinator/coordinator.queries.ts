@@ -2,14 +2,14 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { coordinatorApi } from './coordinator.api';
-import { GetModuleStudentsFilters } from './coordinator.types';
+import { GetModuleStudentsParams } from './coordinator.types';
 
 export const coordinatorKeys = {
   all: ['coordinator'] as const,
   modules: () => [...coordinatorKeys.all, 'modules'] as const,
   module: (moduleId: number) => [...coordinatorKeys.all, 'module', moduleId] as const,
   riskSummary: (moduleId: number) => [...coordinatorKeys.module(moduleId), 'risk-summary'] as const,
-  students: (moduleId: number, filters?: GetModuleStudentsFilters) => 
+  students: (moduleId: number, filters?: GetModuleStudentsParams) => 
     [...coordinatorKeys.module(moduleId), 'students', filters] as const,
   studentRisk: (moduleId: number, studentId: number) => 
     [...coordinatorKeys.module(moduleId), 'student', studentId, 'risk'] as const,
@@ -32,7 +32,7 @@ export const useModuleRiskSummary = (moduleId: number) => {
 
 export const useModuleStudents = (
   moduleId: number,
-  filters?: GetModuleStudentsFilters
+  filters?: GetModuleStudentsParams
 ) => {
   return useQuery({
     queryKey: coordinatorKeys.students(moduleId, filters),

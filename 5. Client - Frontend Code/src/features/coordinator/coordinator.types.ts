@@ -1,4 +1,26 @@
+// ----------------------------------------------------------------------------
+// Common Types
+// ----------------------------------------------------------------------------
+
+export type RiskLevel = "HIGH" | "MODERATE" | "LOW" | "N/A";
+export type InterventionStatus = "ACTIVE" | "FOLLOW_UP_DUE" | "CLOSED";
+
+export interface Performance {
+  attendanceRate: number;
+  submissionRate: number;
+  averageMark: number;
+}
+
 export interface Module {
+  moduleName: string;
+  moduleCode: string;
+}
+
+// ----------------------------------------------------------------------------
+// GET /api/coordinator/modules
+// ----------------------------------------------------------------------------
+
+export interface CoordinatorModule {
   moduleId: number;
   moduleName: string;
   moduleCode: string;
@@ -6,21 +28,33 @@ export interface Module {
   coordinatorModuleId: number;
 }
 
+export interface GetCoordinatorModulesResponse {
+  msg: string;
+  modules: CoordinatorModule[];
+}
+
+// ----------------------------------------------------------------------------
+// GET /api/coordinator/modules/:moduleId/risk-summary
+// ----------------------------------------------------------------------------
+
 export interface RiskSummary {
   totalStudents: number;
   highRiskCount: number;
   moderateRiskCount: number;
   lowRiskCount: number;
-  highRiskPercentage: string;
-  moderateRiskPercentage: string;
-  lowRiskPercentage: string;
+  highRiskPercentage: number;
+  moderateRiskPercentage: number;
+  lowRiskPercentage: number;
 }
 
-export interface StudentPerformance {
-  attendanceRate: number;
-  submissionRate: number;
-  averageMark: number;
+export interface GetModuleRiskSummaryResponse {
+  msg: string;
+  riskSummary: RiskSummary;
 }
+
+// ----------------------------------------------------------------------------
+// GET /api/coordinator/modules/:moduleId/students
+// ----------------------------------------------------------------------------
 
 export interface ModuleStudent {
   studentId: number;
@@ -28,11 +62,26 @@ export interface ModuleStudent {
   firstName: string;
   lastName: string;
   studentModuleId: number;
-  riskLevel: string;
-  performance: StudentPerformance;
+  riskLevel: RiskLevel;
+  performance: Performance;
   hasActiveIntervention: boolean;
-  interventionStatus: string | null;
+  interventionStatus: InterventionStatus | null;
 }
+
+export interface GetModuleStudentsResponse {
+  msg: string;
+  students: ModuleStudent[];
+}
+
+// Query params for filtering students
+export interface GetModuleStudentsParams {
+  riskLevel?: RiskLevel;
+  interventionStatus?: "ACTIVE";
+}
+
+// ----------------------------------------------------------------------------
+// GET /api/coordinator/modules/:moduleId/students/:studentId/risk
+// ----------------------------------------------------------------------------
 
 export interface StudentRiskDetails {
   studentId: number;
@@ -42,37 +91,22 @@ export interface StudentRiskDetails {
   emailAddress: string;
   contactNo: string;
   studentModuleId: number;
-  module: {
-    moduleName: string;
-    moduleCode: string;
-  };
-  riskLevel: string;
-  performance: StudentPerformance;
-  lastCalculated: string;
-}
-
-export interface GetModuleStudentsFilters {
-  riskLevel?: 'HIGH' | 'MODERATE' | 'LOW';
-  interventionStatus?: 'ACTIVE';
-}
-
-// API Response types
-export interface GetCoordinatorModulesResponse {
-  msg: string;
-  modules: Module[];
-}
-
-export interface GetModuleRiskSummaryResponse {
-  msg: string;
-  riskSummary: RiskSummary;
-}
-
-export interface GetModuleStudentsResponse {
-  msg: string;
-  students: ModuleStudent[];
+  module: Module;
+  riskLevel: RiskLevel;
+  performance: Performance;
+  lastCalculated: string; 
 }
 
 export interface GetStudentRiskDetailsResponse {
   msg: string;
   studentRiskDetails: StudentRiskDetails;
+}
+
+// ----------------------------------------------------------------------------
+// Error Response (for handling API errors)
+// ----------------------------------------------------------------------------
+
+export interface ErrorResponse {
+  error: string;
+  msg?: string;
 }
