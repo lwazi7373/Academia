@@ -310,11 +310,52 @@ const createIntervention = async (
     throw badRequest("Student already has an active intervention");
   }
 
-  // Create the intervention
+  // Get active academic period and current performance metrics
+  const [activePeriod] = await connectDB.query(
+    `SELECT periodId FROM academicPeriod WHERE isActive = TRUE LIMIT 1`,
+  );
+
+  if (activePeriod.length === 0) {
+    throw notFound("No active academic period found");
+  }
+
+  const periodId = activePeriod[0].periodId;
+
+  // Get current performance as baseline
+  const [performanceData] = await connectDB.query(
+    `SELECT attendanceRate, submissionRate, averageMark
+     FROM RiskReport 
+     WHERE studentModuleId = ? AND periodId = ?`,
+    [studentModuleId, periodId],
+  );
+
+  const baseline = performanceData[0] || {
+    attendanceRate: 0,
+    submissionRate: 0,
+    averageMark: 0,
+  };
+
+  // Create the intervention with baseline metrics
   const [result] = await connectDB.query(
-    `INSERT INTO Intervention (studentModuleId, coordinatorId, content, createdAt, status)
-       VALUES (?, ?, ?, NOW(), 'ACTIVE')`,
-    [studentModuleId, coordinatorId, content],
+    `INSERT INTO Intervention (
+       studentModuleId, 
+       coordinatorId, 
+       content, 
+       createdAt, 
+       status,
+       baselineAttendanceRate,
+       baselineSubmissionRate,
+       baselineAverageMark
+     )
+     VALUES (?, ?, ?, NOW(), 'ACTIVE', ?, ?, ?)`,
+    [
+      studentModuleId,
+      coordinatorId,
+      content,
+      baseline.attendanceRate,
+      baseline.submissionRate,
+      baseline.averageMark,
+    ],
   );
 
   return {
@@ -324,6 +365,11 @@ const createIntervention = async (
     content,
     status: "ACTIVE",
     createdAt: new Date(),
+    baselinePerformance: {
+      attendanceRate: Number(baseline.attendanceRate) || 0,
+      submissionRate: Number(baseline.submissionRate) || 0,
+      averageMark: Number(baseline.averageMark) || 0,
+    },
   };
 };
 
@@ -346,20 +392,38 @@ const getActiveIntervention = async (coordinatorId, moduleId, studentId) => {
     throw forbidden("Coordinator does not have access to this module");
   }
 
+  // Get active academic period
+  const [activePeriod] = await connectDB.query(
+    `SELECT periodId FROM academicPeriod WHERE isActive = TRUE LIMIT 1`,
+  );
+
+  if (activePeriod.length === 0) {
+    throw notFound("No active academic period found");
+  }
+
+  const periodId = activePeriod[0].periodId;
+
   const [intervention] = await connectDB.query(
     `SELECT 
         i.interventionId,
         i.content,
         i.createdAt,
         i.status,
+        i.baselineAttendanceRate,
+        i.baselineSubmissionRate,
+        i.baselineAverageMark,
         sm.studentModuleId,
+        rr.attendanceRate as currentAttendanceRate,
+        rr.submissionRate as currentSubmissionRate,
+        rr.averageMark as currentAverageMark,
         COUNT(f.followUpId) as followUpCount
       FROM StudentModule sm
       INNER JOIN Intervention i ON sm.studentModuleId = i.studentModuleId
+      LEFT JOIN RiskReport rr ON sm.studentModuleId = rr.studentModuleId AND rr.periodId = ?
       LEFT JOIN FollowUp f ON i.interventionId = f.interventionId
       WHERE sm.studentId = ? AND sm.moduleId = ? AND i.status = 'ACTIVE'
       GROUP BY i.interventionId`,
-    [studentId, moduleId],
+    [periodId, studentId, moduleId],
   );
 
   if (intervention.length === 0) {
@@ -373,6 +437,16 @@ const getActiveIntervention = async (coordinatorId, moduleId, studentId) => {
     createdAt: intervention[0].createdAt,
     status: intervention[0].status,
     followUpCount: intervention[0].followUpCount,
+    baselinePerformance: {
+      attendanceRate: Number(intervention[0].baselineAttendanceRate) || 0,
+      submissionRate: Number(intervention[0].baselineSubmissionRate) || 0,
+      averageMark: Number(intervention[0].baselineAverageMark) || 0,
+    },
+    currentPerformance: {
+      attendanceRate: Number(intervention[0].currentAttendanceRate) || 0,
+      submissionRate: Number(intervention[0].currentSubmissionRate) || 0,
+      averageMark: Number(intervention[0].currentAverageMark) || 0,
+    },
   };
 };
 
