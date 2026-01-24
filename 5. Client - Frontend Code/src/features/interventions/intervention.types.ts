@@ -5,6 +5,12 @@ export type RiskLevel = "HIGH" | "MODERATE" | "LOW" | "N/A";
 export type InterventionStatus = "ACTIVE" | "FOLLOW_UP_DUE" | "CLOSED";
 export type FollowUpOutcome = "IMPROVED" | "NO_CHANGE" | "WORSENED";
 
+export interface Performance {
+  attendanceRate: number;
+  submissionRate: number;
+  averageMark: number;
+}
+
 // ----------------------------------------------------------------------------
 // POST /api/coordinator/modules/:moduleId/students/:studentId/create-intervention
 // ----------------------------------------------------------------------------
