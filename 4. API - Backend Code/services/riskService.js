@@ -71,18 +71,18 @@ const getModuleRiskSummary = async (coordinatorId, moduleId) => {
     highRiskCount: parseInt(data.highRiskCount) || 0,
     moderateRiskCount: parseInt(data.moderateRiskCount) || 0,
     lowRiskCount: parseInt(data.lowRiskCount) || 0,
-    highRiskPercentage:
+    highRiskPercentage: Number(
       total > 0
         ? (((parseInt(data.highRiskCount) || 0) / total) * 100).toFixed(2)
-        : 0,
-    moderateRiskPercentage:
+        : 0),
+    moderateRiskPercentage: Number(
       total > 0
         ? (((parseInt(data.moderateRiskCount) || 0) / total) * 100).toFixed(2)
-        : 0,
-    lowRiskPercentage:
+        : 0),
+    lowRiskPercentage: Number(
       total > 0
         ? (((parseInt(data.lowRiskCount) || 0) / total) * 100).toFixed(2)
-        : 0,
+        : 0),
   };
 };
 
@@ -170,9 +170,9 @@ const getModuleStudents = async (coordinatorId, moduleId, filters = {}) => {
     studentModuleId: student.studentModuleId,
     riskLevel: student.riskLevel || "N/A",
     performance: {
-      attendanceRate: student.attendanceRate || 0,
-      submissionRate: student.submissionRate || 0,
-      averageMark: student.averageMark || 0,
+      attendanceRate: Number(student.attendanceRate) || 0,
+      submissionRate: Number(student.submissionRate) || 0,
+      averageMark: Number(student.averageMark) || 0,
     },
     hasActiveIntervention: student.interventionId !== null,
     interventionStatus: student.interventionStatus || null,
@@ -253,9 +253,9 @@ const getStudentRiskDetails = async (coordinatorId, moduleId, studentId) => {
     },
     riskLevel: studentData[0].riskLevel || "N/A",
     performance: {
-      attendanceRate: studentData[0].attendanceRate || 0,
-      submissionRate: studentData[0].submissionRate || 0,
-      averageMark: studentData[0].averageMark || 0,
+      attendanceRate: Number(studentData[0].attendanceRate) || 0,
+      submissionRate: Number(studentData[0].submissionRate) || 0,
+      averageMark: Number(studentData[0].averageMark) || 0,
     },
     lastCalculated: studentData[0].calculatedAt,
   };

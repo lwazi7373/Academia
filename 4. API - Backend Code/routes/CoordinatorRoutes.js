@@ -72,7 +72,7 @@ router.get(
 );
 
 /**
- * POST /api/coordinator/modules/:moduleId/students/:studentId/interventions
+ * POST /api/coordinator/modules/:moduleId/students/:studentId/create-intervention
  * Create an intervention for a student
  * Extracts: {coordinatorId} from JWT token
  * Params: {moduleId}, {studentId}
@@ -81,7 +81,7 @@ router.get(
  * Note: Will fail if student already has an active intervention (409 Conflict)
  */
 router.post(
-  "/coordinator/modules/:moduleId/students/:studentId/interventions",
+  "/coordinator/modules/:moduleId/students/:studentId/create-intervention",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
   coordinatorController.createIntervention,
