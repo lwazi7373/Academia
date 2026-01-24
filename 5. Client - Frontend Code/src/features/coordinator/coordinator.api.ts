@@ -1,5 +1,6 @@
 import { apiClient } from "../../api/client";
 import {
+  CoordinatorModule,
   GetCoordinatorModulesResponse,
   GetModuleRiskSummaryResponse,
   GetModuleStudentsParams,
@@ -9,9 +10,9 @@ import {
 } from './coordinator.types';
 
 export const coordinatorApi = {
-  getCoordinatorModules: async (): Promise<GetCoordinatorModulesResponse> => {
-    const response = await apiClient.get('/coordinator/modules');
-    return response.data.modules;
+  getCoordinatorModules: async (): Promise<CoordinatorModule[]> => { 
+    const response = await apiClient.get<GetCoordinatorModulesResponse>('/coordinator/modules');
+    return response.data.modules; 
   },
 
   getModuleRiskSummary: async (moduleId: number): Promise<GetModuleRiskSummaryResponse> => {

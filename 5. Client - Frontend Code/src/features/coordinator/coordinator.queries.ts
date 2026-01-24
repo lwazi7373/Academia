@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { coordinatorApi } from './coordinator.api';
-import { GetModuleStudentsParams } from './coordinator.types';
+import { CoordinatorModule, GetModuleStudentsParams } from './coordinator.types';
 
 export const coordinatorKeys = {
   all: ['coordinator'] as const,
@@ -16,7 +16,7 @@ export const coordinatorKeys = {
 };
 
 export const useCoordinatorModules = () => {
-  return useQuery({
+  return useQuery<CoordinatorModule[], Error>({ // Changed from GetCoordinatorModulesResponse
     queryKey: coordinatorKeys.modules(),
     queryFn: () => coordinatorApi.getCoordinatorModules(),
   });
