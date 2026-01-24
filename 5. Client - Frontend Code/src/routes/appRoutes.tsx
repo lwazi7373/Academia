@@ -15,6 +15,8 @@ import LecturerAssessmentsListPage from "../features/lecturer/pages/LecturerAsse
 import AddAssessmentPage from "../features/assessments/pages/AddAssessmentPage";
 import EditAssessmentPage from "../features/assessments/pages/EditAssessmentPage";
 import UploadAssessmentMarksPage from "../features/assessments/pages/UploadAssessmentMarksPage";
+import CoordinatorHomePage from "../features/coordinator/pages/CoordinatorHomePage";
+import CoordinatorModuleRiskPage from "../features/coordinator/pages/CoordinatorModuleRiskPage";
 import { ModuleProvider } from "../features/module/context/ModuleContext";
 
 function AppRoutes() {
@@ -34,7 +36,11 @@ function AppRoutes() {
       {/* Lecturer Routes */}
       <Route path="/lecturer/homePage" element={<LecturerHomePage />} />
 
-      {/* Module Routes (at this point only the sections page uses the data in context) - Wrapped with ModuleProvider */}
+      {/* Coordinator Routes - MOVED OUT OF MODULE WRAPPER */}
+      <Route path="/coordinator/homePage" element={<CoordinatorHomePage />} />
+      <Route path="/coordinator/modules/:moduleId/risk" element={<CoordinatorModuleRiskPage />} />
+      <Route path="/coordinator/modules/:moduleId/students/:studentId" element={<div>Student Specific Risk page</div>} />
+
       {/* Module Routes - All wrapped with ModuleProvider */}
       <Route 
         path="/module/:moduleId/*" 
@@ -46,17 +52,17 @@ function AppRoutes() {
               
               {/* Lecturer Attendance Routes */}
               <Route path="attendance/generate" element={<GenerateAttendanceCodePage />} />
-              <Route path="attendance/view" element={<AttendanceCodePage/>} />
+              <Route path="attendance/view" element={<AttendanceCodePage />} />
               
               {/* Student Attendance Route */}
               <Route path="attendance/submit" element={<SubmitAttendanceCodePage />} />
 
               {/* Assessment Routes */}
-              <Route path="assessments/manage" element={<LecturerAssessmentsListPage/>} />
-              <Route path="assessments/view" element={<StudentAssessmentsListPage/>} />
-              <Route path="assessments/create" element={<AddAssessmentPage/>} />
-              <Route path="assessments/:assessmentId/edit" element={<EditAssessmentPage/>} />
-              <Route path="assessments/:assessmentId/upload-marks" element={<UploadAssessmentMarksPage/>} />
+              <Route path="assessments/manage" element={<LecturerAssessmentsListPage />} />
+              <Route path="assessments/view" element={<StudentAssessmentsListPage />} />
+              <Route path="assessments/create" element={<AddAssessmentPage />} />
+              <Route path="assessments/:assessmentId/edit" element={<EditAssessmentPage />} />
+              <Route path="assessments/:assessmentId/upload-marks" element={<UploadAssessmentMarksPage />} />
             </Routes>
           </ModuleProvider>
         } 
