@@ -506,7 +506,7 @@ const createFollowUp = async (
 
   return {
     followUpId: result.insertId,
-    interventionId,
+    interventionId: Number(interventionId),
     content,
     outcome,
     createdAt: new Date(),

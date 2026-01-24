@@ -115,7 +115,7 @@ router.get(
  *   - If outcome is 'NO_CHANGE' or 'WORSENED', intervention status changes to 'FOLLOW_UP_DUE'
  */
 router.post(
-  "/coordinator/interventions/:interventionId/follow-ups",
+  "/coordinator/intervention/:interventionId/follow-up",
   authenticateToken,
   authorizeRoles("COORDINATOR"),
   coordinatorController.createFollowUp,
