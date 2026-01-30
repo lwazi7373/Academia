@@ -141,21 +141,21 @@ export default function CoordinatorModuleRiskPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-role-coordinator">
       {/* Header */}
-      <header className="bg-white shadow-md">
+      <header className="page-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/coordinator/homePage')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+              className="btn-ghost p-2"
             >
-              <ArrowLeft size={24} className="text-gray-600" />
+              <ArrowLeft size={24} />
             </button>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-800">Module Risk Report</h1>
+              <h1 className="text-2xl font-display font-bold text-neutral-800">Module Risk Report</h1>
               {moduleInfo && (
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-neutral-600">
                   {moduleInfo.moduleCode} - {moduleInfo.moduleName}
                 </p>
               )}
@@ -168,72 +168,80 @@ export default function CoordinatorModuleRiskPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Risk Summary Cards */}
         {riskSummary && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 animate-slide-up">
             {/* Total Students */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-blue-100 p-3 rounded-lg">
-                  <Users className="text-blue-600" size={24} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Total Students</p>
-                  <p className="text-2xl font-bold text-gray-800">{riskSummary.totalStudents}</p>
+            <div className="card">
+              <div className="card-body">
+                <div className="flex items-center gap-3">
+                  <div className="bg-info-100 p-3 rounded-lg">
+                    <Users className="text-info-600" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-600 uppercase tracking-wide">Total Students</p>
+                    <p className="text-2xl font-bold text-neutral-800">{riskSummary.totalStudents}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* High Risk */}
-            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-red-100 p-3 rounded-lg">
-                  <TrendingDown className="text-red-600" size={24} />
+            <div className="card border-l-4 border-danger-500">
+              <div className="card-body">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-danger-100 p-3 rounded-lg">
+                    <TrendingDown className="text-danger-600" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-600 uppercase tracking-wide">High Risk</p>
+                    <p className="text-2xl font-bold text-neutral-800">{riskSummary.highRiskCount}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">High Risk</p>
-                  <p className="text-2xl font-bold text-gray-800">{riskSummary.highRiskCount}</p>
+                <div className="text-xs text-neutral-500 mt-2">
+                  {riskSummary.highRiskPercentage.toFixed(1)}% of students
                 </div>
-              </div>
-              <div className="text-xs text-gray-500 mt-2">
-                {riskSummary.highRiskPercentage.toFixed(1)}% of students
               </div>
             </div>
 
             {/* Moderate Risk */}
-            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-yellow-100 p-3 rounded-lg">
-                  <Activity className="text-yellow-600" size={24} />
+            <div className="card border-l-4 border-warning-500">
+              <div className="card-body">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-warning-100 p-3 rounded-lg">
+                    <Activity className="text-warning-600" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-600 uppercase tracking-wide">Moderate Risk</p>
+                    <p className="text-2xl font-bold text-neutral-800">{riskSummary.moderateRiskCount}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">Moderate Risk</p>
-                  <p className="text-2xl font-bold text-gray-800">{riskSummary.moderateRiskCount}</p>
+                <div className="text-xs text-neutral-500 mt-2">
+                  {riskSummary.moderateRiskPercentage.toFixed(1)}% of students
                 </div>
-              </div>
-              <div className="text-xs text-gray-500 mt-2">
-                {riskSummary.moderateRiskPercentage.toFixed(1)}% of students
               </div>
             </div>
 
             {/* Low Risk */}
-            <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="bg-green-100 p-3 rounded-lg">
-                  <TrendingUp className="text-green-600" size={24} />
+            <div className="card border-l-4 border-success-500">
+              <div className="card-body">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="bg-success-100 p-3 rounded-lg">
+                    <TrendingUp className="text-success-600" size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-600 uppercase tracking-wide">Low Risk</p>
+                    <p className="text-2xl font-bold text-neutral-800">{riskSummary.lowRiskCount}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">Low Risk</p>
-                  <p className="text-2xl font-bold text-gray-800">{riskSummary.lowRiskCount}</p>
+                <div className="text-xs text-neutral-500 mt-2">
+                  {riskSummary.lowRiskPercentage.toFixed(1)}% of students
                 </div>
-              </div>
-              <div className="text-xs text-gray-500 mt-2">
-                {riskSummary.lowRiskPercentage.toFixed(1)}% of students
               </div>
             </div>
           </div>
         )}
 
         {/* Filter Pills */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="card p-4 mb-6 animate-slide-up">
           <div className="flex flex-wrap gap-2">
             {filterOptions.map((option) => (
               <button
@@ -241,14 +249,14 @@ export default function CoordinatorModuleRiskPage() {
                 onClick={() => setActiveFilter(option.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   activeFilter === option.value
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
                 }`}
               >
                 {option.label}
                 {option.count !== undefined && (
                   <span className={`ml-2 ${
-                    activeFilter === option.value ? 'text-indigo-200' : 'text-gray-500'
+                    activeFilter === option.value ? 'text-purple-200' : 'text-neutral-500'
                   }`}>
                     ({option.count})
                   </span>

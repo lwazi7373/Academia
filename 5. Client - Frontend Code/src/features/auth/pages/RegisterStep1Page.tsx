@@ -39,20 +39,17 @@ export default function RegisterPage() {
     try {
       const result = await registerMutation.mutateAsync(formData);
       
-      console.log('Registration step 1 complete:', result); // Testing purposes 
+      console.log('Registration step 1 complete:', result);
       
       if (result.role === 'STUDENT') {
-        // Navigate can actually carry extra data along to the next page 
-        // So if student, carry the userId and StudentNumber to the next page 
-        navigate('/register2/student', { // Page -> "/register2/student"
+        navigate('/register2/student', {
           state: { 
             userId: result.userId, 
             studentNumber: result.studentNumber 
           } 
         });
       } else {
-        // if staff, carry the userId, staffNumber and user role to the next page
-        navigate('/register2/staff', {  // Page -> "/register2/staff"
+        navigate('/register2/staff', {
           state: { 
             userId: result.userId, 
             staffNumber: result.staffNumber,
@@ -73,35 +70,35 @@ export default function RegisterPage() {
   const isStudent = formData.userRole === 'STUDENT';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-info-50 to-accent-50 flex items-center justify-center p-4">
+      <div className="card w-full max-w-2xl animate-scale-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">Academic Portal</h1>
-          <p className="text-blue-100">Create An Account - Step 1 of {isStudent ? '2' : '3'}</p>
+        <div className="bg-gradient-primary p-8 text-center">
+          <h1 className="text-3xl font-display font-bold text-white mb-2">Academic Portal</h1>
+          <p className="text-primary-100">Create An Account - Step 1 of {isStudent ? '2' : '3'}</p>
         </div>
         
-        {/* Visual indicator (not interactive) */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-8 py-4 border-b border-blue-100">
+        {/* Visual indicator */}
+        <div className="bg-gradient-to-r from-primary-50 to-info-50 px-8 py-4 border-b border-primary-100">
           <div className="flex items-center justify-center gap-3">
             {isStudent ? (
               <>
-                <div className="bg-blue-600 p-2 rounded-full">
+                <div className="bg-primary-600 p-2 rounded-full">
                   <GraduationCap size={24} className="text-white" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">Student Registration</div>
-                  <div className="text-sm text-gray-600">Enrolling in academic programs</div>
+                  <div className="font-semibold text-neutral-800">Student Registration</div>
+                  <div className="text-sm text-neutral-600">Enrolling in academic programs</div>
                 </div>
               </>
             ) : (
               <>
-                <div className="bg-indigo-600 p-2 rounded-full">
+                <div className="bg-secondary-600 p-2 rounded-full">
                   <Briefcase size={24} className="text-white" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">Staff Registration</div>
-                  <div className="text-sm text-gray-600">Joining the academic team</div>
+                  <div className="font-semibold text-neutral-800">Staff Registration</div>
+                  <div className="text-sm text-neutral-600">Joining the academic team</div>
                 </div>
               </>
             )}
@@ -113,12 +110,11 @@ export default function RegisterPage() {
           <div className="space-y-6">
             {/* Error message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="alert-danger">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-medium text-red-800">Registration Failed</h3>
-                  <p className="text-sm text-red-700 mt-1">
-                    {/* Use clear messages frome the backend that are sent as msg */}
+                  <h3 className="text-sm font-semibold">Registration Failed</h3>
+                  <p className="text-sm mt-1">
                     {error instanceof AxiosError && error.response?.data?.msg
                       ? error.response.data.msg
                       : 'An error occurred. Please try again.'}
@@ -127,19 +123,19 @@ export default function RegisterPage() {
               </div>
             )}
 
-            <h2 className="text-xl font-bold text-gray-800">Personal Information</h2>
+            <h2 className="text-xl font-display font-bold text-neutral-800">Personal Information</h2>
 
             {/* Role Selection - FIRST FIELD */}
             <div>
-              <label htmlFor="userRole" className="block text-sm font-medium text-gray-700 mb-2">
-                I am registering a *
+              <label htmlFor="userRole" className="block text-sm font-medium text-neutral-700 mb-2">
+                I am registering as *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   {isStudent ? (
-                    <GraduationCap className="h-5 w-5 text-gray-400" />
+                    <GraduationCap className="h-5 w-5 text-neutral-400" />
                   ) : (
-                    <Briefcase className="h-5 w-5 text-gray-400" />
+                    <Briefcase className="h-5 w-5 text-neutral-400" />
                   )}
                 </div>
                 <select
@@ -147,7 +143,7 @@ export default function RegisterPage() {
                   name="userRole"
                   value={formData.userRole}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white"
+                  className="input pl-10"
                   required
                   disabled={isLoading}
                 >
@@ -157,7 +153,7 @@ export default function RegisterPage() {
                   <option value="HOD">Head of Department</option>
                 </select>
               </div>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-neutral-500">
                 {isStudent 
                   ? 'Students will be enrolled in courses and modules' 
                   : 'Staff members will be assigned to departments and modules'}
@@ -165,16 +161,16 @@ export default function RegisterPage() {
             </div>
 
             {/* Divider */}
-            <div className="border-t border-gray-200 pt-6"></div>
+            <div className="border-t border-neutral-200 pt-6"></div>
 
             {/* Title */}
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                Title <span className="text-gray-400">(Optional)</span>
+              <label htmlFor="title" className="block text-sm font-medium text-neutral-700 mb-2">
+                Title <span className="text-neutral-400">(Optional)</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-neutral-400" />
                 </div>
                 <input
                   id="title"
@@ -182,7 +178,7 @@ export default function RegisterPage() {
                   type="text"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   placeholder="Mr., Ms., Dr., Prof., etc."
                   disabled={isLoading}
                 />
@@ -192,12 +188,12 @@ export default function RegisterPage() {
             {/* First Name & Last Name - Side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="firstName" className="block text-sm font-medium text-neutral-700 mb-2">
                   First Name *
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-neutral-400" />
                   </div>
                   <input
                     id="firstName"
@@ -205,7 +201,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className="input pl-10"
                     placeholder="First name"
                     required
                     disabled={isLoading}
@@ -214,12 +210,12 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="lastName" className="block text-sm font-medium text-neutral-700 mb-2">
                   Last Name *
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-neutral-400" />
                   </div>
                   <input
                     id="lastName"
@@ -227,7 +223,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className="input pl-10"
                     placeholder="Last name"
                     required
                     disabled={isLoading}
@@ -238,12 +234,12 @@ export default function RegisterPage() {
 
             {/* ID Number */}
             <div>
-              <label htmlFor="idNumber" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="idNumber" className="block text-sm font-medium text-neutral-700 mb-2">
                 ID Number *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <IdCard className="h-5 w-5 text-gray-400" />
+                  <IdCard className="h-5 w-5 text-neutral-400" />
                 </div>
                 <input
                   id="idNumber"
@@ -251,7 +247,7 @@ export default function RegisterPage() {
                   type="text"
                   value={formData.idNumber}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   placeholder="National ID number"
                   required
                   disabled={isLoading}
@@ -261,12 +257,12 @@ export default function RegisterPage() {
 
             {/* Email Address */}
             <div>
-              <label htmlFor="emailAddress" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="emailAddress" className="block text-sm font-medium text-neutral-700 mb-2">
                 Email Address *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-neutral-400" />
                 </div>
                 <input
                   id="emailAddress"
@@ -274,7 +270,7 @@ export default function RegisterPage() {
                   type="email"
                   value={formData.emailAddress}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   placeholder="email@example.com"
                   required
                   disabled={isLoading}
@@ -284,12 +280,12 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="userPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="userPassword" className="block text-sm font-medium text-neutral-700 mb-2">
                 Password *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-5 w-5 text-neutral-400" />
                 </div>
                 <input
                   id="userPassword"
@@ -297,25 +293,25 @@ export default function RegisterPage() {
                   type="password"
                   value={formData.userPassword}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   placeholder="Create a password"
                   required
                   disabled={isLoading}
                   minLength={6}
                 />
               </div>
-              <p className="mt-1 text-sm text-gray-500">Minimum 6 characters</p>
+              <p className="mt-1 text-sm text-neutral-500">Minimum 6 characters</p>
             </div>
 
             {/* Contact & Gender - Side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="contactNo" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="contactNo" className="block text-sm font-medium text-neutral-700 mb-2">
                   Contact Number *
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400" />
+                    <Phone className="h-5 w-5 text-neutral-400" />
                   </div>
                   <input
                     id="contactNo"
@@ -323,7 +319,7 @@ export default function RegisterPage() {
                     type="tel"
                     value={formData.contactNo}
                     onChange={handleInputChange}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    className="input pl-10"
                     placeholder="0XX XXX XXXX"
                     required
                     disabled={isLoading}
@@ -332,7 +328,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="gender" className="block text-sm font-medium text-neutral-700 mb-2">
                   Gender *
                 </label>
                 <select
@@ -340,7 +336,7 @@ export default function RegisterPage() {
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
-                  className="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input"
                   required
                   disabled={isLoading}
                 >
@@ -356,7 +352,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn-primary w-full text-base py-3"
             >
               {isLoading ? (
                 <>
@@ -374,13 +370,13 @@ export default function RegisterPage() {
         </form>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-8 py-6 text-center">
-          <p className="text-sm text-gray-600">
+        <div className="card-footer text-center">
+          <p className="text-sm text-neutral-600">
             Already have an account?{' '}
             <button
               type="button"
               onClick={() => navigate('/login')}
-              className="text-blue-600 hover:text-blue-500 font-medium"
+              className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
             >
               Sign in
             </button>

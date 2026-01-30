@@ -1,4 +1,3 @@
-// StudentRegistrationStep2.tsx
 import React, { useState, useEffect } from 'react';
 import { GraduationCap, BookOpen, ArrowRight, AlertCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -7,12 +6,9 @@ import { useGetQualifications } from '../auth.queries';
 import { RegisterStudentStep2Request } from '../auth.types';
 
 export default function StudentRegistrationStep2() {
-  // Get data from Step 1 via navigation state
-  // useLocation allows me to get the data sent from the previous page that lead to this one 
-  // note this is the student page, meaning if student we sent userId and studentNumber
   const location = useLocation();
   const navigate = useNavigate();
-  const { userId, studentNumber } = location.state || {}; // This is how we actually get the data
+  const { userId, studentNumber } = location.state || {};
 
   // Redirect to previous page if no data from step 1
   useEffect(() => {
@@ -24,11 +20,11 @@ export default function StudentRegistrationStep2() {
   // Fetch qualifications for dropdown
   const { data: qualifications, isLoading: loadingQualifications } = useGetQualifications();
 
-  // Form state typed with RegisterStudentStep2Request
+  // Form state
   const [formData, setFormData] = useState<RegisterStudentStep2Request>({
     userId: userId || 0,
     studentNumber: studentNumber || '',
-    qualificationName: '',  // Backend expects qualification NAME, not ID
+    qualificationName: '',
     yearOfStudy: 1,
     semesterNo: 1,
     levelOfEducation: '',
@@ -42,7 +38,7 @@ export default function StudentRegistrationStep2() {
     setFormData(prev => ({
       ...prev,
       [name]: name === 'yearOfStudy' || name === 'semesterNo' 
-        ? parseInt(value, 10)  // Convert to number for these fields
+        ? parseInt(value, 10)
         : value
     }));
   };
@@ -53,12 +49,9 @@ export default function StudentRegistrationStep2() {
     try {
       const result = await registerMutation.mutateAsync(formData);
       
-      // Success! Result contains { student, modulesAssigned, modules }
       console.log('Student registration complete:', result);
       
-      // Navigate to the registration complete page (Not yet created, but I will)
       navigate('/registration-complete', { 
-        // Send this to data to the page, to assure admin of what has been registered for the student (no need, but useful)
         state: { 
           message: `Successfully registered! ${result.modulesAssigned} modules assigned.`,
           student: result.student,
@@ -75,37 +68,37 @@ export default function StudentRegistrationStep2() {
   const error = registerMutation.error;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-info-50 to-accent-50 flex items-center justify-center p-4">
+      <div className="card w-full max-w-md animate-scale-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">Academic Portal</h1>
-          <p className="text-blue-100">Student Registration - Step 2 of 2</p>
+        <div className="bg-gradient-primary p-8 text-center">
+          <h1 className="text-3xl font-display font-bold text-white mb-2">Academic Portal</h1>
+          <p className="text-primary-100">Student Registration - Step 2 of 2</p>
         </div>
 
         {/* Progress indicator */}
-        <div className="px-8 py-4 bg-gray-50">
+        <div className="px-8 py-4 bg-neutral-50">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Step 2 of 2</span>
-            <span className="text-sm text-gray-500">Academic details</span>
+            <span className="text-sm font-medium text-neutral-700">Step 2 of 2</span>
+            <span className="text-sm text-neutral-500">Academic details</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-neutral-200 rounded-full h-2">
             <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-in-out" 
+              className="bg-primary-600 h-2 rounded-full transition-all duration-300 ease-in-out" 
               style={{ width: '100%' }}
             ></div>
           </div>
         </div>
 
         {/* Student info from Step 1 */}
-        <div className="px-8 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-8 py-4 bg-primary-50 border-b border-primary-200">
           <div className="flex items-center gap-3">
-            <div className="bg-blue-100 p-2 rounded-full">
-              <GraduationCap size={20} className="text-blue-600" />
+            <div className="bg-primary-100 p-2 rounded-full">
+              <GraduationCap size={20} className="text-primary-600" />
             </div>
             <div>
-              <div className="font-medium text-gray-800">Student Number</div>
-              <div className="text-gray-600">{studentNumber}</div>
+              <div className="font-medium text-neutral-800">Student Number</div>
+              <div className="text-neutral-600 font-mono">{studentNumber}</div>
             </div>
           </div>
         </div>
@@ -115,32 +108,30 @@ export default function StudentRegistrationStep2() {
           <div className="space-y-6">
             {/* Error message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="alert-danger">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-medium text-red-800">Registration Failed</h3>
-                  <p className="text-sm text-red-700 mt-1">
-                    {'An error occurred. Please try again.'}
-                  </p>
+                  <h3 className="text-sm font-semibold">Registration Failed</h3>
+                  <p className="text-sm mt-1">An error occurred. Please try again.</p>
                 </div>
               </div>
             )}
 
             {/* Qualification Dropdown */}
             <div>
-              <label htmlFor="qualificationName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="qualificationName" className="block text-sm font-medium text-neutral-700 mb-2">
                 Qualification *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <BookOpen className="h-5 w-5 text-gray-400" />
+                  <BookOpen className="h-5 w-5 text-neutral-400" />
                 </div>
                 <select
                   id="qualificationName"
                   name="qualificationName"
                   value={formData.qualificationName}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   required
                   disabled={isLoading || loadingQualifications}
                 >
@@ -156,19 +147,19 @@ export default function StudentRegistrationStep2() {
 
             {/* Level of Education */}
             <div>
-              <label htmlFor="levelOfEducation" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="levelOfEducation" className="block text-sm font-medium text-neutral-700 mb-2">
                 Level of Education *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <GraduationCap className="h-5 w-5 text-gray-400" />
+                  <GraduationCap className="h-5 w-5 text-neutral-400" />
                 </div>
                 <select
                   id="levelOfEducation"
                   name="levelOfEducation"
                   value={formData.levelOfEducation}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   required
                   disabled={isLoading}
                 >
@@ -182,19 +173,19 @@ export default function StudentRegistrationStep2() {
 
             {/* Year of Study */}
             <div>
-              <label htmlFor="yearOfStudy" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="yearOfStudy" className="block text-sm font-medium text-neutral-700 mb-2">
                 Year of Study *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <BookOpen className="h-5 w-5 text-gray-400" />
+                  <BookOpen className="h-5 w-5 text-neutral-400" />
                 </div>
                 <select
                   id="yearOfStudy"
                   name="yearOfStudy"
                   value={formData.yearOfStudy}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   required
                   disabled={isLoading}
                 >
@@ -210,19 +201,19 @@ export default function StudentRegistrationStep2() {
 
             {/* Current Semester */}
             <div>
-              <label htmlFor="semesterNo" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="semesterNo" className="block text-sm font-medium text-neutral-700 mb-2">
                 Current Semester *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <BookOpen className="h-5 w-5 text-gray-400" />
+                  <BookOpen className="h-5 w-5 text-neutral-400" />
                 </div>
                 <select
                   id="semesterNo"
                   name="semesterNo"
                   value={formData.semesterNo}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  className="input pl-10"
                   required
                   disabled={isLoading}
                 >
@@ -234,16 +225,14 @@ export default function StudentRegistrationStep2() {
             </div>
 
             {/* Information box */}
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-start gap-3">
-                <BookOpen size={20} className="text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-medium text-blue-800 mb-1">Automatic Enrollment</h3>
-                  <p className="text-sm text-blue-700">
-                    Modules will be assigned automatically based on your qualification and semester selection. 
-                    No manual module selection is required.
-                  </p>
-                </div>
+            <div className="alert-info">
+              <BookOpen size={20} className="flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold mb-1">Automatic Enrollment</h3>
+                <p className="text-sm">
+                  Modules will be assigned automatically based on your qualification and semester selection. 
+                  No manual module selection is required.
+                </p>
               </div>
             </div>
           </div>
@@ -252,7 +241,7 @@ export default function StudentRegistrationStep2() {
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-8 w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="mt-8 btn-primary w-full text-base py-3"
           >
             {isLoading ? (
               <>
@@ -269,10 +258,10 @@ export default function StudentRegistrationStep2() {
         </form>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-8 py-6 text-center">
-          <p className="text-sm text-gray-600">
+        <div className="card-footer text-center">
+          <p className="text-sm text-neutral-600">
             Need help? Contact{' '}
-            <a href="mailto:support@university.edu" className="text-blue-600 hover:text-blue-500 font-medium">
+            <a href="mailto:support@university.edu" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">
               IT Support
             </a>
           </p>
