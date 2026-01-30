@@ -23,12 +23,13 @@ const coordinatorRoutes = require('./routes/CoordinatorRoutes');
 // Added solely for unique issue in the frontend
 const moduleRoute = require("./routes/moduleRoute");
 
-// Routes
+// Routes (Risky naming, but it works, and easy to follow)
+// Will change, when the need arises
 app.use('/api/', authRoutes);
 app.use('/api/', lecturerRoutes);
 app.use('/api/', attendanceRoutes);
-app.use('/api/', assessmentRoutes);
 app.use('/api/', studentRoutes);
+app.use('/api/', assessmentRoutes);
 app.use('/api/', coordinatorRoutes);
 // Single route, to solve a particular issue
 app.use('/api/', moduleRoute);
