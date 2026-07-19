@@ -50,9 +50,10 @@ export default function CoordinatorModuleRiskPage() {
   // Extract data
   const riskSummary = riskSummaryData?.riskSummary;
   const students = studentsData?.students || [];
+
   const moduleInfo = students[0]?.studentModuleId ? {
-    moduleCode: 'Loading...',
-    moduleName: 'Loading...'
+    moduleCode: riskSummaryData?.moduleCode,
+    moduleName: riskSummaryData?.moduleName
   } : null;
 
   // Helper function to get risk badge styling
