@@ -1,4 +1,5 @@
 const riskService = require("../services/riskService");
+const moduleService = require("../services/moduleService");
 
 /**
  * Note: Coordinators in this system will really only be responsible for one module
@@ -25,14 +26,19 @@ const getCoordinatorModules = async (req, res) => {
 const getModuleRiskSummary = async (req, res) => {
   const coordinatorId = req.user.userId; // decoded from the auth Middleware
   const { moduleId } = req.params;
-  const riskSummary = await riskService.getModuleRiskSummary(
-    coordinatorId,
-    moduleId,
-  );
-  return res.status(200).json({
+
+  const [riskSummary, moduleDetails] = await Promise.all([
+    riskService.getModuleRiskSummary(coordinatorId, moduleId),
+    moduleService.getModuleById(moduleId),
+  ]);
+
+    return res.status(200).json({
     msg: "Module risk summary retrieved successfully",
     riskSummary: riskSummary,
+    moduleName: moduleDetails.moduleName,
+    moduleCode: moduleDetails.moduleCode,
   });
+
 };
 
 /**
