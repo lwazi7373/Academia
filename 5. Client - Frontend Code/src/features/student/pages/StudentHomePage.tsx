@@ -16,6 +16,12 @@ export default function StudentHomePage() {
   const { data: performance, isLoading: performanceLoading } = useGetModulePerformance();
   const { data: upcomingAssessments, isLoading: assessmentsLoading } = useGetUpcomingAssessments();
 
+  useEffect(() => {
+    if (!isLoading && (!user || !isStudent(user))) {
+      navigate('/login');
+    }
+  }, [isLoading, user, navigate]);
+
   // Show loading state while auth is being checked
   if (isLoading) {
     return (
@@ -28,11 +34,6 @@ export default function StudentHomePage() {
     );
   }
   
-  useEffect(() => {
-    if (!isLoading && (!user || !isStudent(user))) {
-      navigate('/login');
-    }
-  }, [isLoading, user, navigate]);
 
   if (!user || !isStudent(user)) return null;
   const student = user.studentProfile;

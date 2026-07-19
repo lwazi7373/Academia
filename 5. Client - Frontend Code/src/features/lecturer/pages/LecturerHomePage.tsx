@@ -14,6 +14,12 @@ export default function LecturerHomePage() {
   // Fetch lecturer's modules
   const { data: modules, isLoading: modulesLoading } = useGetMyModules();
 
+  useEffect(() => {
+    if (!isLoading && (!user || !isLecturer(user))) {
+      navigate('/login');
+    }
+  }, [isLoading, user, navigate]);
+
   // Show loading state while auth is being checked
   if (isLoading) {
     return (
@@ -25,12 +31,6 @@ export default function LecturerHomePage() {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (!isLoading && (!user || !isLecturer(user))) {
-      navigate('/login');
-    }
-  }, [isLoading, user, navigate]);
 
   if (!user || !isLecturer(user)) return null;
   const lecturer = user.lecturerProfile;

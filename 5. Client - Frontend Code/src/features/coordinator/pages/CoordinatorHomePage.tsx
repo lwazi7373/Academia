@@ -21,6 +21,12 @@ export default function CoordinatorHomePage() {
   // Fetch coordinator modules
   const { data: modules, isLoading: modulesLoading, error } = useCoordinatorModules();
 
+  useEffect(() => {
+    if (!isLoading && (!user || !isCoordinator(user))) {
+      navigate('/login');
+    }
+  }, [isLoading, user, navigate]);
+
   // Show loading state while auth is being checked
   if (isLoading) {
     return (
@@ -32,12 +38,6 @@ export default function CoordinatorHomePage() {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (!isLoading && (!user || !isCoordinator(user))) {
-      navigate('/login');
-    }
-  }, [isLoading, user, navigate]);
 
   if (!user || !isCoordinator(user)) return null;
   const coordinator = user.coordinatorProfile;
