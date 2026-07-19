@@ -50,6 +50,8 @@ export interface RiskSummary {
 export interface GetModuleRiskSummaryResponse {
   msg: string;
   riskSummary: RiskSummary;
+  moduleName: string;
+  moduleCode: string;
 }
 
 // ----------------------------------------------------------------------------
