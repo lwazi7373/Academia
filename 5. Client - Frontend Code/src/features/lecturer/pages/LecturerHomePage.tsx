@@ -1,6 +1,7 @@
 import { BookOpen, LogOut, Mail, Building, GraduationCap, Loader2 } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useLogout } from '../../auth/auth.mutations';
 import { isLecturer } from '../../auth/auth.types';
 import { useGetMyModules } from '../lecturer.queries';
@@ -25,12 +26,13 @@ export default function LecturerHomePage() {
     );
   }
 
-  // Redirect if not a lecturer
-  if (!user || !isLecturer(user)) {
-    navigate('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!isLoading && (!user || !isLecturer(user))) {
+      navigate('/login');
+    }
+  }, [isLoading, user, navigate]);
 
+  if (!user || !isLecturer(user)) return null;
   const lecturer = user.lecturerProfile;
 
   const handleLogout = async () => {

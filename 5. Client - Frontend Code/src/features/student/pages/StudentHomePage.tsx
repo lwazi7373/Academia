@@ -1,6 +1,7 @@
 import { BookOpen, Calendar, AlertCircle, CheckCircle, Clock, LogOut, User, Award, Target, Loader2, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useLogout } from '../../auth/auth.mutations';
 import { isStudent } from '../../auth/auth.types';
 import { useGetStudentModules, useGetModulePerformance, useGetUpcomingAssessments } from '../../student/student.queries';
@@ -26,13 +27,14 @@ export default function StudentHomePage() {
       </div>
     );
   }
+  
+  useEffect(() => {
+    if (!isLoading && (!user || !isStudent(user))) {
+      navigate('/login');
+    }
+  }, [isLoading, user, navigate]);
 
-  // Only redirect after we know for sure user is not authenticated
-  if (!user || !isStudent(user)) {
-    navigate('/login');
-    return null;
-  }
-
+  if (!user || !isStudent(user)) return null;
   const student = user.studentProfile;
 
   const handleLogout = async () => {

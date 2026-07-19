@@ -9,23 +9,37 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { useLogout } from '../../auth/auth.mutations';
+import { useEffect } from 'react';
 import { isCoordinator } from '../../auth/auth.types';
 import { useCoordinatorModules } from '../../coordinator/coordinator.queries';
 
 export default function CoordinatorHomePage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
 
   // Fetch coordinator modules
   const { data: modules, isLoading: modulesLoading, error } = useCoordinatorModules();
 
-  // Redirect if not a coordinator
-  if (!user || !isCoordinator(user)) {
-    navigate('/login');
-    return null;
+  // Show loading state while auth is being checked
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
+  useEffect(() => {
+    if (!isLoading && (!user || !isCoordinator(user))) {
+      navigate('/login');
+    }
+  }, [isLoading, user, navigate]);
+
+  if (!user || !isCoordinator(user)) return null;
   const coordinator = user.coordinatorProfile;
 
   const handleLogout = async () => {

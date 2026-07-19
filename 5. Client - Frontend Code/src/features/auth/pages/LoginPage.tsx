@@ -6,59 +6,22 @@ import { AxiosError } from 'axios';
 
 export default function LoginPage() {
     // State 
-  const [userType, setUserType] = useState('student'); // Starts off on student
-  const [identifierNumber, setIdentifierNumber] = useState('');
+  const [userType, setUserType] = useState('student'); // Starts off on student, (other option is staff)
+  const [identifierNumber, setIdentifierNumber] = useState(''); // Student or Staff number
   const [userPassword, setUserPassword] = useState('');
 
-  // A user can have both LECTURER and COORDINATOR roles. Roles is an array in the system (e.g., ['LECTURER', 'COORDINATOR'])
+  // A user (if staff) can have both LECTURER and COORDINATOR roles. Roles is an array in the system (e.g., ['LECTURER', 'COORDINATOR'])
   // The LoginResponse only returns a LoginUser which has roles: string[], but doesn't include the full profile data.
-  // After login, useGetMe fetches the full User type with profiles.
-  // So to handle this, I am going to add state for role selection modal
+  // After login, useGetMe is called which fetches the full User type with the full profile data.
+
+  // In the case where a user(staff) has multiple roles, a UI element asking for role selection (what there are logging in as) will be shown
   const [showRoleModal, setShowRoleModal] = useState(false);
-  const [availableRoles, setAvailableRoles] = useState<string[]>([]);
+  // Showing the roles accessible  
+  const [availableRoles, setAvailableRoles] = useState<string[]>([]); 
   
   // React Query mutation hook
   const loginMutation = useLogin();
   const navigate = useNavigate();
-
-    // Handle roles issue
-    const navigateBasedOnRole = (roles: string[], selectedRole?: string) => {
-    // If a specific role is selected, use that
-    if (selectedRole) {
-      if (selectedRole === 'COORDINATOR') {
-        navigate('/coordinator/homePage');
-      } else if (selectedRole === 'LECTURER') {
-        navigate('/lecturer/homePage');
-      }
-      return;
-    }
-
-    // Check if user has both LECTURER and COORDINATOR roles
-    const hasLecturer = roles.includes('LECTURER');
-    const hasCoordinator = roles.includes('COORDINATOR');
-    
-    if (hasLecturer && hasCoordinator) {
-      // Show modal to let user choose
-      setAvailableRoles(roles);
-      setShowRoleModal(true);
-      return;
-    }
-
-    // Single role navigation
-    if (roles.includes('STUDENT')) {
-      navigate('/student/homePage');
-    } else if (hasCoordinator) {
-      navigate('/coordinator/homePage');
-    } else if (hasLecturer) {
-      navigate('/lecturer/homePage');
-    } else if (roles.includes('HOD')) {
-      navigate('/hod/homePage'); // Not really there yet
-    } else if (roles.includes('ADMIN')) {
-      navigate('/register');
-    } else {
-      navigate('/dashboard'); // Fallback
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,10 +37,9 @@ export default function LoginPage() {
       // Stored token in localStorage
       // Invalidated cache to trigger useGetMe
       // Showed success toast
-      
-      // We will navigate to the relevant users next page (studentHomePage, lecturerModulesPage or CoordinatorHomePage)
-      // I am expecting result to have the role (since useGetMe was triggered)
 
+      // We will navigate to the relevant user's next page (studentHomePage, lecturerModulesPage or CoordinatorHomePage)
+      console.log(result.user.roles) // I am expecting result to have the role (since useGetMe was triggered)
       navigateBasedOnRole(result.user.roles);
     } catch (error) {
       // Error is automatically handled by mutation
@@ -89,6 +51,44 @@ export default function LoginPage() {
   const handleRoleSelection = (role: string) => {
       setShowRoleModal(false);
       navigateBasedOnRole(availableRoles, role);
+  };
+
+
+  const navigateBasedOnRole = (roles: string[], selectedRole?: string) => {
+    if (selectedRole) {
+      if (selectedRole === 'COORDINATOR') {
+        navigate('/coordinator/homePage');
+      } else if (selectedRole === 'LECTURER') {
+        navigate('/lecturer/homePage');
+      }
+      return;
+    }
+
+    // Check if user has "BOTH" LECTURER and COORDINATOR roles
+    const hasLecturer = roles.includes('LECTURER');
+    const hasCoordinator = roles.includes('COORDINATOR');
+    
+    if (hasLecturer && hasCoordinator) {
+      // Show the modal to let the user choose
+      setAvailableRoles(roles);
+      setShowRoleModal(true);
+      return;
+    }
+
+    // Single role navigation
+    if (roles.includes('STUDENT')) {
+      navigate('/student/homePage');
+    } else if (hasCoordinator) {
+      navigate('/coordinator/homePage');
+    } else if (hasLecturer) {
+      navigate('/lecturer/homePage');
+    } else if (roles.includes('HOD')) {
+      navigate('/hod/homePage'); // Not really there yet
+    } else if (roles.includes('ADMIN')) {
+      navigate('/register'); // Admin only registers users
+    } else {
+      navigate('/dashboard'); // Fallback
+    }
   };
 
   // Extracting loading and error states from mutation
