@@ -27,8 +27,8 @@ const moduleRoute = require("./routes/moduleRoute");
 app.use('/api/', authRoutes);
 app.use('/api/', lecturerRoutes);
 app.use('/api/', attendanceRoutes);
-app.use('/api/', assessmentRoutes);
 app.use('/api/', studentRoutes);
+app.use('/api/', assessmentRoutes);
 app.use('/api/', coordinatorRoutes);
 // Single route, to solve a particular issue
 app.use('/api/', moduleRoute);
