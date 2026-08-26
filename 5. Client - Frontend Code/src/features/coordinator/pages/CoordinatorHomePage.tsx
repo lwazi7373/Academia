@@ -14,7 +14,7 @@ import { isCoordinator } from '../../auth/auth.types';
 import { useCoordinatorModules } from '../../coordinator/coordinator.queries';
 
 export default function CoordinatorHomePage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isFetching } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
 
@@ -22,10 +22,10 @@ export default function CoordinatorHomePage() {
   const { data: modules, isLoading: modulesLoading, error } = useCoordinatorModules();
 
   useEffect(() => {
-    if (!isLoading && (!user || !isCoordinator(user))) {
+    if (!isLoading && !isFetching && (!user || !isCoordinator(user))) {
       navigate('/login');
     }
-  }, [isLoading, user, navigate]);
+  }, [isLoading, isFetching, user, navigate]);
 
   // Show loading state while auth is being checked
   if (isLoading) {

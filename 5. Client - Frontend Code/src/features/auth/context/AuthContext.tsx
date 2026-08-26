@@ -8,17 +8,16 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isFetching: boolean; 
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // Check if token exists
-  const hasToken = !!localStorage.getItem('authToken');
   
   // Fetch user data if token exists
-  const { data: user, isLoading } = useGetMe(hasToken);
+  const { data: user, isLoading, isFetching } = useGetMe();
   
   // Logout mutation
   const logoutMutation = useLogout();
@@ -31,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     user: user || null,
     isAuthenticated: !!user,
     isLoading,
+    isFetching,
     logout,
   };
 

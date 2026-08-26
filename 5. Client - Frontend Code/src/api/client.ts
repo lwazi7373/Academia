@@ -39,10 +39,16 @@ apiClient.interceptors.response.use(
     if (error.response) {
       const status = error.response.status; // Backend statuses match exactly, no ambiguity
       if (status === 401) {
-        // Unauthorized - token expired or invalid
+        const wasLoggedIn = !!localStorage.getItem('authToken');
         localStorage.removeItem('authToken');
-        toast.error('Session expired. Please login again.');
-        window.location.href = '/login'; // I Will need to change this once route wiring is done 
+
+        // Only redirect/toast if we're not already sitting on the login page
+        if (window.location.pathname !== '/login') {
+          if (wasLoggedIn) {
+            toast.error('Session expired. Please login again.');
+          }
+          window.location.href = '/login';
+        }
       } else if (status === 403) {
         toast.error('You do not have permission to perform this action.');
       } else if (status === 500) {

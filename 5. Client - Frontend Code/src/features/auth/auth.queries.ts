@@ -22,7 +22,7 @@ export const useGetMe = (enabled = true) => { // I might want to conditionally c
     staleTime: 5 * 60 * 1000, // 5 minutes 
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     retry: false, // Don't retry on 401 (you are simply not authenticated)
-    enabled: enabled && !!localStorage.getItem('authToken'), // Only fetch if token exists
+    enabled: enabled, // just the caller's own flag now, no localStorage check
   });
 };
 

@@ -7,7 +7,7 @@ import { isStudent } from '../../auth/auth.types';
 import { useGetStudentModules, useGetModulePerformance, useGetUpcomingAssessments } from '../../student/student.queries';
 
 export default function StudentHomePage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isFetching } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
 
@@ -17,10 +17,10 @@ export default function StudentHomePage() {
   const { data: upcomingAssessments, isLoading: assessmentsLoading } = useGetUpcomingAssessments();
 
   useEffect(() => {
-    if (!isLoading && (!user || !isStudent(user))) {
+    if (!isLoading && !isFetching && (!user || !isStudent(user))) {
       navigate('/login');
     }
-  }, [isLoading, user, navigate]);
+  }, [isLoading, isFetching, user, navigate]);
 
   // Show loading state while auth is being checked
   if (isLoading) {

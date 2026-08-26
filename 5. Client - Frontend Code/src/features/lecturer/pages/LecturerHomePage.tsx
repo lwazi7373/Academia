@@ -7,7 +7,7 @@ import { isLecturer } from '../../auth/auth.types';
 import { useGetMyModules } from '../lecturer.queries';
 
 export default function LecturerHomePage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isFetching } = useAuth();
   const navigate = useNavigate();
   const logoutMutation = useLogout();
   
@@ -15,10 +15,10 @@ export default function LecturerHomePage() {
   const { data: modules, isLoading: modulesLoading } = useGetMyModules();
 
   useEffect(() => {
-    if (!isLoading && (!user || !isLecturer(user))) {
+    if (!isLoading && !isFetching && (!user || !isLecturer(user))) {
       navigate('/login');
     }
-  }, [isLoading, user, navigate]);
+  }, [isLoading, isFetching, user, navigate]);
 
   // Show loading state while auth is being checked
   if (isLoading) {
